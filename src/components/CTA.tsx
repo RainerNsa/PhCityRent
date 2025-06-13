@@ -1,6 +1,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { ArrowRight, Home, UserCheck, Shield, CheckCircle } from "lucide-react";
+import { Link } from "react-router-dom";
 import VerificationForm from "./VerificationForm";
 
 const CTA = () => {
@@ -57,10 +58,13 @@ const CTA = () => {
               <p className="text-white/80 mb-6">
                 Browse verified listings and find your perfect rental property in Port Harcourt
               </p>
-              <button className="bg-pulse-500 hover:bg-pulse-600 text-white py-3 px-6 rounded-full font-medium transition-colors w-full group">
+              <Link 
+                to="/properties"
+                className="bg-pulse-500 hover:bg-pulse-600 text-white py-3 px-6 rounded-full font-medium transition-colors w-full group inline-flex items-center justify-center"
+              >
                 Start Searching
                 <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </button>
+              </Link>
             </div>
             
             {/* Verify Me As Agent */}
@@ -78,7 +82,7 @@ const CTA = () => {
               </div>
               <button 
                 onClick={() => setShowAgentForm(true)}
-                className="bg-green-600 text-white py-3 px-6 rounded-full font-medium hover:bg-green-700 transition-colors w-full group"
+                className="bg-green-600 text-white py-3 px-6 rounded-full font-medium hover:bg-green-700 transition-colors w-full group inline-flex items-center justify-center"
               >
                 Get Verified Now
                 <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -94,10 +98,13 @@ const CTA = () => {
               <p className="text-white/80 mb-6">
                 Secure your rent payment with our escrow service for complete peace of mind
               </p>
-              <button className="bg-purple-600 text-white py-3 px-6 rounded-full font-medium hover:bg-purple-700 transition-colors w-full group">
+              <Link 
+                to="/escrow"
+                className="bg-purple-600 text-white py-3 px-6 rounded-full font-medium hover:bg-purple-700 transition-colors w-full group inline-flex items-center justify-center"
+              >
                 Secure Payment
                 <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </button>
+              </Link>
             </div>
           </div>
           
@@ -108,7 +115,7 @@ const CTA = () => {
             <p className="text-white/70 mb-4 text-sm">Get verified to list your properties directly</p>
             <button 
               onClick={() => setShowLandlordForm(true)}
-              className="bg-white/20 text-white px-8 py-3 rounded-full font-medium hover:bg-white/30 transition-colors border border-white/30 w-full group"
+              className="bg-white/20 text-white px-8 py-3 rounded-full font-medium hover:bg-white/30 transition-colors border border-white/30 w-full group inline-flex items-center justify-center"
             >
               Verify as Landlord
               <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />

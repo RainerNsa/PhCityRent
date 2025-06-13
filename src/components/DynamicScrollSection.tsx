@@ -62,28 +62,22 @@ const DynamicScrollSection = () => {
   return (
     <section 
       ref={sectionRef}
-      className="relative py-16 md:py-20 overflow-hidden min-h-fit"
-      style={{
-        background: `linear-gradient(135deg, 
-          rgba(249,115,22,${0.8 + scrollProgress * 0.2}) 0%, 
-          rgba(249,115,22,${0.6 + scrollProgress * 0.3}) 50%, 
-          rgba(251,146,60,${0.8 + scrollProgress * 0.2}) 100%)`
-      }}
+      className="relative py-16 md:py-20 bg-gradient-to-br from-orange-500/90 via-orange-400/80 to-orange-600/90"
     >
-      {/* Dynamic background elements - contained within section */}
+      {/* Dynamic background elements */}
       <div 
-        className="absolute top-10 right-10 w-64 h-64 md:w-96 md:h-96 bg-white/10 rounded-full blur-3xl transition-all duration-1000 pointer-events-none"
+        className="absolute top-10 right-10 w-32 h-32 md:w-48 md:h-48 bg-white/10 rounded-full blur-2xl transition-all duration-1000 pointer-events-none"
         style={{
-          transform: `translateX(${(1 - scrollProgress) * 50}px) translateY(${scrollProgress * 30}px)`,
-          opacity: 0.3 + scrollProgress * 0.4,
+          transform: `translateX(${(1 - scrollProgress) * 30}px) translateY(${scrollProgress * 20}px)`,
+          opacity: 0.4 + scrollProgress * 0.3,
         }}
       ></div>
       
       <div 
-        className="absolute bottom-10 left-10 w-48 h-48 md:w-80 md:h-80 bg-white/10 rounded-full blur-3xl transition-all duration-1000 pointer-events-none"
+        className="absolute bottom-10 left-10 w-24 h-24 md:w-40 md:h-40 bg-white/10 rounded-full blur-2xl transition-all duration-1000 pointer-events-none"
         style={{
-          transform: `translateX(${(1 - scrollProgress) * -50}px) translateY(${(1 - scrollProgress) * 30}px)`,
-          opacity: 0.2 + scrollProgress * 0.6,
+          transform: `translateX(${(1 - scrollProgress) * -30}px) translateY(${(1 - scrollProgress) * 20}px)`,
+          opacity: 0.3 + scrollProgress * 0.4,
         }}
       ></div>
 
@@ -91,8 +85,8 @@ const DynamicScrollSection = () => {
         <div 
           className="text-center mb-12 md:mb-16 transition-all duration-1000"
           style={{
-            transform: `translateY(${(1 - scrollProgress) * 30}px)`,
-            opacity: Math.max(0.3, scrollProgress),
+            transform: `translateY(${(1 - scrollProgress) * 20}px)`,
+            opacity: Math.max(0.5, scrollProgress),
           }}
         >
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
@@ -111,16 +105,16 @@ const DynamicScrollSection = () => {
             return (
               <div
                 key={index}
-                className="bg-white/10 backdrop-blur-sm rounded-2xl text-center p-6 transition-all duration-500 hover:bg-white/20"
+                className="bg-white/20 backdrop-blur-sm rounded-2xl text-center p-6 transition-all duration-500 hover:bg-white/30 border border-white/20"
                 style={{
-                  transform: `translateY(${(1 - itemProgress) * 50}px) scale(${0.9 + itemProgress * 0.1})`,
-                  opacity: Math.max(0.1, itemProgress),
+                  transform: `translateY(${(1 - itemProgress) * 30}px) scale(${0.95 + itemProgress * 0.05})`,
+                  opacity: Math.max(0.3, itemProgress),
                 }}
               >
                 <div 
-                  className="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-500"
+                  className="bg-white/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-500"
                   style={{
-                    transform: `rotate(${itemProgress * 180}deg)`,
+                    transform: `rotate(${itemProgress * 90}deg)`,
                   }}
                 >
                   <Icon className="w-8 h-8 text-white" />
@@ -128,7 +122,7 @@ const DynamicScrollSection = () => {
                 <h3 className="text-lg font-bold text-white mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-white/80 text-sm">
+                <p className="text-white/90 text-sm">
                   {feature.description}
                 </p>
               </div>
@@ -140,27 +134,27 @@ const DynamicScrollSection = () => {
         <div 
           className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center transition-all duration-1000"
           style={{
-            transform: `translateY(${(1 - scrollProgress) * 20}px)`,
-            opacity: Math.max(0.3, scrollProgress),
+            transform: `translateY(${(1 - scrollProgress) * 15}px)`,
+            opacity: Math.max(0.5, scrollProgress),
           }}
         >
           <div className="text-white">
             <div className="text-3xl md:text-4xl font-bold mb-2">
               {Math.floor(scrollProgress * 500)}+
             </div>
-            <div className="text-white/80">Verified Properties</div>
+            <div className="text-white/90">Verified Properties</div>
           </div>
           <div className="text-white">
             <div className="text-3xl md:text-4xl font-bold mb-2">
               {Math.floor(scrollProgress * 150)}+
             </div>
-            <div className="text-white/80">Trusted Agents</div>
+            <div className="text-white/90">Trusted Agents</div>
           </div>
           <div className="text-white">
             <div className="text-3xl md:text-4xl font-bold mb-2">
               {Math.floor(scrollProgress * 1000)}+
             </div>
-            <div className="text-white/80">Happy Tenants</div>
+            <div className="text-white/90">Happy Tenants</div>
           </div>
         </div>
       </div>

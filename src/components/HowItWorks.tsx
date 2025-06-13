@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Search, UserCheck, Shield, Home } from "lucide-react";
@@ -16,24 +15,24 @@ const StepCard = ({ number, title, description, icon: Icon, isActive, onClick }:
   return (
     <div 
       className={cn(
-        "rounded-xl p-6 cursor-pointer transition-all duration-500 border",
+        "feature-card cursor-pointer transition-all duration-500 border",
         isActive 
-          ? "bg-white shadow-lg border-blue-200" 
-          : "bg-white/50 hover:bg-white/80 border-transparent"
+          ? "glass-card border-pulse-200 shadow-elegant" 
+          : "bg-white/50 hover:bg-white/80 border-transparent hover:shadow-elegant"
       )}
       onClick={onClick}
     >
       <div className="flex items-start">
         <div className={cn(
           "flex items-center justify-center rounded-full w-12 h-12 mr-4 flex-shrink-0 transition-colors duration-300",
-          isActive ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-500"
+          isActive ? "bg-pulse-500 text-white" : "bg-gray-100 text-gray-500"
         )}>
           <Icon className="w-6 h-6" />
         </div>
         <div>
           <h3 className={cn(
-            "text-lg font-semibold mb-2 transition-colors duration-300",
-            isActive ? "text-blue-600" : "text-gray-800"
+            "text-lg font-display font-semibold mb-2 transition-colors duration-300",
+            isActive ? "text-pulse-500" : "text-gray-800"
           )}>
             {title}
           </h3>
@@ -113,60 +112,60 @@ const HowItWorks = () => {
   }, []);
   
   return (
-    <section className="py-20 bg-gray-50 relative" id="how-it-works" ref={sectionRef}>
-      <div className="absolute -top-20 right-0 w-72 h-72 bg-blue-100/60 rounded-full opacity-60 blur-3xl -z-10"></div>
-      <div className="absolute bottom-0 left-10 w-64 h-64 bg-green-50 rounded-full opacity-70 blur-3xl -z-10"></div>
+    <section className="section-container relative animate-on-scroll" id="how-it-works" ref={sectionRef} style={{
+      background: 'linear-gradient(180deg, rgba(249,115,22,0.02) 0%, rgba(249,115,22,0.05) 100%)'
+    }}>
+      <div className="absolute -top-20 right-0 w-72 h-72 bg-pulse-100/60 rounded-full opacity-60 blur-3xl -z-10"></div>
+      <div className="absolute bottom-0 left-10 w-64 h-64 bg-pulse-50 rounded-full opacity-70 blur-3xl -z-10"></div>
       
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 opacity-0 fade-in-stagger">
-          <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-600 border border-blue-200 mb-4">
-            <span>Simple Process</span>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Our simple four-step process ensures you find verified rentals safely and securely.
-          </p>
+      <div className="text-center mb-16 opacity-0 fade-in-stagger">
+        <div className="pulse-chip mb-4">
+          <span>Simple Process</span>
+        </div>
+        <h2 className="section-title text-gray-900 mb-4">How It Works</h2>
+        <p className="section-subtitle">
+          Our simple four-step process ensures you find verified rentals safely and securely.
+        </p>
+      </div>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="space-y-4 order-2 lg:order-1 opacity-0 fade-in-stagger">
+          {stepsData.map((step, index) => (
+            <StepCard
+              key={step.number}
+              number={step.number}
+              title={step.title}
+              description={step.description}
+              icon={step.icon}
+              isActive={activeStep === index}
+              onClick={() => setActiveStep(index)}
+            />
+          ))}
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-4 order-2 lg:order-1 opacity-0 fade-in-stagger">
-            {stepsData.map((step, index) => (
-              <StepCard
-                key={step.number}
-                number={step.number}
-                title={step.title}
-                description={step.description}
-                icon={step.icon}
-                isActive={activeStep === index}
-                onClick={() => setActiveStep(index)}
+        <div className="robot-image-container h-[400px] order-1 lg:order-2 opacity-0 fade-in-stagger">
+          {stepsData.map((step, index) => (
+            <div
+              key={index}
+              className={cn(
+                "absolute inset-0 transition-opacity duration-1000",
+                activeStep === index ? "opacity-100" : "opacity-0 pointer-events-none"
+              )}
+            >
+              <img
+                src={step.image}
+                alt={step.title}
+                className="w-full h-full object-cover rounded-2xl"
               />
-            ))}
-          </div>
-          
-          <div className="relative rounded-3xl overflow-hidden h-[400px] shadow-lg order-1 lg:order-2 opacity-0 fade-in-stagger">
-            {stepsData.map((step, index) => (
-              <div
-                key={index}
-                className={cn(
-                  "absolute inset-0 transition-opacity duration-1000",
-                  activeStep === index ? "opacity-100" : "opacity-0 pointer-events-none"
-                )}
-              >
-                <img
-                  src={step.image}
-                  alt={step.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent">
-                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                    <span className="text-blue-400 font-medium mb-2 block">{step.number}</span>
-                    <h3 className="text-2xl font-semibold mb-2">{step.title}</h3>
-                    <p className="text-white/80">{step.description}</p>
-                  </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent rounded-2xl">
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                  <span className="text-pulse-400 font-medium mb-2 block">{step.number}</span>
+                  <h3 className="text-2xl font-display font-semibold mb-2">{step.title}</h3>
+                  <p className="text-white/80">{step.description}</p>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

@@ -62,90 +62,88 @@ const FeaturedListings = () => {
   }, []);
 
   return (
-    <section className="py-16 bg-white" id="listings">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-600 border border-green-200 mb-4">
-            <Shield className="w-4 h-4 mr-2" />
-            <span>Verified Listings</span>
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Featured Properties
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover verified rental properties from trusted agents across Port Harcourt
-          </p>
+    <section className="section-container bg-white animate-on-scroll" id="listings">
+      <div className="text-center mb-12">
+        <div className="pulse-chip mb-4">
+          <Shield className="w-4 h-4 mr-2" />
+          <span>Verified Listings</span>
         </div>
+        <h2 className="section-title text-gray-900 mb-4">
+          Featured Properties
+        </h2>
+        <p className="section-subtitle">
+          Discover verified rental properties from trusted agents across Port Harcourt
+        </p>
+      </div>
 
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-gray-200 animate-pulse rounded-xl h-80"></div>
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {listings.map((listing) => (
-              <div key={listing.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                <div className="relative">
-                  <img 
-                    src={listing.image} 
-                    alt={listing.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  {listing.verified && (
-                    <div className="absolute top-4 right-4 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center">
-                      <Shield className="w-3 h-3 mr-1" />
-                      Verified
-                    </div>
-                  )}
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="glass-card animate-pulse h-80"></div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {listings.map((listing, index) => (
+            <div key={listing.id} className={`glass-card feature-card hover-lift fadeIn stagger-${(index % 3) + 1}`}>
+              <div className="relative">
+                <img 
+                  src={listing.image} 
+                  alt={listing.title}
+                  className="w-full h-48 object-cover rounded-lg"
+                />
+                {listing.verified && (
+                  <div className="absolute top-4 right-4 bg-pulse-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center">
+                    <Shield className="w-3 h-3 mr-1" />
+                    Verified
+                  </div>
+                )}
+              </div>
+              
+              <div className="pt-4">
+                <h3 className="text-xl font-display font-semibold text-gray-900 mb-2">{listing.title}</h3>
+                
+                <div className="flex items-center text-gray-600 mb-3">
+                  <MapPin className="w-4 h-4 mr-1" />
+                  <span className="text-sm">{listing.location}</span>
                 </div>
                 
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{listing.title}</h3>
-                  
-                  <div className="flex items-center text-gray-600 mb-3">
-                    <MapPin className="w-4 h-4 mr-1" />
-                    <span className="text-sm">{listing.location}</span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-4 text-sm text-gray-600">
-                      <div className="flex items-center">
-                        <Bed className="w-4 h-4 mr-1" />
-                        <span>{listing.bedrooms} beds</span>
-                      </div>
-                      <div className="flex items-center">
-                        <Bath className="w-4 h-4 mr-1" />
-                        <span>{listing.bathrooms} baths</span>
-                      </div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-4 text-sm text-gray-600">
+                    <div className="flex items-center">
+                      <Bed className="w-4 h-4 mr-1" />
+                      <span>{listing.bedrooms} beds</span>
                     </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center text-blue-600 font-semibold">
-                      <DollarSign className="w-4 h-4 mr-1" />
-                      <span>{listing.price}</span>
+                    <div className="flex items-center">
+                      <Bath className="w-4 h-4 mr-1" />
+                      <span>{listing.bathrooms} baths</span>
                     </div>
-                    <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
-                      View Details
-                    </button>
-                  </div>
-                  
-                  <div className="mt-3 pt-3 border-t border-gray-200">
-                    <p className="text-xs text-gray-500">Listed by: {listing.agent}</p>
                   </div>
                 </div>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center text-pulse-500 font-semibold">
+                    <DollarSign className="w-4 h-4 mr-1" />
+                    <span>{listing.price}</span>
+                  </div>
+                  <button className="button-primary text-sm py-2 px-4">
+                    View Details
+                  </button>
+                </div>
+                
+                <div className="mt-3 pt-3 border-t border-gray-200">
+                  <p className="text-xs text-gray-500">Listed by: {listing.agent}</p>
+                </div>
               </div>
-            ))}
-          </div>
-        )}
-        
-        <div className="text-center mt-12">
-          <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
-            View All Properties
-          </button>
+            </div>
+          ))}
         </div>
+      )}
+      
+      <div className="text-center mt-12">
+        <button className="button-primary">
+          View All Properties
+        </button>
       </div>
     </section>
   );

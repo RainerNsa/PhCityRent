@@ -30,58 +30,60 @@ const CTA = () => {
   }, []);
   
   return (
-    <section className="py-16 bg-gradient-to-br from-blue-600 to-green-600 relative" id="get-started" ref={ctaRef}>
+    <section className="py-16 relative" id="get-started" ref={ctaRef} style={{
+      background: 'linear-gradient(135deg, rgba(249,115,22,0.9) 0%, rgba(249,115,22,0.8) 50%, rgba(251,146,60,0.9) 100%)'
+    }}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 opacity-0">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+          <h2 className="section-title text-white mb-4">
             Ready to Find Your Perfect Home?
           </h2>
-          <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+          <p className="text-xl text-white/90 max-w-2xl mx-auto">
             Join thousands of satisfied tenants who found their dream homes through our secure platform
           </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
           {/* Find a House */}
-          <div className="bg-white rounded-xl p-8 text-center shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-            <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Home className="w-8 h-8 text-blue-600" />
+          <div className="glass-card feature-card text-center hover-lift">
+            <div className="bg-pulse-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Home className="w-8 h-8 text-pulse-600" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Find a House</h3>
+            <h3 className="text-xl font-display font-bold text-gray-900 mb-3">Find a House</h3>
             <p className="text-gray-600 mb-6">
               Browse verified listings and find your perfect rental property in Port Harcourt
             </p>
-            <button className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center group">
+            <button className="button-primary w-full group">
               Start Searching
               <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
             </button>
           </div>
           
           {/* Verify Me As Agent */}
-          <div className="bg-white rounded-xl p-8 text-center shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+          <div className="glass-card feature-card text-center hover-lift">
             <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <UserCheck className="w-8 h-8 text-green-600" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Verify Me As Agent</h3>
+            <h3 className="text-xl font-display font-bold text-gray-900 mb-3">Verify Me As Agent</h3>
             <p className="text-gray-600 mb-6">
               Join our network of trusted agents and list verified properties on our platform
             </p>
-            <button className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center justify-center group">
+            <button className="bg-green-600 text-white py-3 px-6 rounded-full font-medium hover:bg-green-700 transition-colors w-full group">
               Get Verified
               <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
             </button>
           </div>
           
           {/* Escrow Your Rent */}
-          <div className="bg-white rounded-xl p-8 text-center shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+          <div className="glass-card feature-card text-center hover-lift">
             <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <Shield className="w-8 h-8 text-purple-600" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Escrow Your Rent</h3>
+            <h3 className="text-xl font-display font-bold text-gray-900 mb-3">Escrow Your Rent</h3>
             <p className="text-gray-600 mb-6">
               Secure your rent payment with our escrow service for complete peace of mind
             </p>
-            <button className="w-full bg-purple-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-purple-700 transition-colors flex items-center justify-center group">
+            <button className="bg-purple-600 text-white py-3 px-6 rounded-full font-medium hover:bg-purple-700 transition-colors w-full group">
               Secure Payment
               <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
             </button>
@@ -89,10 +91,10 @@ const CTA = () => {
         </div>
         
         <div className="text-center mt-12">
-          <p className="text-blue-100 mb-4">Questions? We're here to help!</p>
+          <p className="text-white/90 mb-4">Questions? We're here to help!</p>
           <a 
             href="#contact" 
-            className="text-white underline hover:no-underline transition-all"
+            className="text-white underline hover:no-underline transition-all story-link"
           >
             Contact our support team
           </a>

@@ -62,7 +62,7 @@ const DynamicScrollSection = () => {
   return (
     <section 
       ref={sectionRef}
-      className="relative py-20 overflow-hidden"
+      className="relative py-16 md:py-20 overflow-hidden min-h-fit"
       style={{
         background: `linear-gradient(135deg, 
           rgba(249,115,22,${0.8 + scrollProgress * 0.2}) 0%, 
@@ -70,40 +70,40 @@ const DynamicScrollSection = () => {
           rgba(251,146,60,${0.8 + scrollProgress * 0.2}) 100%)`
       }}
     >
-      {/* Dynamic background elements */}
+      {/* Dynamic background elements - contained within section */}
       <div 
-        className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl transition-all duration-1000"
+        className="absolute top-10 right-10 w-64 h-64 md:w-96 md:h-96 bg-white/10 rounded-full blur-3xl transition-all duration-1000 pointer-events-none"
         style={{
-          transform: `translateX(${(1 - scrollProgress) * 100}px) translateY(${scrollProgress * 50}px)`,
-          opacity: 0.3 + scrollProgress * 0.7,
+          transform: `translateX(${(1 - scrollProgress) * 50}px) translateY(${scrollProgress * 30}px)`,
+          opacity: 0.3 + scrollProgress * 0.4,
         }}
       ></div>
       
       <div 
-        className="absolute bottom-0 left-0 w-80 h-80 bg-white/10 rounded-full blur-3xl transition-all duration-1000"
+        className="absolute bottom-10 left-10 w-48 h-48 md:w-80 md:h-80 bg-white/10 rounded-full blur-3xl transition-all duration-1000 pointer-events-none"
         style={{
-          transform: `translateX(${(1 - scrollProgress) * -100}px) translateY(${(1 - scrollProgress) * 50}px)`,
-          opacity: 0.2 + scrollProgress * 0.8,
+          transform: `translateX(${(1 - scrollProgress) * -50}px) translateY(${(1 - scrollProgress) * 30}px)`,
+          opacity: 0.2 + scrollProgress * 0.6,
         }}
       ></div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div 
-          className="text-center mb-16 transition-all duration-1000"
+          className="text-center mb-12 md:mb-16 transition-all duration-1000"
           style={{
-            transform: `translateY(${(1 - scrollProgress) * 50}px)`,
-            opacity: scrollProgress,
+            transform: `translateY(${(1 - scrollProgress) * 30}px)`,
+            opacity: Math.max(0.3, scrollProgress),
           }}
         >
-          <h2 className="section-title text-white mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Why RentPH Safe is Different
           </h2>
-          <p className="text-xl text-white/90 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
             We've revolutionized the rental process in Port Harcourt with verified listings and secure transactions
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-12 md:mb-16">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             const itemProgress = Math.max(0, Math.min(1, (scrollProgress - feature.delay) / 0.3));
@@ -111,21 +111,21 @@ const DynamicScrollSection = () => {
             return (
               <div
                 key={index}
-                className="glass-card text-center p-6 hover-lift transition-all duration-500"
+                className="bg-white/10 backdrop-blur-sm rounded-2xl text-center p-6 transition-all duration-500 hover:bg-white/20"
                 style={{
-                  transform: `translateY(${(1 - itemProgress) * 100}px) scale(${0.8 + itemProgress * 0.2})`,
-                  opacity: itemProgress,
+                  transform: `translateY(${(1 - itemProgress) * 50}px) scale(${0.9 + itemProgress * 0.1})`,
+                  opacity: Math.max(0.1, itemProgress),
                 }}
               >
                 <div 
                   className="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-500"
                   style={{
-                    transform: `rotate(${itemProgress * 360}deg)`,
+                    transform: `rotate(${itemProgress * 180}deg)`,
                   }}
                 >
                   <Icon className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-display font-bold text-white mb-2">
+                <h3 className="text-lg font-bold text-white mb-2">
                   {feature.title}
                 </h3>
                 <p className="text-white/80 text-sm">
@@ -138,26 +138,26 @@ const DynamicScrollSection = () => {
 
         {/* Dynamic stats counter */}
         <div 
-          className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center transition-all duration-1000"
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center transition-all duration-1000"
           style={{
-            transform: `translateY(${(1 - scrollProgress) * 30}px)`,
-            opacity: scrollProgress,
+            transform: `translateY(${(1 - scrollProgress) * 20}px)`,
+            opacity: Math.max(0.3, scrollProgress),
           }}
         >
           <div className="text-white">
-            <div className="text-4xl font-bold mb-2">
+            <div className="text-3xl md:text-4xl font-bold mb-2">
               {Math.floor(scrollProgress * 500)}+
             </div>
             <div className="text-white/80">Verified Properties</div>
           </div>
           <div className="text-white">
-            <div className="text-4xl font-bold mb-2">
+            <div className="text-3xl md:text-4xl font-bold mb-2">
               {Math.floor(scrollProgress * 150)}+
             </div>
             <div className="text-white/80">Trusted Agents</div>
           </div>
           <div className="text-white">
-            <div className="text-4xl font-bold mb-2">
+            <div className="text-3xl md:text-4xl font-bold mb-2">
               {Math.floor(scrollProgress * 1000)}+
             </div>
             <div className="text-white/80">Happy Tenants</div>

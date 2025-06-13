@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import FeaturedListings from "@/components/FeaturedListings";
 import HowItWorks from "@/components/HowItWorks";
+import DynamicScrollSection from "@/components/DynamicScrollSection";
 import CTA from "@/components/CTA";
 import ContactFAQ from "@/components/ContactFAQ";
 import Footer from "@/components/Footer";
@@ -58,6 +59,7 @@ const Index = () => {
         <Hero />
         <FeaturedListings />
         <HowItWorks />
+        <DynamicScrollSection />
         <CTA />
         <ContactFAQ />
       </main>

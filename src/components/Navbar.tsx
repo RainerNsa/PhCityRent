@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Menu, X, Home } from "lucide-react";
@@ -13,10 +12,7 @@ const Navbar = () => {
     };
     
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () =>
-
-
-.removeEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const toggleMenu = () => {

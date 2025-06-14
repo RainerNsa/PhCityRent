@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,7 +11,8 @@ import Landlords from "./pages/Landlords";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+import VerificationStatus from "./pages/VerificationStatus";
+import AgentDashboard from "./pages/AgentDashboard";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -27,6 +27,8 @@ const App = () => (
           <Route path="/agents" element={<Agents />} />
           <Route path="/landlords" element={<Landlords />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/verification-status" element={<VerificationStatus />} />
+          <Route path="/agent-dashboard" element={<AgentDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

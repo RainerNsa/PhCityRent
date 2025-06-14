@@ -1,12 +1,13 @@
-
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Star, Phone, Mail, MapPin, Home, Calendar, Shield, CheckCircle, Filter } from "lucide-react";
+import VerificationForm from "@/components/VerificationForm";
+import { Star, Phone, Mail, MapPin, Home, Calendar, Shield, CheckCircle, Filter, UserPlus } from "lucide-react";
 
 const Agents = () => {
   const [selectedLocation, setSelectedLocation] = useState("all");
   const [selectedRating, setSelectedRating] = useState("all");
+  const [showVerificationForm, setShowVerificationForm] = useState(false);
 
   const agents = [
     {
@@ -190,15 +191,30 @@ const Agents = () => {
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Want to Become a Verified Agent?</h2>
             <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
               Join our network of trusted real estate professionals and get access to exclusive tools, 
-              verified listings, and direct client connections.
+              verified listings, and direct client connections in Port Harcourt.
             </p>
-            <button className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-full font-medium transition-colors">
-              Apply for Verification
-            </button>
+            <div className="flex justify-center gap-4">
+              <button 
+                onClick={() => setShowVerificationForm(true)}
+                className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-full font-medium transition-colors flex items-center gap-2"
+              >
+                <UserPlus className="w-5 h-5" />
+                Apply for Verification
+              </button>
+              <button className="bg-white hover:bg-gray-50 text-green-600 border border-green-200 px-8 py-3 rounded-full font-medium transition-colors">
+                Learn More
+              </button>
+            </div>
           </div>
         </div>
       </main>
       <Footer />
+      
+      <VerificationForm 
+        isOpen={showVerificationForm}
+        onClose={() => setShowVerificationForm(false)}
+        type="agent"
+      />
     </div>
   );
 };

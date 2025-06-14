@@ -1,149 +1,131 @@
 
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-import { useAuth } from "@/hooks/useAuth";
-import { X, Shield, Mail, Lock, User } from "lucide-react";
+import React, { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
+import { Loader2 } from 'lucide-react';
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialMode?: "signin" | "signup";
 }
 
-const AuthModal = ({ isOpen, onClose, initialMode = "signin" }: AuthModalProps) => {
-  const [mode, setMode] = useState<"signin" | "signup">(initialMode);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
+const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
+  const [mode, setMode] = useState<'signin' | 'signup'>('signin');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      if (mode === "signup") {
-        if (!fullName.trim()) {
-          return;
-        }
-        const { error } = await signUp(email, password, fullName);
-        if (!error) {
-          onClose();
-        }
-      } else {
+      if (mode === 'signin') {
         const { error } = await signIn(email, password);
-        if (!error) {
-          onClose();
-        }
+        if (error) throw error;
+        toast({
+          title: "Welcome back!",
+          description: "You have been signed in successfully.",
+        });
+      } else {
+        const { error } = await signUp(email, password, fullName);
+        if (error) throw error;
+        toast({
+          title: "Account created!",
+          description: "Please check your email to verify your account.",
+        });
       }
+      onClose();
+    } catch (error: any) {
+      toast({
+        title: "Authentication failed",
+        description: error.message,
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  if (!isOpen) return null;
+  const resetForm = () => {
+    setEmail('');
+    setPassword('');
+    setFullName('');
+  };
+
+  const switchMode = () => {
+    setMode(mode === 'signin' ? 'signup' : 'signin');
+    resetForm();
+  };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-md p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="bg-pulse-100 p-2 rounded-lg">
-              <Shield className="w-5 h-5 text-pulse-600" />
-            </div>
-            <h2 className="text-xl font-bold">
-              {mode === "signin" ? "Sign In" : "Create Account"}
-            </h2>
-          </div>
-          <Button variant="ghost" size="icon" onClick={onClose}>
-            <X className="w-5 h-5" />
-          </Button>
-        </div>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>
+            {mode === 'signin' ? 'Sign In' : 'Create Account'}
+          </DialogTitle>
+        </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {mode === "signup" && (
+          {mode === 'signup' && (
             <div className="space-y-2">
-              <label className="text-sm font-medium">Full Name</label>
-              <div className="relative">
-                <User className="w-4 h-4 absolute left-3 top-3.5 text-gray-400" />
-                <Input
-                  type="text"
-                  placeholder="John Doe"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="pl-10"
-                  required
-                />
-              </div>
+              <Label htmlFor="fullName">Full Name</Label>
+              <Input
+                id="fullName"
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+              />
             </div>
           )}
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Email</label>
-            <div className="relative">
-              <Mail className="w-4 h-4 absolute left-3 top-3.5 text-gray-400" />
-              <Input
-                type="email"
-                placeholder="john@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="pl-10"
-                required
-              />
-            </div>
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Password</label>
-            <div className="relative">
-              <Lock className="w-4 h-4 absolute left-3 top-3.5 text-gray-400" />
-              <Input
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="pl-10"
-                required
-                minLength={6}
-              />
-            </div>
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
           </div>
 
-          <Button
-            type="submit"
-            className="w-full bg-pulse-500 hover:bg-pulse-600"
-            disabled={loading}
-          >
-            {loading ? "Please wait..." : mode === "signin" ? "Sign In" : "Create Account"}
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {mode === 'signin' ? 'Sign In' : 'Create Account'}
           </Button>
         </form>
 
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
-            {mode === "signin" ? "Don't have an account?" : "Already have an account?"}
-          </p>
-          <Button
-            variant="link"
-            onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-            className="text-pulse-600 hover:text-pulse-700"
-          >
-            {mode === "signin" ? "Create Account" : "Sign In"}
+        <div className="text-center">
+          <Button variant="link" onClick={switchMode}>
+            {mode === 'signin' 
+              ? "Don't have an account? Sign up" 
+              : "Already have an account? Sign in"
+            }
           </Button>
         </div>
-
-        {mode === "signup" && (
-          <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-            <p className="text-xs text-blue-700">
-              After creating your account, you'll receive a confirmation email. 
-              Verified agents can access additional features through their dashboard.
-            </p>
-          </div>
-        )}
-      </Card>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

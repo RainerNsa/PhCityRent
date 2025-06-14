@@ -1,86 +1,73 @@
 
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/useAuth";
-import { User, LogOut, Settings, Shield, ChevronDown } from "lucide-react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { useAuth } from '@/hooks/useAuth';
+import { User, Settings, LogOut, Shield } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const UserMenu = () => {
-  const { user, userRole, signOut, isAdmin, isAgent } = useAuth();
+  const { user, signOut, isAdmin } = useAuth();
+  const navigate = useNavigate();
 
   if (!user) return null;
 
-  const getRoleColor = (role: string | null) => {
-    switch (role) {
-      case 'super_admin':
-        return 'bg-red-100 text-red-800';
-      case 'admin':
-        return 'bg-purple-100 text-purple-800';
-      case 'agent':
-        return 'bg-green-100 text-green-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
   };
+
+  const userInitials = user.user_metadata?.full_name
+    ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase()
+    : user.email?.substring(0, 2).toUpperCase() || 'U';
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="flex items-center gap-2">
-          <div className="bg-pulse-100 p-1 rounded-full">
-            <User className="w-4 h-4 text-pulse-600" />
-          </div>
-          <span className="hidden md:block text-sm">
-            {user.user_metadata?.full_name || user.email?.split('@')[0]}
-          </span>
-          <ChevronDown className="w-4 h-4" />
+        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+          <Avatar className="h-8 w-8">
+            <AvatarFallback>{userInitials}</AvatarFallback>
+          </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      
-      <DropdownMenuContent align="end" className="w-56">
-        <div className="px-2 py-1.5">
-          <p className="text-sm font-medium">{user.user_metadata?.full_name || 'User'}</p>
-          <p className="text-xs text-gray-500">{user.email}</p>
-          {userRole && (
-            <Badge className={`text-xs mt-1 ${getRoleColor(userRole)}`}>
-              {userRole.replace('_', ' ').toUpperCase()}
-            </Badge>
-          )}
+      <DropdownMenuContent className="w-56" align="end" forceMount>
+        <div className="flex items-center justify-start gap-2 p-2">
+          <div className="flex flex-col space-y-1 leading-none">
+            <p className="font-medium">{user.user_metadata?.full_name || 'User'}</p>
+            <p className="text-xs text-muted-foreground">{user.email}</p>
+          </div>
         </div>
-        
         <DropdownMenuSeparator />
         
-        {isAgent && (
-          <DropdownMenuItem asChild>
-            <Link to="/agent-dashboard" className="flex items-center">
-              <Shield className="w-4 h-4 mr-2" />
-              Agent Dashboard
-            </Link>
-          </DropdownMenuItem>
-        )}
+        <DropdownMenuItem onClick={() => navigate('/agent-dashboard')}>
+          <User className="mr-2 h-4 w-4" />
+          <span>Dashboard</span>
+        </DropdownMenuItem>
         
         {isAdmin && (
-          <DropdownMenuItem asChild>
-            <Link to="/admin-dashboard" className="flex items-center">
-              <Settings className="w-4 h-4 mr-2" />
-              Admin Dashboard
-            </Link>
+          <DropdownMenuItem onClick={() => navigate('/admin')}>
+            <Shield className="mr-2 h-4 w-4" />
+            <span>Admin Panel</span>
           </DropdownMenuItem>
         )}
         
+        <DropdownMenuItem>
+          <Settings className="mr-2 h-4 w-4" />
+          <span>Settings</span>
+        </DropdownMenuItem>
+        
         <DropdownMenuSeparator />
         
-        <DropdownMenuItem onClick={signOut} className="text-red-600">
-          <LogOut className="w-4 h-4 mr-2" />
-          Sign Out
+        <DropdownMenuItem onClick={handleSignOut}>
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Log out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

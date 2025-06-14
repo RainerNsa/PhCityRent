@@ -1,9 +1,9 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { useVerificationStatus } from "@/hooks/useVerificationStatus";
 import { 
   Shield, 
   Clock, 
@@ -15,50 +15,13 @@ import {
   AlertCircle
 } from "lucide-react";
 
-interface VerificationStatusData {
-  agentId: string;
-  applicantName: string;
-  submissionDate: string;
-  status: "pending_review" | "documents_reviewed" | "referee_contacted" | "approved" | "rejected" | "needs_info";
-  currentStep: number;
-  totalSteps: number;
-  reviewerNotes?: string;
-  refereeStatus?: "pending" | "contacted" | "confirmed" | "failed";
-  nextAction?: string;
-  estimatedCompletion?: string;
-}
-
 const VerificationStatus = () => {
   const [searchId, setSearchId] = useState("");
-  const [statusData, setStatusData] = useState<VerificationStatusData | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Mock data for demo
-  const mockStatusData: VerificationStatusData = {
-    agentId: "AGT-PHC-EMEKA001",
-    applicantName: "Emeka Okafor",
-    submissionDate: "2024-01-15T10:30:00Z",
-    status: "referee_contacted",
-    currentStep: 3,
-    totalSteps: 5,
-    reviewerNotes: "Documents verified successfully. Referee has been contacted.",
-    refereeStatus: "contacted",
-    nextAction: "Waiting for referee confirmation",
-    estimatedCompletion: "2024-01-17"
-  };
+  const { checkStatus, isLoading, statusData } = useVerificationStatus();
 
   const handleSearch = async () => {
-    setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      if (searchId.includes("EMEKA") || searchId === "AGT-PHC-EMEKA001") {
-        setStatusData(mockStatusData);
-      } else {
-        setStatusData(null);
-      }
-      setIsLoading(false);
-    }, 1000);
+    if (!searchId.trim()) return;
+    await checkStatus(searchId.trim());
   };
 
   const getStatusIcon = (status: string) => {
@@ -125,7 +88,7 @@ const VerificationStatus = () => {
             />
             <Button 
               onClick={handleSearch}
-              disabled={isLoading || !searchId}
+              disabled={isLoading || !searchId.trim()}
               className="bg-pulse-500 hover:bg-pulse-600"
             >
               {isLoading ? "Searching..." : "Check Status"}

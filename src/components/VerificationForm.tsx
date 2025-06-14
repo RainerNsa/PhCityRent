@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
+import { useAgentApplication } from "@/hooks/useAgentApplication";
 import VerificationFormHeader from "./verification/VerificationFormHeader";
 import PersonalInfoSection from "./verification/PersonalInfoSection";
 import OperatingAreasSection from "./verification/OperatingAreasSection";
@@ -38,12 +39,12 @@ interface VerificationFormProps {
 }
 
 const VerificationForm = ({ isOpen, onClose, type }: VerificationFormProps) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadedIdDocument, setUploadedIdDocument] = useState<File | null>(null);
   const [uploadedSelfie, setUploadedSelfie] = useState<File | null>(null);
   const [uploadedCacDocument, setUploadedCacDocument] = useState<File | null>(null);
   const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
   const { toast } = useToast();
+  const { submitApplication, isSubmitting } = useAgentApplication();
 
   const form = useForm<VerificationFormData>({
     resolver: zodResolver(verificationSchema),
@@ -96,46 +97,47 @@ const VerificationForm = ({ isOpen, onClose, type }: VerificationFormProps) => {
   };
 
   const onSubmit = async (data: VerificationFormData) => {
-    setIsSubmitting(true);
-    
     try {
-      // Generate unique agent ID
-      const agentId = `AGT-PHC-${data.fullName.substring(0, 5).toUpperCase()}${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+      const applicationData = {
+        fullName: data.fullName,
+        whatsappNumber: data.whatsappNumber,
+        email: data.email,
+        residentialAddress: data.residentialAddress,
+        operatingAreas: data.operatingAreas,
+        isRegisteredBusiness: data.isRegisteredBusiness,
+        refereeFullName: data.refereeFullName,
+        refereeWhatsappNumber: data.refereeWhatsappNumber,
+        refereeRole: data.refereeRole,
+      };
+
+      const documents = {
+        idDocument: uploadedIdDocument || undefined,
+        selfieWithId: uploadedSelfie || undefined,
+        cacDocument: uploadedCacDocument || undefined,
+      };
+
+      const result = await submitApplication(applicationData, documents);
       
-      console.log("Enhanced verification form data:", {
-        ...data,
-        agentId,
-        submittedAt: new Date().toISOString(),
-        status: "pending_review"
-      });
-      
-      console.log("Uploaded files:", {
-        idDocument: uploadedIdDocument?.name,
-        selfieWithId: uploadedSelfie?.name,
-        cacDocument: uploadedCacDocument?.name
-      });
-      
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast({
-        title: "Verification Application Submitted!",
-        description: `Your ${type} verification application has been submitted with ID: ${agentId}. Our team will review your documents and contact your referee within 24-48 hours. You'll receive updates via WhatsApp.`,
-      });
-      
-      form.reset();
-      setUploadedIdDocument(null);
-      setUploadedSelfie(null);
-      setUploadedCacDocument(null);
-      setSelectedAreas([]);
-      onClose();
+      if (result.success) {
+        toast({
+          title: "Verification Application Submitted!",
+          description: `Your ${type} verification application has been submitted with ID: ${result.agentId}. Our team will review your documents and contact your referee within 24-48 hours. You'll receive updates via WhatsApp.`,
+        });
+        
+        form.reset();
+        setUploadedIdDocument(null);
+        setUploadedSelfie(null);
+        setUploadedCacDocument(null);
+        setSelectedAreas([]);
+        onClose();
+      }
     } catch (error) {
+      console.error('Submission error:', error);
       toast({
         title: "Submission Failed",
         description: "Please try again or contact support on WhatsApp.",
         variant: "destructive",
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 

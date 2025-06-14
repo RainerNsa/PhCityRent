@@ -11,7 +11,6 @@ import Agents from "./pages/Agents";
 import Landlords from "./pages/Landlords";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
-
 import VerificationStatus from "./pages/VerificationStatus";
 import AgentDashboard from "./pages/AgentDashboard";
 
@@ -32,7 +31,6 @@ const App = () => (
           <Route path="/contact" element={<Contact />} />
           <Route path="/verification-status" element={<VerificationStatus />} />
           <Route path="/agent-dashboard" element={<AgentDashboard />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

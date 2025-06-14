@@ -14,10 +14,10 @@ const Footer = () => {
               <div className="bg-orange-500 p-2 rounded-lg">
                 <Home className="h-5 w-5 text-white" />
               </div>
-              <span className="text-xl font-bold">RentPH Safe</span>
+              <span className="text-xl font-bold">PHCityRent</span>
             </div>
             <p className="text-gray-300 text-sm leading-relaxed">
-              Nigeria's most trusted rental platform. Find verified properties, connect with reliable agents, and secure your rent payments in Port Harcourt.
+              Port Harcourt's most trusted rental platform. Find verified properties, connect with reliable agents, and secure your rent payments in Port Harcourt.
             </p>
             <div className="flex space-x-4">
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" 
@@ -96,7 +96,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-4 h-4 text-orange-500 flex-shrink-0" />
-                <span className="text-gray-300">hello@rentphsafe.com</span>
+                <span className="text-gray-300">hello@phcityrent.com</span>
               </div>
             </div>
           </div>
@@ -106,7 +106,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-sm text-gray-400">
-              <p>&copy; 2024 RentPH Safe. All rights reserved.</p>
+              <p>&copy; 2024 PHCityRent. All rights reserved.</p>
             </div>
             
             <div className="flex flex-wrap justify-center md:justify-end space-x-6 text-sm">
@@ -124,7 +124,7 @@ const Footer = () => {
           
           <div className="text-center mt-4 pt-4 border-t border-gray-800">
             <p className="text-xs text-gray-500">
-              Built with ❤️ for Nigerian renters - Making housing safe and accessible
+              Built with ❤️ for Port Harcourt renters - Making housing safe and accessible
             </p>
           </div>
         </div>

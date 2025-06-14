@@ -48,12 +48,12 @@ const Navbar = () => {
           to="/" 
           className="flex items-center space-x-2"
           onClick={scrollToTop}
-          aria-label="RentPH Safe"
+          aria-label="PHCityRent"
         >
           <div className="bg-pulse-500 p-2 rounded-lg">
             <Home className="h-5 w-5 text-white" />
           </div>
-          <span className="text-xl font-display font-bold text-gray-900">RentPH Safe</span>
+          <span className="text-xl font-display font-bold text-gray-900">PHCityRent</span>
         </Link>
 
         {/* Desktop Navigation */}

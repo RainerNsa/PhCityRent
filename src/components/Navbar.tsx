@@ -1,6 +1,8 @@
+
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Menu, X, Home } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -42,36 +44,25 @@ const Navbar = () => {
       )}
     >
       <div className="container flex items-center justify-between px-4 sm:px-6 lg:px-8">
-        <a 
-          href="#" 
+        <Link 
+          to="/" 
           className="flex items-center space-x-2"
-          onClick={(e) => {
-            e.preventDefault();
-            scrollToTop();
-          }}
+          onClick={scrollToTop}
           aria-label="RentPH Safe"
         >
           <div className="bg-pulse-500 p-2 rounded-lg">
             <Home className="h-5 w-5 text-white" />
           </div>
           <span className="text-xl font-display font-bold text-gray-900">RentPH Safe</span>
-        </a>
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-8">
-          <a 
-            href="#" 
-            className="nav-link"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToTop();
-            }}
-          >
-            Home
-          </a>
-          <a href="#listings" className="nav-link">Properties</a>
-          <a href="#how-it-works" className="nav-link">How It Works</a>
-          <a href="#contact" className="nav-link">Contact</a>
+          <Link to="/" className="nav-link">Home</Link>
+          <Link to="/properties" className="nav-link">Properties</Link>
+          <Link to="/agents" className="nav-link">Agents</Link>
+          <Link to="/escrow" className="nav-link">Escrow</Link>
+          <Link to="/contact" className="nav-link">Contact</Link>
         </nav>
 
         {/* Mobile menu button */}
@@ -90,20 +81,18 @@ const Navbar = () => {
         isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"
       )}>
         <nav className="flex flex-col space-y-8 items-center mt-8">
-          <a 
-            href="#" 
+          <Link 
+            to="/" 
             className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100 transition-colors" 
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToTop();
+            onClick={() => {
               setIsMenuOpen(false);
               document.body.style.overflow = '';
             }}
           >
             Home
-          </a>
-          <a 
-            href="#listings" 
+          </Link>
+          <Link 
+            to="/properties" 
             className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100 transition-colors" 
             onClick={() => {
               setIsMenuOpen(false);
@@ -111,19 +100,29 @@ const Navbar = () => {
             }}
           >
             Properties
-          </a>
-          <a 
-            href="#how-it-works" 
+          </Link>
+          <Link 
+            to="/agents" 
             className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100 transition-colors" 
             onClick={() => {
               setIsMenuOpen(false);
               document.body.style.overflow = '';
             }}
           >
-            How It Works
-          </a>
-          <a 
-            href="#contact" 
+            Agents
+          </Link>
+          <Link 
+            to="/escrow" 
+            className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100 transition-colors" 
+            onClick={() => {
+              setIsMenuOpen(false);
+              document.body.style.overflow = '';
+            }}
+          >
+            Escrow
+          </Link>
+          <Link 
+            to="/contact" 
             className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100 transition-colors" 
             onClick={() => {
               setIsMenuOpen(false);
@@ -131,7 +130,7 @@ const Navbar = () => {
             }}
           >
             Contact
-          </a>
+          </Link>
         </nav>
       </div>
     </header>

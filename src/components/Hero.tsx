@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { ArrowRight, Shield, Home, Users } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -59,22 +60,22 @@ const Hero = () => {
               className="flex flex-col sm:flex-row gap-4 opacity-0 animate-fade-in" 
               style={{ animationDelay: "0.7s" }}
             >
-              <a 
-                href="#listings" 
+              <Link 
+                to="/properties" 
                 className="button-primary group"
               >
                 <Home className="mr-2 w-5 h-5" />
                 Find a House
                 <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </a>
+              </Link>
               
-              <a 
-                href="#verify-agent" 
+              <Link 
+                to="/agents" 
                 className="button-secondary"
               >
                 <Users className="mr-2 w-5 h-5" />
                 Verify Me As Agent
-              </a>
+              </Link>
             </div>
           </div>
           

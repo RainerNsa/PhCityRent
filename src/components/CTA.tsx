@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import { ArrowRight, Home, UserCheck, Shield, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -121,12 +122,12 @@ const CTA = () => {
           
           <div className="text-center mt-8">
             <p className="text-gray-600 mb-4">Questions? We're here to help!</p>
-            <a 
-              href="#contact" 
+            <Link 
+              to="/contact" 
               className="text-orange-500 underline hover:no-underline transition-all hover:text-orange-600"
             >
               Contact our support team
-            </a>
+            </Link>
           </div>
         </div>
         

@@ -20,8 +20,8 @@ const ApplicationOverview = ({ statusData, getStatusIcon, getStatusColor }: Appl
             <User className="w-5 h-5 text-pulse-600" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold">{statusData.applicantName}</h3>
-            <p className="text-sm text-gray-600">Agent ID: {statusData.agentId}</p>
+            <h3 className="text-lg font-semibold">{statusData.full_name}</h3>
+            <p className="text-sm text-gray-600">Agent ID: {statusData.agent_id}</p>
           </div>
         </div>
         <Badge className={getStatusColor(statusData.status)}>
@@ -34,20 +34,20 @@ const ApplicationOverview = ({ statusData, getStatusIcon, getStatusColor }: Appl
         <div>
           <p className="text-gray-600">Submitted</p>
           <p className="font-medium">
-            {new Date(statusData.submissionDate).toLocaleDateString()}
+            {new Date(statusData.created_at).toLocaleDateString()}
           </p>
         </div>
         <div>
-          <p className="text-gray-600">Progress</p>
+          <p className="text-gray-600">Last Updated</p>
           <p className="font-medium">
-            Step {statusData.currentStep} of {statusData.totalSteps}
+            {new Date(statusData.updated_at).toLocaleDateString()}
           </p>
         </div>
         <div>
           <p className="text-gray-600">Est. Completion</p>
           <p className="font-medium">
-            {statusData.estimatedCompletion ? 
-              new Date(statusData.estimatedCompletion).toLocaleDateString() : 
+            {statusData.estimated_completion ? 
+              new Date(statusData.estimated_completion).toLocaleDateString() : 
               "TBD"
             }
           </p>

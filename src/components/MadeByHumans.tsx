@@ -11,7 +11,7 @@ const MadeByHumans = () => {
         backgroundImage: "url('/background-section3.png')"
       }}>
           <div className="flex items-center text-white">
-            <img src="/logo.svg" alt="PHCityRent Logo" className="h-5 sm:h-6 w-auto mr-3 invert" />
+            <img src="/phcityrent-logo.svg" alt="PHCityRent Logo" className="h-6 sm:h-8 w-auto mr-3 invert" />
             <span className="text-white text-xl font-medium">
           </span>
           </div>

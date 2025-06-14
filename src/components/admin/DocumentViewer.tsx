@@ -6,7 +6,7 @@ import { Download, Eye, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
-interface Document {
+interface VerificationDocument {
   id: string;
   document_type: string;
   file_name: string;
@@ -16,7 +16,7 @@ interface Document {
 }
 
 interface DocumentViewerProps {
-  document: Document | null;
+  document: VerificationDocument | null;
   isOpen: boolean;
   onClose: () => void;
 }

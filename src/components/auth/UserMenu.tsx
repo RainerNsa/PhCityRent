@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { User, LogOut, Settings, Shield, ChevronDown } from "lucide-react";
+import { Link } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -58,16 +59,20 @@ const UserMenu = () => {
         <DropdownMenuSeparator />
         
         {isAgent && (
-          <DropdownMenuItem>
-            <Shield className="w-4 h-4 mr-2" />
-            Agent Dashboard
+          <DropdownMenuItem asChild>
+            <Link to="/agent-dashboard" className="flex items-center">
+              <Shield className="w-4 h-4 mr-2" />
+              Agent Dashboard
+            </Link>
           </DropdownMenuItem>
         )}
         
         {isAdmin && (
-          <DropdownMenuItem>
-            <Settings className="w-4 h-4 mr-2" />
-            Admin Panel
+          <DropdownMenuItem asChild>
+            <Link to="/admin-dashboard" className="flex items-center">
+              <Settings className="w-4 h-4 mr-2" />
+              Admin Dashboard
+            </Link>
           </DropdownMenuItem>
         )}
         

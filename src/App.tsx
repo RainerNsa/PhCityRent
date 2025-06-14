@@ -15,6 +15,7 @@ import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import VerificationStatus from "./pages/VerificationStatus";
 import AgentDashboard from "./pages/AgentDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 import Auth from "./pages/Auth";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/verification-status" element={<VerificationStatus />} />
             <Route path="/agent-dashboard" element={<AgentDashboard />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

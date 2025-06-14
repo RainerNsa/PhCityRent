@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
@@ -54,7 +53,9 @@ const AdminApplicationsList = () => {
           *,
           referee_verifications (
             status,
-            referee_full_name
+            referee_full_name,
+            referee_whatsapp_number,
+            referee_role
           )
         `)
         .order('created_at', { ascending: false });

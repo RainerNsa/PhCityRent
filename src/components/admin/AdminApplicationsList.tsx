@@ -82,7 +82,9 @@ const AdminApplicationsList = () => {
                          app.agent_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          app.whatsapp_number.includes(searchTerm);
     const matchesStatus = statusFilter === 'all' || app.status === statusFilter;
-    const matchesArea = areaFilter === 'all' || app.operating_areas?.includes(areaFilter);
+    const matchesArea = areaFilter === 'all' || app.operating_areas?.some(area => 
+      area.toLowerCase().includes(areaFilter.toLowerCase())
+    );
     
     let matchesDate = true;
     if (dateRange.from) {

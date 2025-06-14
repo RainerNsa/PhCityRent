@@ -12,91 +12,82 @@ import { format } from 'date-fns';
 import { DateRange } from 'react-day-picker';
 
 interface AdvancedFiltersProps {
-  onFiltersChange: (filters: any) => void;
+  searchTerm: string;
+  onSearchChange: (value: string) => void;
+  statusFilter: string;
+  onStatusChange: (value: string) => void;
+  areaFilter: string;
+  onAreaChange: (value: string) => void;
+  dateRange: { from?: Date; to?: Date };
+  onDateRangeChange: (range: { from?: Date; to?: Date }) => void;
+  activeFilters: string[];
   onClearFilters: () => void;
 }
 
-const AdvancedFilters = ({ onFiltersChange, onClearFilters }: AdvancedFiltersProps) => {
-  const [filters, setFilters] = useState({
-    agentId: '',
-    status: '',
-    operatingArea: '',
-    dateRange: undefined as DateRange | undefined,
-    businessType: ''
-  });
-
-  const [activeFilters, setActiveFilters] = useState<string[]>([]);
-
-  const handleFilterChange = (key: string, value: any) => {
-    const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
-    
-    // Update active filters
-    const active = Object.entries(newFilters)
-      .filter(([k, v]) => {
-        if (k === 'dateRange') return v && v.from && v.to;
-        return v && v !== '';
-      })
-      .map(([k]) => k);
-    
-    setActiveFilters(active);
-    onFiltersChange(newFilters);
-  };
-
-  const clearAllFilters = () => {
-    const emptyFilters = {
-      agentId: '',
-      status: '',
-      operatingArea: '',
-      dateRange: undefined,
-      businessType: ''
-    };
-    setFilters(emptyFilters);
-    setActiveFilters([]);
-    onClearFilters();
-  };
-
-  const removeFilter = (filterKey: string) => {
-    const newFilters = { ...filters };
-    if (filterKey === 'dateRange') {
-      newFilters.dateRange = undefined;
+const AdvancedFilters = ({ 
+  searchTerm,
+  onSearchChange,
+  statusFilter,
+  onStatusChange,
+  areaFilter,
+  onAreaChange,
+  dateRange,
+  onDateRangeChange,
+  activeFilters,
+  onClearFilters 
+}: AdvancedFiltersProps) => {
+  const handleDateRangeChange = (range: DateRange | undefined) => {
+    if (range) {
+      onDateRangeChange({ from: range.from, to: range.to });
     } else {
-      (newFilters as any)[filterKey] = '';
+      onDateRangeChange({});
     }
-    setFilters(newFilters);
-    
-    const active = activeFilters.filter(f => f !== filterKey);
-    setActiveFilters(active);
-    onFiltersChange(newFilters);
+  };
+
+  const removeFilter = (filterType: string) => {
+    switch (filterType) {
+      case 'Search':
+        onSearchChange('');
+        break;
+      case 'Status':
+        onStatusChange('all');
+        break;
+      case 'Area':
+        onAreaChange('all');
+        break;
+      case 'Date filtered':
+        onDateRangeChange({});
+        break;
+    }
   };
 
   return (
     <Card className="p-4 space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold">Advanced Filters</h3>
-        <Button variant="outline" size="sm" onClick={clearAllFilters}>
+        <Button variant="outline" size="sm" onClick={onClearFilters}>
           Clear All
         </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label className="text-sm font-medium mb-2 block">Agent ID</label>
+          <label className="text-sm font-medium mb-2 block">Search</label>
           <Input
-            placeholder="Search by Agent ID..."
-            value={filters.agentId}
-            onChange={(e) => handleFilterChange('agentId', e.target.value)}
+            placeholder="Search by name, ID, or phone..."
+            value={searchTerm}
+            onChange={(e) => onSearchChange(e.target.value)}
           />
         </div>
 
         <div>
           <label className="text-sm font-medium mb-2 block">Status</label>
-          <Select value={filters.status} onValueChange={(value) => handleFilterChange('status', value)}>
+          <Select value={statusFilter} onValueChange={onStatusChange}>
             <SelectTrigger>
               <SelectValue placeholder="Select status..." />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Statuses</SelectItem>
+              <SelectItem value="all">All Statuses</SelectItem>
               <SelectItem value="pending_review">Pending Review</SelectItem>
               <SelectItem value="documents_reviewed">Documents Reviewed</SelectItem>
               <SelectItem value="referee_contacted">Referee Contacted</SelectItem>
@@ -111,8 +102,8 @@ const AdvancedFilters = ({ onFiltersChange, onClearFilters }: AdvancedFiltersPro
           <label className="text-sm font-medium mb-2 block">Operating Area</label>
           <Input
             placeholder="Search by area..."
-            value={filters.operatingArea}
-            onChange={(e) => handleFilterChange('operatingArea', e.target.value)}
+            value={areaFilter === 'all' ? '' : areaFilter}
+            onChange={(e) => onAreaChange(e.target.value || 'all')}
           />
         </div>
 
@@ -122,14 +113,14 @@ const AdvancedFilters = ({ onFiltersChange, onClearFilters }: AdvancedFiltersPro
             <PopoverTrigger asChild>
               <Button variant="outline" className="w-full justify-start text-left font-normal">
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {filters.dateRange?.from ? (
-                  filters.dateRange.to ? (
+                {dateRange.from ? (
+                  dateRange.to ? (
                     <>
-                      {format(filters.dateRange.from, "LLL dd, y")} -{" "}
-                      {format(filters.dateRange.to, "LLL dd, y")}
+                      {format(dateRange.from, "LLL dd, y")} -{" "}
+                      {format(dateRange.to, "LLL dd, y")}
                     </>
                   ) : (
-                    format(filters.dateRange.from, "LLL dd, y")
+                    format(dateRange.from, "LLL dd, y")
                   )
                 ) : (
                   <span>Pick a date range</span>
@@ -140,39 +131,25 @@ const AdvancedFilters = ({ onFiltersChange, onClearFilters }: AdvancedFiltersPro
               <Calendar
                 initialFocus
                 mode="range"
-                defaultMonth={filters.dateRange?.from}
-                selected={filters.dateRange}
-                onSelect={(range) => handleFilterChange('dateRange', range)}
+                defaultMonth={dateRange.from}
+                selected={{ from: dateRange.from, to: dateRange.to }}
+                onSelect={handleDateRangeChange}
                 numberOfMonths={2}
               />
             </PopoverContent>
           </Popover>
-        </div>
-
-        <div>
-          <label className="text-sm font-medium mb-2 block">Business Type</label>
-          <Select value={filters.businessType} onValueChange={(value) => handleFilterChange('businessType', value)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select type..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">All Types</SelectItem>
-              <SelectItem value="individual">Individual</SelectItem>
-              <SelectItem value="registered">Registered Business</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
       </div>
 
       {activeFilters.length > 0 && (
         <div className="flex flex-wrap gap-2">
           <span className="text-sm text-gray-600">Active filters:</span>
-          {activeFilters.map((filter) => (
-            <Badge key={filter} variant="secondary" className="flex items-center gap-1">
-              {filter === 'dateRange' ? 'Date Range' : filter.replace(/([A-Z])/g, ' $1').trim()}
+          {activeFilters.map((filter, index) => (
+            <Badge key={index} variant="secondary" className="flex items-center gap-1">
+              {filter}
               <X 
                 className="w-3 h-3 cursor-pointer hover:text-red-500" 
-                onClick={() => removeFilter(filter)}
+                onClick={() => removeFilter(filter.split(': ')[0])}
               />
             </Badge>
           ))}

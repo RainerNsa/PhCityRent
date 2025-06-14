@@ -113,6 +113,47 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          agent_id: string | null
+          created_at: string | null
+          email: string | null
+          full_name: string | null
+          id: string
+          is_verified_agent: boolean | null
+          updated_at: string | null
+          whatsapp_number: string | null
+        }
+        Insert: {
+          agent_id?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id: string
+          is_verified_agent?: boolean | null
+          updated_at?: string | null
+          whatsapp_number?: string | null
+        }
+        Update: {
+          agent_id?: string | null
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          is_verified_agent?: boolean | null
+          updated_at?: string | null
+          whatsapp_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: true
+            referencedRelation: "agent_applications"
+            referencedColumns: ["agent_id"]
+          },
+        ]
+      }
       referee_verifications: {
         Row: {
           application_id: string | null
@@ -162,6 +203,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_roles: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
       }
       verification_documents: {
         Row: {
@@ -256,12 +321,28 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_agent_profile: {
+        Args: { application_id: string }
+        Returns: undefined
+      }
       generate_agent_id: {
         Args: { applicant_name: string }
         Returns: string
       }
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      has_role: {
+        Args: {
+          _user_id: string
+          _role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: boolean
+      }
     }
     Enums: {
+      app_role: "agent" | "admin" | "super_admin"
       application_status:
         | "pending_review"
         | "documents_reviewed"
@@ -386,6 +467,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["agent", "admin", "super_admin"],
       application_status: [
         "pending_review",
         "documents_reviewed",

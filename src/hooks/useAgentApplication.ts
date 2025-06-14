@@ -130,7 +130,7 @@ export const useAgentApplication = () => {
         throw new Error('Failed to store referee information');
       }
 
-      // Upload documents
+      // Upload documents (only for authenticated users now)
       const uploadPromises = [];
       
       if (documents.idDocument) {
@@ -151,7 +151,15 @@ export const useAgentApplication = () => {
         );
       }
 
-      await Promise.all(uploadPromises);
+      // Only upload documents if user is authenticated
+      if (uploadPromises.length > 0) {
+        try {
+          await Promise.all(uploadPromises);
+        } catch (uploadError) {
+          console.warn('Document upload failed, but application was created:', uploadError);
+          // Continue without failing the entire application
+        }
+      }
 
       // Log initial status
       await supabase

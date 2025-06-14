@@ -38,7 +38,7 @@ const CTA = () => {
       <section className="py-16 relative" id="get-started" ref={ctaRef} style={{
         background: 'linear-gradient(135deg, rgba(249,115,22,0.9) 0%, rgba(249,115,22,0.8) 50%, rgba(251,146,60,0.9) 100%)'
       }}>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 opacity-0">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
               Ready to Find Your Perfect Home?
@@ -50,17 +50,17 @@ const CTA = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {/* Find a House */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center transition-all duration-300 hover:bg-white/20 hover:scale-105">
-              <div className="bg-pulse-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Home className="w-8 h-8 text-pulse-600" />
+            <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 text-center transition-all duration-300 hover:bg-white/30 hover:scale-105 border border-white/30">
+              <div className="bg-white/30 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Home className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-white mb-3">Find a House</h3>
-              <p className="text-white/80 mb-6">
+              <p className="text-white/90 mb-6">
                 Browse verified listings and find your perfect rental property in Port Harcourt
               </p>
               <Link 
                 to="/properties"
-                className="bg-pulse-500 hover:bg-pulse-600 text-white py-3 px-6 rounded-full font-medium transition-colors w-full group inline-flex items-center justify-center"
+                className="bg-white text-orange-600 py-3 px-6 rounded-full font-medium transition-colors w-full group inline-flex items-center justify-center hover:bg-white/90"
               >
                 Start Searching
                 <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -68,17 +68,17 @@ const CTA = () => {
             </div>
             
             {/* Verify Me As Agent */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center transition-all duration-300 hover:bg-white/20 hover:scale-105 border-2 border-green-400/50">
-              <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <UserCheck className="w-8 h-8 text-green-600" />
+            <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 text-center transition-all duration-300 hover:bg-white/30 hover:scale-105 border-2 border-green-400/50">
+              <div className="bg-green-500/80 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <UserCheck className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-white mb-3">Verify Me As Agent</h3>
-              <p className="text-white/80 mb-4">
+              <p className="text-white/90 mb-4">
                 Join our network of trusted agents and list verified properties on our platform
               </p>
               <div className="flex items-center justify-center gap-2 mb-4">
-                <CheckCircle className="w-4 h-4 text-green-400" />
-                <span className="text-green-400 text-sm font-medium">Quick 2-min form</span>
+                <CheckCircle className="w-4 h-4 text-green-300" />
+                <span className="text-green-300 text-sm font-medium">Quick 2-min form</span>
               </div>
               <button 
                 onClick={() => setShowAgentForm(true)}
@@ -90,12 +90,12 @@ const CTA = () => {
             </div>
             
             {/* Escrow Your Rent */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center transition-all duration-300 hover:bg-white/20 hover:scale-105">
-              <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-8 h-8 text-purple-600" />
+            <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 text-center transition-all duration-300 hover:bg-white/30 hover:scale-105 border border-white/30">
+              <div className="bg-purple-500/80 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Shield className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-bold text-white mb-3">Escrow Your Rent</h3>
-              <p className="text-white/80 mb-6">
+              <p className="text-white/90 mb-6">
                 Secure your rent payment with our escrow service for complete peace of mind
               </p>
               <Link 
@@ -109,13 +109,13 @@ const CTA = () => {
           </div>
           
           {/* Additional verification option for landlords with better visibility */}
-          <div className="text-center mt-12 p-6 bg-white/10 backdrop-blur-sm rounded-2xl max-w-md mx-auto border border-white/20">
+          <div className="text-center mt-12 p-6 bg-white/20 backdrop-blur-sm rounded-2xl max-w-md mx-auto border border-white/30">
             <UserCheck className="w-12 h-12 text-white mx-auto mb-3" />
-            <p className="text-white/90 mb-4 font-medium text-lg">Are you a landlord?</p>
-            <p className="text-white/70 mb-4 text-sm">Get verified to list your properties directly</p>
+            <p className="text-white mb-4 font-medium text-lg">Are you a landlord?</p>
+            <p className="text-white/90 mb-4 text-sm">Get verified to list your properties directly</p>
             <button 
               onClick={() => setShowLandlordForm(true)}
-              className="bg-white/20 text-white px-8 py-3 rounded-full font-medium hover:bg-white/30 transition-colors border border-white/30 w-full group inline-flex items-center justify-center"
+              className="bg-white/30 text-white px-8 py-3 rounded-full font-medium hover:bg-white/40 transition-colors border border-white/50 w-full group inline-flex items-center justify-center"
             >
               Verify as Landlord
               <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />

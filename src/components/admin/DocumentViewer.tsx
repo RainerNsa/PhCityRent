@@ -164,7 +164,6 @@ const DocumentViewer = ({ document, isOpen, onClose }: DocumentViewerProps) => {
             </div>
           </div>
 
-          {/* Document Preview */}
           <div className="border rounded-lg p-4 min-h-[400px] max-h-[500px] overflow-auto bg-gray-50">
             {loading ? (
               <div className="flex items-center justify-center h-64">
@@ -191,7 +190,7 @@ const DocumentViewer = ({ document, isOpen, onClose }: DocumentViewerProps) => {
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => setZ oom(Math.max(zoom - 0.2, 0.5))}
+                        onClick={() => setZoom(Math.max(zoom - 0.2, 0.5))}
                       >
                         <ZoomOut className="w-4 h-4" />
                       </Button>

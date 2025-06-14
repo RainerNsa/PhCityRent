@@ -1,9 +1,9 @@
 
-import { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useDocumentUpload } from "./useDocumentUpload";
 
-export interface AgentApplicationData {
+interface ApplicationData {
   fullName: string;
   whatsappNumber: string;
   email?: string;
@@ -15,175 +15,90 @@ export interface AgentApplicationData {
   refereeRole: string;
 }
 
-export interface DocumentUpload {
-  file: File;
-  type: 'id_document' | 'selfie_with_id' | 'cac_document';
+interface DocumentFiles {
+  idDocument?: File;
+  selfieWithId?: File;
+  cacDocument?: File;
 }
 
 export const useAgentApplication = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast();
-
-  const generateAgentId = async (fullName: string): Promise<string> => {
-    const { data, error } = await supabase
-      .rpc('generate_agent_id', { applicant_name: fullName });
-    
-    if (error) {
-      console.error('Error generating agent ID:', error);
-      // Fallback ID generation
-      const namePart = fullName.substring(0, 5).toUpperCase().replace(/[^A-Z]/g, '');
-      const randomPart = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-      return `AGT-PHC-${namePart}${randomPart}`;
-    }
-    
-    return data;
-  };
-
-  const uploadDocument = async (file: File, applicationId: string, documentType: 'id_document' | 'selfie_with_id' | 'cac_document') => {
-    const bucketMap = {
-      'id_document': 'agent-id-photos',
-      'selfie_with_id': 'agent-selfies',
-      'cac_document': 'agent-cac-docs'
-    };
-
-    const bucket = bucketMap[documentType];
-    const fileName = `${applicationId}/${documentType}_${Date.now()}_${file.name}`;
-    
-    const { data: uploadData, error: uploadError } = await supabase.storage
-      .from(bucket)
-      .upload(fileName, file);
-
-    if (uploadError) {
-      console.error('Error uploading file:', uploadError);
-      throw new Error(`Failed to upload ${documentType}`);
-    }
-
-    // Store document metadata
-    const { error: metadataError } = await supabase
-      .from('verification_documents')
-      .insert({
-        application_id: applicationId,
-        document_type: documentType,
-        file_name: file.name,
-        file_path: uploadData.path,
-        file_size: file.size,
-        mime_type: file.type
-      });
-
-    if (metadataError) {
-      console.error('Error storing document metadata:', metadataError);
-      throw new Error(`Failed to store ${documentType} metadata`);
-    }
-
-    return uploadData.path;
-  };
+  const { uploadDocument } = useDocumentUpload();
 
   const submitApplication = async (
-    applicationData: AgentApplicationData,
-    documents: {
-      idDocument?: File;
-      selfieWithId?: File;
-      cacDocument?: File;
-    }
+    applicationData: ApplicationData,
+    documents: DocumentFiles
   ) => {
     setIsSubmitting(true);
     
     try {
-      // Generate unique agent ID
-      const agentId = await generateAgentId(applicationData.fullName);
-      
-      // Insert application data
+      // Generate agent ID
+      const { data: agentIdData, error: agentIdError } = await supabase
+        .rpc('generate_agent_id', { applicant_name: applicationData.fullName });
+
+      if (agentIdError) throw agentIdError;
+      const agentId = agentIdData;
+
+      // Create application
       const { data: application, error: applicationError } = await supabase
         .from('agent_applications')
         .insert({
           agent_id: agentId,
           full_name: applicationData.fullName,
           whatsapp_number: applicationData.whatsappNumber,
-          email: applicationData.email || null,
+          email: applicationData.email,
           residential_address: applicationData.residentialAddress,
           operating_areas: applicationData.operatingAreas,
           is_registered_business: applicationData.isRegisteredBusiness,
-          status: 'pending_review',
-          next_action: 'Documents are being reviewed by our team'
         })
         .select()
         .single();
 
-      if (applicationError) {
-        console.error('Error creating application:', applicationError);
-        throw new Error('Failed to create application');
-      }
+      if (applicationError) throw applicationError;
 
-      // Insert referee information
-      const { error: refereeError } = await supabase
+      // Create referee verification record
+      await supabase
         .from('referee_verifications')
         .insert({
           application_id: application.id,
           referee_full_name: applicationData.refereeFullName,
           referee_whatsapp_number: applicationData.refereeWhatsappNumber,
           referee_role: applicationData.refereeRole,
-          status: 'pending'
         });
 
-      if (refereeError) {
-        console.error('Error creating referee record:', refereeError);
-        throw new Error('Failed to store referee information');
-      }
-
-      // Upload documents (only for authenticated users now)
+      // Upload documents if provided
       const uploadPromises = [];
       
       if (documents.idDocument) {
         uploadPromises.push(
-          uploadDocument(documents.idDocument, application.id, 'id_document')
+          uploadDocument(documents.idDocument, 'id_document', application.id)
         );
       }
       
       if (documents.selfieWithId) {
         uploadPromises.push(
-          uploadDocument(documents.selfieWithId, application.id, 'selfie_with_id')
+          uploadDocument(documents.selfieWithId, 'selfie_with_id', application.id)
         );
       }
       
-      if (documents.cacDocument && applicationData.isRegisteredBusiness) {
+      if (documents.cacDocument) {
         uploadPromises.push(
-          uploadDocument(documents.cacDocument, application.id, 'cac_document')
+          uploadDocument(documents.cacDocument, 'cac_document', application.id)
         );
       }
 
-      // Only upload documents if user is authenticated
       if (uploadPromises.length > 0) {
-        try {
-          await Promise.all(uploadPromises);
-        } catch (uploadError) {
-          console.warn('Document upload failed, but application was created:', uploadError);
-          // Continue without failing the entire application
-        }
+        await Promise.all(uploadPromises);
       }
 
-      // Log initial status
-      await supabase
-        .from('verification_status_log')
-        .insert({
-          application_id: application.id,
-          previous_status: null,
-          new_status: 'pending_review',
-          change_reason: 'Application submitted',
-          notes: 'Initial application submission completed'
-        });
-
-      return { success: true, agentId, applicationId: application.id };
-      
+      return { success: true, agentId };
     } catch (error) {
       console.error('Application submission error:', error);
-      throw error;
+      return { success: false, error: error.message };
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  return {
-    submitApplication,
-    isSubmitting
-  };
+  return { submitApplication, isSubmitting };
 };

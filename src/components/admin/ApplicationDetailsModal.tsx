@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useNotifications } from '@/hooks/useNotifications';
 import { User } from 'lucide-react';
 import DocumentViewer from './DocumentViewer';
 import ApplicationPersonalInfo from './ApplicationPersonalInfo';  
@@ -51,6 +52,7 @@ const ApplicationDetailsModal = ({ application, isOpen, onClose, onUpdate }: App
   const [documents, setDocuments] = useState<any[]>([]);
   const [selectedDocument, setSelectedDocument] = useState<any>(null);
   const { toast } = useToast();
+  const { sendStatusUpdateNotification, sendRefereeContactNotification } = useNotifications();
 
   useEffect(() => {
     if (application) {
@@ -80,7 +82,9 @@ const ApplicationDetailsModal = ({ application, isOpen, onClose, onUpdate }: App
   const handleStatusUpdate = async () => {
     if (!application) return;
 
+    const oldStatus = application.status;
     setUpdating(true);
+    
     try {
       const { error } = await supabase
         .from('agent_applications')
@@ -105,9 +109,22 @@ const ApplicationDetailsModal = ({ application, isOpen, onClose, onUpdate }: App
           notes: `Status updated by admin. Next action: ${nextAction}`
         });
 
+      // Send notifications for status changes
+      if (newStatus !== oldStatus) {
+        await sendStatusUpdateNotification(application.id, newStatus, oldStatus);
+        
+        // If status is referee_contacted, also notify referee
+        if (newStatus === 'referee_contacted' && application.referee_verifications?.[0]) {
+          await sendRefereeContactNotification(
+            application.id, 
+            application.referee_verifications[0].referee_whatsapp_number
+          );
+        }
+      }
+
       toast({
         title: "Application Updated",
-        description: "Application status has been updated successfully.",
+        description: "Application status has been updated successfully and notifications sent.",
       });
 
       onUpdate();

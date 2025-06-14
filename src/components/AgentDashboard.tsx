@@ -1,247 +1,362 @@
 
-import React, { useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { 
   Shield, 
-  Home, 
-  Users, 
-  TrendingUp, 
-  MessageSquare, 
-  Calendar,
-  Plus,
-  Eye,
-  Edit,
-  Trash2
-} from "lucide-react";
+  FileText, 
+  Clock, 
+  CheckCircle, 
+  XCircle, 
+  AlertCircle,
+  User,
+  MapPin,
+  Phone,
+  Mail
+} from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
-interface AgentData {
-  agentId: string;
-  name: string;
-  verificationDate: string;
-  operatingAreas: string[];
-  totalListings: number;
-  activeListings: number;
-  totalViews: number;
-  totalInquiries: number;
-  verificationBadge: "verified" | "pending" | "rejected";
+interface ApplicationData {
+  id: string;
+  agent_id: string;
+  full_name: string;
+  whatsapp_number: string;
+  email?: string;
+  status: string;
+  created_at: string;
+  operating_areas: string[];
+  residential_address: string;
+  reviewer_notes?: string;
+  estimated_completion?: string;
+  verification_documents?: Array<{
+    id: string;
+    document_type: string;
+    file_name: string;
+    uploaded_at: string;
+  }>;
+  referee_verifications?: Array<{
+    referee_full_name: string;
+    referee_whatsapp_number: string;
+    referee_role: string;
+    status: string;
+  }>;
 }
 
 const AgentDashboard = () => {
-  const [agentData] = useState<AgentData>({
-    agentId: "AGT-PHC-EMEKA001",
-    name: "Emeka Okafor",
-    verificationDate: "2024-01-15",
-    operatingAreas: ["GRA", "Trans Amadi", "Eagle Island"],
-    totalListings: 23,
-    activeListings: 18,
-    totalViews: 1247,
-    totalInquiries: 89,
-    verificationBadge: "verified"
-  });
+  const { user } = useAuth();
+  const [application, setApplication] = useState<ApplicationData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
-  const [recentListings] = useState([
-    {
-      id: 1,
-      title: "3 Bedroom Duplex - GRA",
-      location: "Old GRA, Port Harcourt",
-      price: "₦2,500,000/year",
-      status: "active",
-      views: 156,
-      inquiries: 12,
-      datePosted: "2024-01-10"
-    },
-    {
-      id: 2,
-      title: "2 Bedroom Flat - Trans Amadi",
-      location: "Trans Amadi Industrial Layout",
-      price: "₦1,800,000/year",
-      status: "active",
-      views: 203,
-      inquiries: 18,
-      datePosted: "2024-01-08"
-    },
-    {
-      id: 3,
-      title: "4 Bedroom Bungalow - Eagle Island",
-      location: "Eagle Island, Port Harcourt",
-      price: "₦3,200,000/year",
-      status: "rented",
-      views: 89,
-      inquiries: 7,
-      datePosted: "2024-01-05"
+  useEffect(() => {
+    if (user) {
+      fetchApplicationData();
     }
-  ]);
+  }, [user]);
+
+  const fetchApplicationData = async () => {
+    try {
+      // First try to get application by user profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('agent_id')
+        .eq('id', user?.id)
+        .single();
+
+      let query = supabase
+        .from('agent_applications')
+        .select(`
+          *,
+          verification_documents (
+            id,
+            document_type,
+            file_name,
+            uploaded_at
+          ),
+          referee_verifications (
+            referee_full_name,
+            referee_whatsapp_number,
+            referee_role,
+            status
+          )
+        `);
+
+      if (profile?.agent_id) {
+        query = query.eq('agent_id', profile.agent_id);
+      } else {
+        // Fallback: try to match by email if available
+        if (user?.email) {
+          query = query.eq('email', user.email);
+        }
+      }
+
+      const { data, error } = await query.single();
+
+      if (error && error.code !== 'PGRST116') {
+        throw error;
+      }
+
+      setApplication(data);
+    } catch (error) {
+      console.error('Error fetching application:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load application data",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'pending_review':
+        return <Clock className="w-5 h-5 text-yellow-500" />;
+      case 'documents_reviewed':
+        return <FileText className="w-5 h-5 text-blue-500" />;
+      case 'referee_contacted':
+        return <Phone className="w-5 h-5 text-blue-500" />;
+      case 'approved':
+        return <CheckCircle className="w-5 h-5 text-green-500" />;
+      case 'rejected':
+        return <XCircle className="w-5 h-5 text-red-500" />;
+      case 'needs_info':
+        return <AlertCircle className="w-5 h-5 text-orange-500" />;
+      default:
+        return <Clock className="w-5 h-5 text-gray-500" />;
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return 'bg-green-100 text-green-800';
+      case 'rejected':
+        return 'bg-red-100 text-red-800';
+      case 'needs_info':
+        return 'bg-orange-100 text-orange-800';
+      default:
+        return 'bg-blue-100 text-blue-800';
+    }
+  };
+
+  const getProgressPercentage = (status: string) => {
+    switch (status) {
+      case 'pending_review':
+        return 25;
+      case 'documents_reviewed':
+        return 50;
+      case 'referee_contacted':
+        return 75;
+      case 'approved':
+        return 100;
+      case 'rejected':
+        return 0;
+      case 'needs_info':
+        return 40;
+      default:
+        return 0;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-pulse-500"></div>
+      </div>
+    );
+  }
+
+  if (!application) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center py-12">
+            <Shield className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">No Application Found</h2>
+            <p className="text-gray-600 mb-6">
+              You haven't submitted a verification application yet.
+            </p>
+            <Button onClick={() => window.location.href = '/'} className="bg-pulse-500 hover:bg-pulse-600">
+              Apply for Verification
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="bg-pulse-100 p-3 rounded-lg">
-                <Shield className="w-8 h-8 text-pulse-600" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Agent Dashboard</h1>
-                <p className="text-gray-600">Welcome back, {agentData.name}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Badge 
-                variant={agentData.verificationBadge === "verified" ? "default" : "secondary"}
-                className="bg-green-100 text-green-800"
-              >
-                <Shield className="w-3 h-3 mr-1" />
-                Verified Agent
-              </Badge>
-              <div className="text-right">
-                <p className="text-sm font-medium">Agent ID</p>
-                <p className="text-xs text-gray-600">{agentData.agentId}</p>
-              </div>
-            </div>
+        <div className="text-center">
+          <div className="bg-pulse-100 p-3 rounded-lg w-fit mx-auto mb-4">
+            <Shield className="w-8 h-8 text-pulse-600" />
           </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Agent Dashboard</h1>
+          <p className="text-gray-600">Track your verification progress</p>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-          <Card className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="bg-blue-100 p-2 rounded-lg">
-                <Home className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Active Listings</p>
-                <p className="text-2xl font-bold">{agentData.activeListings}</p>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="bg-green-100 p-2 rounded-lg">
-                <Eye className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Total Views</p>
-                <p className="text-2xl font-bold">{agentData.totalViews.toLocaleString()}</p>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="bg-orange-100 p-2 rounded-lg">
-                <MessageSquare className="w-5 h-5 text-orange-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Inquiries</p>
-                <p className="text-2xl font-bold">{agentData.totalInquiries}</p>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="bg-purple-100 p-2 rounded-lg">
-                <TrendingUp className="w-5 h-5 text-purple-600" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Success Rate</p>
-                <p className="text-2xl font-bold">78%</p>
-              </div>
-            </div>
-          </Card>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-lg font-semibold mb-4">Quick Actions</h2>
-          <div className="flex flex-wrap gap-3">
-            <Button className="bg-pulse-500 hover:bg-pulse-600">
-              <Plus className="w-4 h-4 mr-2" />
-              Add New Listing
-            </Button>
-            <Button variant="outline">
-              <Users className="w-4 h-4 mr-2" />
-              View Inquiries
-            </Button>
-            <Button variant="outline">
-              <Calendar className="w-4 h-4 mr-2" />
-              Schedule Viewing
-            </Button>
-            <Button variant="outline">
-              <Shield className="w-4 h-4 mr-2" />
-              Update Profile
-            </Button>
-          </div>
-        </div>
-
-        {/* Recent Listings */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        {/* Status Overview */}
+        <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Your Recent Listings</h2>
-            <Button variant="outline" size="sm">View All</Button>
+            <div className="flex items-center gap-3">
+              {getStatusIcon(application.status)}
+              <div>
+                <h2 className="text-xl font-semibold">Application Status</h2>
+                <p className="text-gray-600">Agent ID: {application.agent_id}</p>
+              </div>
+            </div>
+            <Badge className={getStatusColor(application.status)}>
+              {application.status.replace('_', ' ').toUpperCase()}
+            </Badge>
           </div>
-          
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="border-b">
-                <tr className="text-left">
-                  <th className="pb-3 text-sm font-medium text-gray-600">Property</th>
-                  <th className="pb-3 text-sm font-medium text-gray-600">Location</th>
-                  <th className="pb-3 text-sm font-medium text-gray-600">Price</th>
-                  <th className="pb-3 text-sm font-medium text-gray-600">Status</th>
-                  <th className="pb-3 text-sm font-medium text-gray-600">Performance</th>
-                  <th className="pb-3 text-sm font-medium text-gray-600">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentListings.map((listing) => (
-                  <tr key={listing.id} className="border-b last:border-0">
-                    <td className="py-4">
-                      <div>
-                        <p className="font-medium">{listing.title}</p>
-                        <p className="text-sm text-gray-600">Posted {listing.datePosted}</p>
-                      </div>
-                    </td>
-                    <td className="py-4 text-sm">{listing.location}</td>
-                    <td className="py-4 text-sm font-medium">{listing.price}</td>
-                    <td className="py-4">
-                      <Badge 
-                        variant={listing.status === "active" ? "default" : "secondary"}
-                        className={listing.status === "active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}
-                      >
-                        {listing.status}
-                      </Badge>
-                    </td>
-                    <td className="py-4">
-                      <div className="text-sm">
-                        <p>{listing.views} views</p>
-                        <p className="text-gray-600">{listing.inquiries} inquiries</p>
-                      </div>
-                    </td>
-                    <td className="py-4">
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="ghost">
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="ghost">
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="ghost">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+
+          {/* Progress Bar */}
+          <div className="mb-4">
+            <div className="flex justify-between text-sm text-gray-600 mb-2">
+              <span>Progress</span>
+              <span>{getProgressPercentage(application.status)}%</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                className="bg-pulse-500 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${getProgressPercentage(application.status)}%` }}
+              ></div>
+            </div>
           </div>
-        </div>
+
+          {application.estimated_completion && (
+            <p className="text-sm text-gray-600">
+              Estimated completion: {new Date(application.estimated_completion).toLocaleDateString()}
+            </p>
+          )}
+        </Card>
+
+        {/* Personal Information */}
+        <Card className="p-6">
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <User className="w-5 h-5" />
+            Personal Information
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center gap-2">
+              <User className="w-4 h-4 text-gray-500" />
+              <span className="font-medium">Name:</span> {application.full_name}
+            </div>
+            <div className="flex items-center gap-2">
+              <Phone className="w-4 h-4 text-gray-500" />
+              <span className="font-medium">WhatsApp:</span> {application.whatsapp_number}
+            </div>
+            {application.email && (
+              <div className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-gray-500" />
+                <span className="font-medium">Email:</span> {application.email}
+              </div>
+            )}
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-gray-500" />
+              <span className="font-medium">Address:</span> {application.residential_address}
+            </div>
+          </div>
+        </Card>
+
+        {/* Operating Areas */}
+        <Card className="p-6">
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <MapPin className="w-5 h-5" />
+            Operating Areas
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {application.operating_areas.map((area, index) => (
+              <Badge key={index} variant="outline">
+                {area}
+              </Badge>
+            ))}
+          </div>
+        </Card>
+
+        {/* Documents */}
+        <Card className="p-6">
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <FileText className="w-5 h-5" />
+            Uploaded Documents
+          </h3>
+          {application.verification_documents && application.verification_documents.length > 0 ? (
+            <div className="space-y-3">
+              {application.verification_documents.map((doc) => (
+                <div key={doc.id} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <p className="font-medium">{doc.document_type.replace('_', ' ').toUpperCase()}</p>
+                    <p className="text-sm text-gray-600">{doc.file_name}</p>
+                    <p className="text-xs text-gray-500">
+                      Uploaded: {new Date(doc.uploaded_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <CheckCircle className="w-5 h-5 text-green-500" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-600">No documents uploaded yet.</p>
+          )}
+        </Card>
+
+        {/* Referee Information */}
+        {application.referee_verifications && application.referee_verifications.length > 0 && (
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-4">Referee Verification</h3>
+            {application.referee_verifications.map((referee, index) => (
+              <div key={index} className="border rounded-lg p-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                  <div>
+                    <span className="font-medium">Name:</span> {referee.referee_full_name}
+                  </div>
+                  <div>
+                    <span className="font-medium">WhatsApp:</span> {referee.referee_whatsapp_number}
+                  </div>
+                  <div>
+                    <span className="font-medium">Role:</span> {referee.referee_role}
+                  </div>
+                  <div>
+                    <span className="font-medium">Status:</span>
+                    <Badge className="ml-2" variant="outline">
+                      {referee.status.toUpperCase()}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </Card>
+        )}
+
+        {/* Review Notes */}
+        {application.reviewer_notes && (
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-3">Review Notes</h3>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p className="text-blue-800">{application.reviewer_notes}</p>
+            </div>
+          </Card>
+        )}
+
+        {/* Actions */}
+        <Card className="p-6">
+          <h3 className="text-lg font-semibold mb-4">Need Help?</h3>
+          <div className="flex flex-wrap gap-4">
+            <Button variant="outline" onClick={() => window.location.href = '/verification-status'}>
+              Check Status
+            </Button>
+            <Button variant="outline" onClick={() => window.location.href = '/contact'}>
+              Contact Support
+            </Button>
+          </div>
+        </Card>
       </div>
     </div>
   );

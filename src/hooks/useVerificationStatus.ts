@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
-interface VerificationStatusData {
+export interface VerificationStatusData {
   id: string;
   agent_id: string;
   full_name: string;

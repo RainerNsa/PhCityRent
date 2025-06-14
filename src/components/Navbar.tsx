@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -13,7 +12,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const location = useLocation();
-  const { user, isLoading } = useAuth();
+  const { user, loading } = useAuth(); // Changed from isLoading to loading
 
   useEffect(() => {
     const handleScroll = () => {
@@ -83,7 +82,7 @@ const Navbar = () => {
 
             {/* Auth Section */}
             <div className="hidden lg:flex items-center space-x-4">
-              {isLoading ? (
+              {loading ? (
                 <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" />
               ) : user ? (
                 <UserMenu />
@@ -105,7 +104,7 @@ const Navbar = () => {
 
             {/* Mobile Menu Button */}
             <div className="lg:hidden flex items-center space-x-2">
-              {!isLoading && user && <UserMenu />}
+              {!loading && user && <UserMenu />}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className={cn(
@@ -163,7 +162,7 @@ const Navbar = () => {
         </div>
       </nav>
 
-      <AuthModal open={showAuthModal} onOpenChange={setShowAuthModal} />
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </>
   );
 };

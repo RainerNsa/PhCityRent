@@ -29,6 +29,8 @@ interface Application {
   referee_verifications?: {
     status: string;
     referee_full_name: string;
+    referee_whatsapp_number: string;
+    referee_role: string;
   }[];
 }
 

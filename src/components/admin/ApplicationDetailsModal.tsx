@@ -10,6 +10,9 @@ import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { User, Phone, Mail, MapPin, FileText, MessageSquare, Clock } from 'lucide-react';
+import { Database } from '@/integrations/supabase/types';
+
+type ApplicationStatus = Database['public']['Enums']['application_status'];
 
 interface Application {
   id: string;
@@ -17,7 +20,7 @@ interface Application {
   full_name: string;
   whatsapp_number: string;
   email: string;
-  status: string;
+  status: ApplicationStatus;
   created_at: string;
   operating_areas: string[];
   residential_address: string;
@@ -40,7 +43,7 @@ interface ApplicationDetailsModalProps {
 }
 
 const ApplicationDetailsModal = ({ application, isOpen, onClose, onUpdate }: ApplicationDetailsModalProps) => {
-  const [newStatus, setNewStatus] = useState('');
+  const [newStatus, setNewStatus] = useState<ApplicationStatus>('pending_review');
   const [reviewerNotes, setReviewerNotes] = useState('');
   const [nextAction, setNextAction] = useState('');
   const [updating, setUpdating] = useState(false);
@@ -257,7 +260,7 @@ const ApplicationDetailsModal = ({ application, isOpen, onClose, onUpdate }: App
             <div className="space-y-4">
               <div>
                 <label className="text-sm font-medium mb-2 block">Status</label>
-                <Select value={newStatus} onValueChange={setNewStatus}>
+                <Select value={newStatus} onValueChange={(value: ApplicationStatus) => setNewStatus(value)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>

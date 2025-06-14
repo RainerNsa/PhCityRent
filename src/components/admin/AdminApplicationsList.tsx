@@ -9,6 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Search, Eye, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import ApplicationDetailsModal from './ApplicationDetailsModal';
+import { Database } from '@/integrations/supabase/types';
+
+type ApplicationStatus = Database['public']['Enums']['application_status'];
 
 interface Application {
   id: string;
@@ -16,9 +19,13 @@ interface Application {
   full_name: string;
   whatsapp_number: string;
   email: string;
-  status: string;
+  status: ApplicationStatus;
   created_at: string;
   operating_areas: string[];
+  residential_address: string;
+  is_registered_business: boolean;
+  reviewer_notes?: string;
+  next_action?: string;
   referee_verifications?: {
     status: string;
     referee_full_name: string;

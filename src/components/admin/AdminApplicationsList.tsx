@@ -3,8 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import ApplicationDetailsModal from './ApplicationDetailsModal';
-import ApplicationFilters from './ApplicationFilters';
+import AdvancedFilters from './AdvancedFilters';
 import ApplicationCard from './ApplicationCard';
+import BulkActions from './BulkActions';
+import ExportTools from './ExportTools';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Database } from '@/integrations/supabase/types';
 
 type ApplicationStatus = Database['public']['Enums']['application_status'];
@@ -35,6 +38,9 @@ const AdminApplicationsList = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [areaFilter, setAreaFilter] = useState('all');
+  const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({});
+  const [selectedApplications, setSelectedApplications] = useState<string[]>([]);
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
   const { toast } = useToast();
 
@@ -76,8 +82,51 @@ const AdminApplicationsList = () => {
                          app.agent_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          app.whatsapp_number.includes(searchTerm);
     const matchesStatus = statusFilter === 'all' || app.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    const matchesArea = areaFilter === 'all' || app.operating_areas?.includes(areaFilter);
+    
+    let matchesDate = true;
+    if (dateRange.from) {
+      const appDate = new Date(app.created_at);
+      matchesDate = appDate >= dateRange.from;
+      if (dateRange.to) {
+        matchesDate = matchesDate && appDate <= dateRange.to;
+      }
+    }
+    
+    return matchesSearch && matchesStatus && matchesArea && matchesDate;
   });
+
+  const handleSelectApplication = (applicationId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedApplications(prev => [...prev, applicationId]);
+    } else {
+      setSelectedApplications(prev => prev.filter(id => id !== applicationId));
+    }
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedApplications(filteredApplications.map(app => app.id));
+    } else {
+      setSelectedApplications([]);
+    }
+  };
+
+  const getActiveFilters = () => {
+    const filters = [];
+    if (searchTerm) filters.push(`Search: ${searchTerm}`);
+    if (statusFilter !== 'all') filters.push(`Status: ${statusFilter}`);
+    if (areaFilter !== 'all') filters.push(`Area: ${areaFilter}`);
+    if (dateRange.from) filters.push('Date filtered');
+    return filters;
+  };
+
+  const clearAllFilters = () => {
+    setSearchTerm('');
+    setStatusFilter('all');
+    setAreaFilter('all');
+    setDateRange({});
+  };
 
   if (loading) {
     return (
@@ -89,20 +138,59 @@ const AdminApplicationsList = () => {
 
   return (
     <div className="space-y-6">
-      <ApplicationFilters
+      <AdvancedFilters
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         statusFilter={statusFilter}
         onStatusChange={setStatusFilter}
+        dateRange={dateRange}
+        onDateRangeChange={setDateRange}
+        areaFilter={areaFilter}
+        onAreaChange={setAreaFilter}
+        activeFilters={getActiveFilters()}
+        onClearFilters={clearAllFilters}
       />
+
+      <div className="flex flex-col lg:flex-row gap-4">
+        <div className="flex-1">
+          <BulkActions
+            selectedApplications={selectedApplications}
+            onBulkActionComplete={fetchApplications}
+            onClearSelection={() => setSelectedApplications([])}
+          />
+        </div>
+        
+        <ExportTools selectedApplications={selectedApplications} />
+      </div>
+
+      {/* Select All Checkbox */}
+      {filteredApplications.length > 0 && (
+        <div className="flex items-center gap-2 p-2 bg-gray-50 rounded">
+          <Checkbox
+            id="select-all"
+            checked={selectedApplications.length === filteredApplications.length}
+            onCheckedChange={handleSelectAll}
+          />
+          <label htmlFor="select-all" className="text-sm font-medium cursor-pointer">
+            Select all {filteredApplications.length} applications
+          </label>
+        </div>
+      )}
 
       <div className="grid gap-4">
         {filteredApplications.map((application) => (
-          <ApplicationCard
-            key={application.id}
-            application={application}
-            onViewDetails={setSelectedApplication}
-          />
+          <div key={application.id} className="flex items-center gap-3">
+            <Checkbox
+              checked={selectedApplications.includes(application.id)}
+              onCheckedChange={(checked) => handleSelectApplication(application.id, checked as boolean)}
+            />
+            <div className="flex-1">
+              <ApplicationCard
+                application={application}
+                onViewDetails={setSelectedApplication}
+              />
+            </div>
+          </div>
         ))}
       </div>
 

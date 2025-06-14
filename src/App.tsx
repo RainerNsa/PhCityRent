@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Routes, Route } from "react-router-dom";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Index from "./pages/Index";
 import Properties from "./pages/Properties";
 import Escrow from "./pages/Escrow";
@@ -28,8 +29,22 @@ const App = () => (
       <Route path="/landlords" element={<Landlords />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/verification-status" element={<VerificationStatus />} />
-      <Route path="/agent-dashboard" element={<AgentDashboard />} />
-      <Route path="/admin" element={<AdminDashboard />} />
+      <Route 
+        path="/agent-dashboard" 
+        element={
+          <ProtectedRoute requireAuth={true}>
+            <AgentDashboard />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/admin" 
+        element={
+          <ProtectedRoute requireAdmin={true}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        } 
+      />
       <Route path="/auth" element={<Auth />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

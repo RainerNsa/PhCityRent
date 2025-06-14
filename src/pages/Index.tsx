@@ -4,6 +4,8 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import FeaturedListings from "@/components/FeaturedListings";
 import HowItWorks from "@/components/HowItWorks";
+import ScamEducation from "@/components/ScamEducation";
+import LocalTestimonials from "@/components/LocalTestimonials";
 import DynamicScrollSection from "@/components/DynamicScrollSection";
 import CTA from "@/components/CTA";
 import ContactFAQ from "@/components/ContactFAQ";
@@ -59,6 +61,8 @@ const Index = () => {
         <Hero />
         <FeaturedListings />
         <HowItWorks />
+        <ScamEducation />
+        <LocalTestimonials />
         <DynamicScrollSection />
         <CTA />
         <ContactFAQ />

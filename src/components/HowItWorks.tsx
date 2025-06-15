@@ -52,28 +52,28 @@ const HowItWorks = () => {
       title: "Browse Verified Listings",
       description: "Search through our database of verified rental properties across Port Harcourt, all vetted by our team.",
       icon: Search,
-      image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?auto=format&fit=crop&w=800&q=80"
+      image: "https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=800&q=80" // Modern Nigerian duplex
     },
     {
       number: "02",
       title: "Connect with Trusted Agents",
       description: "Get in touch with verified agents who have been thoroughly screened and approved by our platform.",
       icon: UserCheck,
-      image: "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=800&q=80"
+      image: "https://images.unsplash.com/photo-1565402170291-8491f14678db?auto=format&fit=crop&w=800&q=80" // Nigerian residential building/agent scene
     },
     {
       number: "03",
       title: "Secure Your Rent with Escrow",
       description: "Use our secure escrow service to protect your rent payment until you've verified the property and keys.",
       icon: Shield,
-      image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=800&q=80"
+      image: "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?auto=format&fit=crop&w=800&q=80" // Nigerian modern home/security
     },
     {
       number: "04",
       title: "Move Into Your New Home",
       description: "Complete the rental process with confidence, knowing you're protected from scams and fraud.",
       icon: Home,
-      image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80"
+      image: "https://images.unsplash.com/photo-1571055107559-3e67626fa8be?auto=format&fit=crop&w=800&q=80" // Nigerian family home/moving scene
     }
   ];
 

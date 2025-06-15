@@ -9,8 +9,14 @@ type PropertyInsert = Database['public']['Tables']['properties']['Insert'];
 export const useProperties = (filters?: {
   search?: string;
   location?: string;
+  propertyType?: string;
   priceRange?: string;
+  minPrice?: number;
+  maxPrice?: number;
   bedrooms?: string;
+  bathrooms?: string;
+  isVerified?: boolean;
+  isFeatured?: boolean;
 }) => {
   return useQuery({
     queryKey: ['properties', filters],
@@ -30,13 +36,42 @@ export const useProperties = (filters?: {
         query = query.ilike('location', `%${filters.location}%`);
       }
 
+      if (filters?.propertyType && filters.propertyType !== 'all') {
+        query = query.eq('property_type', filters.propertyType);
+      }
+
       if (filters?.bedrooms && filters.bedrooms !== 'all') {
         const bedroomCount = parseInt(filters.bedrooms);
-        if (bedroomCount === 4) {
-          query = query.gte('bedrooms', 4);
+        if (bedroomCount === 5) {
+          query = query.gte('bedrooms', 5);
         } else {
           query = query.eq('bedrooms', bedroomCount);
         }
+      }
+
+      if (filters?.bathrooms && filters.bathrooms !== 'all') {
+        const bathroomCount = parseInt(filters.bathrooms);
+        if (bathroomCount === 4) {
+          query = query.gte('bathrooms', 4);
+        } else {
+          query = query.eq('bathrooms', bathroomCount);
+        }
+      }
+
+      if (filters?.minPrice) {
+        query = query.gte('price_per_year', filters.minPrice);
+      }
+
+      if (filters?.maxPrice) {
+        query = query.lte('price_per_year', filters.maxPrice);
+      }
+
+      if (filters?.isVerified) {
+        query = query.eq('is_verified', true);
+      }
+
+      if (filters?.isFeatured) {
+        query = query.eq('featured', true);
       }
 
       if (filters?.priceRange && filters.priceRange !== 'all') {

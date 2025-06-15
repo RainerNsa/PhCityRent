@@ -19,7 +19,14 @@ const Properties = () => {
   const [sortBy, setSortBy] = useState("newest");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const { data: properties = [], isLoading, error } = useProperties(filters);
+  const { data: properties = [], isLoading, error } = useProperties({
+    search: filters.search,
+    location: filters.location !== "all" ? filters.location : undefined,
+    propertyType: filters.propertyType !== "all" ? filters.propertyType : undefined,
+    minPrice: filters.priceRange[0],
+    maxPrice: filters.priceRange[1],
+    bedrooms: filters.bedrooms !== "all" ? filters.bedrooms : undefined,
+  });
 
   const handleFilterChange = (newFilters: typeof filters) => {
     setFilters(newFilters);

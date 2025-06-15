@@ -1,27 +1,56 @@
 
 import React, { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer } from 'recharts';
-import { TrendingUp, Clock, CheckCircle, Users, Calendar } from 'lucide-react';
+import { useRealTimeUpdates } from '@/hooks/useRealTimeUpdates';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { RefreshCw, BarChart3, Users, FileDown } from 'lucide-react';
+import AnalyticsMetrics from './analytics/AnalyticsMetrics';
+import AnalyticsCharts from './analytics/AnalyticsCharts';
+import AgentPerformanceAnalytics from './analytics/AgentPerformanceAnalytics';
+import AnalyticsExport from './analytics/AnalyticsExport';
 
 interface AnalyticsData {
-  statusDistribution: Array<{ name: string; value: number; color: string }>;
-  monthlyTrends: Array<{ month: string; applications: number; approved: number }>;
-  processingTimes: Array<{ status: string; avgDays: number }>;
-  topAreas: Array<{ area: string; count: number }>;
+  metrics: {
+    totalApplications: number;
+    approved: number;
+    pending: number;
+    thisMonth: number;
+    approvalRate: number;
+    avgProcessingDays: number;
+  };
+  charts: {
+    statusDistribution: Array<{ name: string; value: number; color: string }>;
+    monthlyTrends: Array<{ month: string; applications: number; approved: number; rejected: number }>;
+    topAreas: Array<{ area: string; count: number }>;
+    processingTimes: Array<{ status: string; avgDays: number }>;
+  };
 }
 
 const ApplicationAnalytics = () => {
   const [analytics, setAnalytics] = useState<AnalyticsData>({
-    statusDistribution: [],
-    monthlyTrends: [],
-    processingTimes: [],
-    topAreas: []
+    metrics: {
+      totalApplications: 0,
+      approved: 0,
+      pending: 0,
+      thisMonth: 0,
+      approvalRate: 0,
+      avgProcessingDays: 0,
+    },
+    charts: {
+      statusDistribution: [],
+      monthlyTrends: [],
+      topAreas: [],
+      processingTimes: [],
+    }
   });
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const { toast } = useToast();
+
+  // Set up real-time updates
+  const { isConnected } = useRealTimeUpdates('agent_applications', fetchAnalytics);
 
   useEffect(() => {
     fetchAnalytics();
@@ -29,17 +58,45 @@ const ApplicationAnalytics = () => {
 
   const fetchAnalytics = async () => {
     try {
+      if (!loading) setRefreshing(true);
+      
       const { data: applications, error } = await supabase
         .from('agent_applications')
         .select('*');
 
       if (error) throw error;
 
-      // Process analytics data
-      const statusCounts = applications.reduce((acc: any, app) => {
+      // Calculate metrics
+      const totalApplications = applications?.length || 0;
+      const approved = applications?.filter(app => app.status === 'approved').length || 0;
+      const pending = applications?.filter(app => app.status === 'pending_review').length || 0;
+      
+      // This month's applications
+      const thisMonthStart = new Date();
+      thisMonthStart.setDate(1);
+      thisMonthStart.setHours(0, 0, 0, 0);
+      
+      const thisMonth = applications?.filter(app => 
+        new Date(app.created_at) >= thisMonthStart
+      ).length || 0;
+
+      const approvalRate = totalApplications > 0 ? Math.round((approved / totalApplications) * 100) : 0;
+
+      // Calculate average processing days for approved applications
+      const approvedApps = applications?.filter(app => app.status === 'approved') || [];
+      const avgProcessingDays = approvedApps.length > 0 
+        ? Math.round(approvedApps.reduce((sum, app) => {
+            const created = new Date(app.created_at);
+            const updated = new Date(app.updated_at);
+            return sum + Math.ceil((updated.getTime() - created.getTime()) / (1000 * 60 * 60 * 24));
+          }, 0) / approvedApps.length)
+        : 0;
+
+      // Process status distribution
+      const statusCounts = applications?.reduce((acc: any, app) => {
         acc[app.status] = (acc[app.status] || 0) + 1;
         return acc;
-      }, {});
+      }, {}) || {};
 
       const statusDistribution = Object.entries(statusCounts).map(([status, count]) => ({
         name: status.replace('_', ' ').toUpperCase(),
@@ -47,28 +104,28 @@ const ApplicationAnalytics = () => {
         color: getStatusColor(status)
       }));
 
-      // Monthly trends (simplified)
-      const monthlyData = applications.reduce((acc: any, app) => {
+      // Process monthly trends
+      const monthlyData = applications?.reduce((acc: any, app) => {
         const month = new Date(app.created_at).toLocaleString('default', { month: 'short' });
         if (!acc[month]) {
-          acc[month] = { applications: 0, approved: 0 };
+          acc[month] = { applications: 0, approved: 0, rejected: 0 };
         }
         acc[month].applications++;
-        if (app.status === 'approved') {
-          acc[month].approved++;
-        }
+        if (app.status === 'approved') acc[month].approved++;
+        if (app.status === 'rejected') acc[month].rejected++;
         return acc;
-      }, {});
+      }, {}) || {};
 
       const monthlyTrends = Object.entries(monthlyData).map(([month, data]: [string, any]) => ({
         month,
         applications: data.applications,
-        approved: data.approved
+        approved: data.approved,
+        rejected: data.rejected
       }));
 
-      // Top operating areas
+      // Process top operating areas
       const areaCount: any = {};
-      applications.forEach(app => {
+      applications?.forEach(app => {
         app.operating_areas?.forEach((area: string) => {
           areaCount[area] = (areaCount[area] || 0) + 1;
         });
@@ -76,15 +133,52 @@ const ApplicationAnalytics = () => {
 
       const topAreas = Object.entries(areaCount)
         .sort(([,a], [,b]) => (b as number) - (a as number))
-        .slice(0, 5)
+        .slice(0, 8)
         .map(([area, count]) => ({ area, count: count as number }));
 
-      setAnalytics({
-        statusDistribution,
-        monthlyTrends,
-        processingTimes: [], // Would need more complex calculation
-        topAreas
+      // Calculate processing times by status
+      const statusProcessingTimes = {
+        'approved': 0,
+        'pending_review': 0,
+        'documents_reviewed': 0,
+        'referee_contacted': 0
+      };
+
+      Object.keys(statusProcessingTimes).forEach(status => {
+        const statusApps = applications?.filter(app => app.status === status) || [];
+        if (statusApps.length > 0) {
+          const avgDays = statusApps.reduce((sum, app) => {
+            const created = new Date(app.created_at);
+            const updated = new Date(app.updated_at);
+            return sum + Math.ceil((updated.getTime() - created.getTime()) / (1000 * 60 * 60 * 24));
+          }, 0) / statusApps.length;
+          
+          statusProcessingTimes[status as keyof typeof statusProcessingTimes] = Math.round(avgDays);
+        }
       });
+
+      const processingTimes = Object.entries(statusProcessingTimes).map(([status, days]) => ({
+        status: status.replace('_', ' ').toUpperCase(),
+        avgDays: days
+      }));
+
+      setAnalytics({
+        metrics: {
+          totalApplications,
+          approved,
+          pending,
+          thisMonth,
+          approvalRate,
+          avgProcessingDays,
+        },
+        charts: {
+          statusDistribution,
+          monthlyTrends,
+          topAreas,
+          processingTimes,
+        }
+      });
+
     } catch (error) {
       console.error('Error fetching analytics:', error);
       toast({
@@ -94,6 +188,7 @@ const ApplicationAnalytics = () => {
       });
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
@@ -109,122 +204,86 @@ const ApplicationAnalytics = () => {
     return colors[status] || '#6b7280';
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pulse-500"></div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Total Applications</p>
-              <p className="text-2xl font-bold">
-                {analytics.statusDistribution.reduce((sum, item) => sum + item.value, 0)}
-              </p>
-            </div>
-            <Users className="w-8 h-8 text-blue-500" />
+      {/* Header with Real-time Status */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <h2 className="text-2xl font-bold">Analytics Dashboard</h2>
+          <div className={`flex items-center gap-2 px-2 py-1 rounded-full text-xs ${
+            isConnected ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
+          }`}>
+            <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+            {isConnected ? 'Real-time Active' : 'Offline'}
           </div>
-        </Card>
+        </div>
         
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Approved</p>
-              <p className="text-2xl font-bold text-green-600">
-                {analytics.statusDistribution.find(s => s.name === 'APPROVED')?.value || 0}
-              </p>
-            </div>
-            <CheckCircle className="w-8 h-8 text-green-500" />
-          </div>
-        </Card>
-        
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Pending</p>
-              <p className="text-2xl font-bold text-yellow-600">
-                {analytics.statusDistribution.find(s => s.name === 'PENDING REVIEW')?.value || 0}
-              </p>
-            </div>
-            <Clock className="w-8 h-8 text-yellow-500" />
-          </div>
-        </Card>
-        
-        <Card className="p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">This Month</p>
-              <p className="text-2xl font-bold text-purple-600">
-                {analytics.monthlyTrends[analytics.monthlyTrends.length - 1]?.applications || 0}
-              </p>
-            </div>
-            <Calendar className="w-8 h-8 text-purple-500" />
-          </div>
-        </Card>
+        <Button 
+          onClick={fetchAnalytics} 
+          variant="outline" 
+          size="sm"
+          disabled={refreshing}
+        >
+          <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+          Refresh
+        </Button>
       </div>
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Status Distribution */}
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Application Status Distribution</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={analytics.statusDistribution}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={80}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {analytics.statusDistribution.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </Card>
+      {/* Main Analytics */}
+      <Tabs defaultValue="overview" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="overview" className="flex items-center gap-2">
+            <BarChart3 className="w-4 h-4" />
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="agents" className="flex items-center gap-2">
+            <Users className="w-4 h-4" />
+            Agent Performance
+          </TabsTrigger>
+          <TabsTrigger value="export" className="flex items-center gap-2">
+            <FileDown className="w-4 h-4" />
+            Export
+          </TabsTrigger>
+          <TabsTrigger value="realtime" className="flex items-center gap-2">
+            <RefreshCw className="w-4 h-4" />
+            Real-time
+          </TabsTrigger>
+        </TabsList>
 
-        {/* Monthly Trends */}
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Monthly Application Trends</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={analytics.monthlyTrends}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Line type="monotone" dataKey="applications" stroke="#3b82f6" name="Total Applications" />
-              <Line type="monotone" dataKey="approved" stroke="#10b981" name="Approved" />
-            </LineChart>
-          </ResponsiveContainer>
-        </Card>
-      </div>
+        <TabsContent value="overview" className="space-y-6">
+          <AnalyticsMetrics data={analytics.metrics} isLoading={loading} />
+          <AnalyticsCharts data={analytics.charts} isLoading={loading} />
+        </TabsContent>
 
-      {/* Top Operating Areas */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Top Operating Areas</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={analytics.topAreas}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="area" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="count" fill="#3b82f6" />
-          </BarChart>
-        </ResponsiveContainer>
-      </Card>
+        <TabsContent value="agents">
+          <AgentPerformanceAnalytics />
+        </TabsContent>
+
+        <TabsContent value="export">
+          <AnalyticsExport />
+        </TabsContent>
+
+        <TabsContent value="realtime" className="space-y-6">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h3 className="font-semibold text-blue-900 mb-2">Real-time Updates</h3>
+            <p className="text-blue-800 text-sm mb-3">
+              This dashboard automatically updates when new applications are submitted or existing ones are modified.
+            </p>
+            <div className="flex items-center gap-4 text-sm">
+              <div className="flex items-center gap-2">
+                <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                <span>Connection: {isConnected ? 'Active' : 'Disconnected'}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <RefreshCw className="w-4 h-4" />
+                <span>Last updated: {new Date().toLocaleTimeString()}</span>
+              </div>
+            </div>
+          </div>
+          
+          <AnalyticsMetrics data={analytics.metrics} isLoading={loading} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

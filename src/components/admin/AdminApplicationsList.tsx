@@ -1,13 +1,12 @@
+
 import React, { useState } from 'react';
-import { useApplicationsData } from './applications/useApplicationsData';
-import { useApplicationsFilters } from './applications/useApplicationsFilters';
+import { useApplicationsData } from '@/components/admin/applications/useApplicationsData';
+import ApplicationsToolbar from '@/components/admin/applications/ApplicationsToolbar';
+import ApplicationsGrid from '@/components/admin/applications/ApplicationsGrid';
+import ApplicationDetailsModal from '@/components/admin/ApplicationDetailsModal';
 import { usePagination } from '@/hooks/usePagination';
-import ApplicationsToolbar from './applications/ApplicationsToolbar';
-import ApplicationsGrid from './applications/ApplicationsGrid';
-import ApplicationsLoadingSkeleton from './applications/ApplicationsLoadingSkeleton';
-import ApplicationDetailsModal from './ApplicationDetailsModal';
-import ErrorState from '@/components/common/ErrorState';
 import { Database } from '@/integrations/supabase/types';
+import ErrorState from '@/components/common/ErrorState';
 
 type ApplicationStatus = Database['public']['Enums']['application_status'];
 
@@ -34,160 +33,139 @@ interface Application {
 
 const AdminApplicationsList = () => {
   const { applications, loading, error, refetch } = useApplicationsData();
-  const [selectedApplications, setSelectedApplications] = useState<string[]>([]);
-  const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
-
+  
   const [filters, setFilters] = useState({
-    status: '',
-    operatingArea: '',
+    status: 'all',
+    operatingArea: 'all',
     dateRange: null,
     searchTerm: '',
   });
+  
+  const [selectedApplications, setSelectedApplications] = useState<string[]>([]);
+  const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleFiltersChange = (newFilters: any) => {
-    setFilters(newFilters);
-  };
-
-  const filteredApplications = React.useMemo(() => {
-    let filtered = [...applications];
-
-    if (filters.status) {
-      filtered = filtered.filter(app => app.status === filters.status);
-    }
-
-    if (filters.operatingArea) {
-      filtered = filtered.filter(app => app.operating_areas.includes(filters.operatingArea));
-    }
-
-    if (filters.dateRange) {
-      const [startDate, endDate] = filters.dateRange;
-      filtered = filtered.filter(app => {
-        const appDate = new Date(app.created_at);
-        const start = startDate ? new Date(startDate) : null;
-        const end = endDate ? new Date(endDate) : null;
-
-        if (start && appDate < start) return false;
-        if (end && appDate > end) return false;
-
-        return true;
-      });
-    }
-
-    if (filters.searchTerm) {
-      const term = filters.searchTerm.toLowerCase();
-      filtered = filtered.filter(app =>
-        app.full_name.toLowerCase().includes(term) ||
-        app.email.toLowerCase().includes(term) ||
-        app.whatsapp_number.includes(term) ||
-        app.agent_id.toLowerCase().includes(term)
-      );
-    }
-
-    return filtered;
-  }, [applications, filters]);
-
-  const pagination = usePagination({
-    data: filteredApplications,
-    itemsPerPage: 10
+  // Filter applications based on current filters
+  const filteredApplications = applications.filter((app) => {
+    if (filters.status !== 'all' && app.status !== filters.status) return false;
+    if (filters.operatingArea !== 'all' && !app.operating_areas.includes(filters.operatingArea)) return false;
+    if (filters.searchTerm && !app.full_name.toLowerCase().includes(filters.searchTerm.toLowerCase()) && 
+        !app.email.toLowerCase().includes(filters.searchTerm.toLowerCase()) &&
+        !app.agent_id.toLowerCase().includes(filters.searchTerm.toLowerCase())) return false;
+    return true;
   });
 
-  const handleSelectApplication = (applicationId: string, checked: boolean) => {
-    setSelectedApplications(prev => {
-      if (checked) {
-        return [...prev, applicationId];
-      } else {
-        return prev.filter(id => id !== applicationId);
-      }
-    });
+  const {
+    currentPage,
+    totalPages,
+    paginatedItems: paginatedApplications,
+    goToPage,
+    goToNextPage,
+    goToPreviousPage,
+  } = usePagination(filteredApplications, 10);
+
+  const handleApplicationSelect = (applicationId: string) => {
+    setSelectedApplications(prev => 
+      prev.includes(applicationId)
+        ? prev.filter(id => id !== applicationId)
+        : [...prev, applicationId]
+    );
   };
 
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedApplications(pagination.paginatedData.map(app => app.id));
-    } else {
-      setSelectedApplications([]);
-    }
+  const handleSelectAll = (selectAll: boolean) => {
+    setSelectedApplications(selectAll ? paginatedApplications.map(app => app.id) : []);
+  };
+
+  const handleApplicationClick = (application: Application) => {
+    setSelectedApplication(application);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedApplication(null);
+  };
+
+  const handleApplicationUpdate = async (updatedApplication: Application) => {
+    // Refetch data to get the latest updates
+    await refetch();
+    setIsModalOpen(false);
+    setSelectedApplication(null);
+  };
+
+  const handleBulkAction = (action: string) => {
+    console.log(`Performing bulk action: ${action} on applications:`, selectedApplications);
+    // Implement bulk actions here
   };
 
   const handleClearSelection = () => {
     setSelectedApplications([]);
   };
 
-  const handleBulkAction = (action: string) => {
-    console.log(`Bulk action: ${action} on ${selectedApplications.length} applications`);
-    // Implement bulk action logic here
-  };
-
-  if (loading) {
-    return <ApplicationsLoadingSkeleton count={10} />;
-  }
-
   if (error) {
     return (
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Agent Applications</h1>
-            <p className="text-gray-600 mt-1">Manage and review agent applications</p>
-          </div>
-        </div>
-        
-        <ErrorState
-          title="Failed to Load Applications"
-          message={error}
-          onRetry={refetch}
-          showRetry={true}
-          showHome={true}
-        />
-      </div>
+      <ErrorState
+        title="Failed to Load Applications"
+        message={error}
+        onRetry={refetch}
+        showRetry={true}
+        showHome={false}
+      />
     );
   }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Agent Applications</h1>
-          <p className="text-gray-600 mt-1">Manage and review agent applications</p>
+          <h2 className="text-2xl font-bold text-gray-900">Agent Applications</h2>
+          <p className="text-gray-600 mt-1">
+            Manage and review agent verification applications
+          </p>
+        </div>
+        
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md">
+            {filteredApplications.length} Total
+          </span>
+          <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-md">
+            {filteredApplications.filter(app => app.status === 'pending_review').length} Pending
+          </span>
+          <span className="px-2 py-1 bg-green-100 text-green-700 rounded-md">
+            {filteredApplications.filter(app => app.status === 'approved').length} Approved
+          </span>
         </div>
       </div>
 
-      {/* Toolbar */}
       <ApplicationsToolbar
         selectedCount={selectedApplications.length}
         totalCount={filteredApplications.length}
         onClearSelection={handleClearSelection}
         filters={filters}
-        onFiltersChange={handleFiltersChange}
+        onFiltersChange={setFilters}
         onBulkAction={handleBulkAction}
       />
 
-      {/* Applications Grid */}
       <ApplicationsGrid
-        applications={filteredApplications}
+        applications={paginatedApplications}
+        loading={loading}
         selectedApplications={selectedApplications}
-        onSelectApplication={handleSelectApplication}
+        onApplicationSelect={handleApplicationSelect}
         onSelectAll={handleSelectAll}
-        onViewDetails={setSelectedApplication}
-        // Pagination props
-        currentPage={pagination.currentPage}
-        totalPages={pagination.totalPages}
-        onPageChange={pagination.goToPage}
-        hasNextPage={pagination.hasNextPage}
-        hasPreviousPage={pagination.hasPreviousPage}
-        startIndex={pagination.startIndex}
-        endIndex={pagination.endIndex}
-        totalItems={pagination.totalItems}
-        paginatedApplications={pagination.paginatedData}
+        onApplicationClick={handleApplicationClick}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={goToPage}
+        onNextPage={goToNextPage}
+        onPreviousPage={goToPreviousPage}
       />
 
-      {/* Application Details Modal */}
       {selectedApplication && (
         <ApplicationDetailsModal
           application={selectedApplication}
-          isOpen={!!selectedApplication}
-          onClose={() => setSelectedApplication(null)}
+          isOpen={isModalOpen}
+          onClose={handleModalClose}
+          onUpdate={handleApplicationUpdate}
         />
       )}
     </div>

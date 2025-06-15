@@ -32,7 +32,7 @@ interface Application {
 interface ApplicationsGridProps {
   applications: Application[];
   selectedApplications: string[];
-  onSelectApplication: (applicationId: string, checked: boolean) => void;
+  onSelectApplication: (applicationId: string) => void;
   onSelectAll: (checked: boolean) => void;
   onViewDetails: (application: Application) => void;
   // Pagination props
@@ -102,7 +102,7 @@ const ApplicationsGrid = ({
             <div className="pt-2">
               <Checkbox
                 checked={selectedApplications.includes(application.id)}
-                onCheckedChange={(checked) => onSelectApplication(application.id, checked as boolean)}
+                onCheckedChange={() => onSelectApplication(application.id)}
                 className="min-w-[16px]"
               />
             </div>

@@ -4,6 +4,7 @@ import { useApplicationsData } from '@/components/admin/applications/useApplicat
 import ApplicationsToolbar from '@/components/admin/applications/ApplicationsToolbar';
 import ApplicationsGrid from '@/components/admin/applications/ApplicationsGrid';
 import ApplicationDetailsModal from '@/components/admin/ApplicationDetailsModal';
+import ApplicationsLoadingSkeleton from '@/components/admin/applications/ApplicationsLoadingSkeleton';
 import { usePagination } from '@/hooks/usePagination';
 import { Database } from '@/integrations/supabase/types';
 import ErrorState from '@/components/common/ErrorState';
@@ -55,14 +56,7 @@ const AdminApplicationsList = () => {
     return true;
   });
 
-  const {
-    currentPage,
-    totalPages,
-    paginatedItems: paginatedApplications,
-    goToPage,
-    goToNextPage,
-    goToPreviousPage,
-  } = usePagination(filteredApplications, 10);
+  const pagination = usePagination({ data: filteredApplications, itemsPerPage: 10 });
 
   const handleApplicationSelect = (applicationId: string) => {
     setSelectedApplications(prev => 
@@ -73,7 +67,7 @@ const AdminApplicationsList = () => {
   };
 
   const handleSelectAll = (selectAll: boolean) => {
-    setSelectedApplications(selectAll ? paginatedApplications.map(app => app.id) : []);
+    setSelectedApplications(selectAll ? pagination.paginatedData.map((app: Application) => app.id) : []);
   };
 
   const handleApplicationClick = (application: Application) => {
@@ -86,7 +80,7 @@ const AdminApplicationsList = () => {
     setSelectedApplication(null);
   };
 
-  const handleApplicationUpdate = async (updatedApplication: Application) => {
+  const handleApplicationUpdate = async () => {
     // Refetch data to get the latest updates
     await refetch();
     setIsModalOpen(false);
@@ -146,19 +140,26 @@ const AdminApplicationsList = () => {
         onBulkAction={handleBulkAction}
       />
 
-      <ApplicationsGrid
-        applications={paginatedApplications}
-        loading={loading}
-        selectedApplications={selectedApplications}
-        onApplicationSelect={handleApplicationSelect}
-        onSelectAll={handleSelectAll}
-        onApplicationClick={handleApplicationClick}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={goToPage}
-        onNextPage={goToNextPage}
-        onPreviousPage={goToPreviousPage}
-      />
+      {loading ? (
+        <ApplicationsLoadingSkeleton count={5} />
+      ) : (
+        <ApplicationsGrid
+          applications={pagination.paginatedData as Application[]}
+          selectedApplications={selectedApplications}
+          onSelectApplication={handleApplicationSelect}
+          onSelectAll={handleSelectAll}
+          onViewDetails={handleApplicationClick}
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          onPageChange={pagination.goToPage}
+          hasNextPage={pagination.hasNextPage}
+          hasPreviousPage={pagination.hasPreviousPage}
+          startIndex={pagination.startIndex}
+          endIndex={pagination.endIndex}
+          totalItems={pagination.totalItems}
+          paginatedApplications={pagination.paginatedData as Application[]}
+        />
+      )}
 
       {selectedApplication && (
         <ApplicationDetailsModal

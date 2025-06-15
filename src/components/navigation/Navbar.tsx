@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Menu, X, Shield, Home, Users, Building, Phone, FileCheck } from "lucide-react";
+import { Menu, X, Home, Users, Building, Phone, FileCheck, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import UserMenu from "@/components/auth/UserMenu";
 import AuthModal from "@/components/auth/AuthModal";
@@ -12,7 +13,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const location = useLocation();
-  const { user, loading } = useAuth(); // Changed from isLoading to loading
+  const { user, loading } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,12 +49,25 @@ const Navbar = () => {
       )}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
+            {/* Logo */}
             <Link to="/" className="flex items-center space-x-3 group">
-              <img 
-                src="/phcityrent-logo.svg" 
-                alt="PHCityRent Logo" 
-                className="h-8 w-auto transition-transform group-hover:scale-105" 
-              />
+              <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105">
+                <Home className="w-6 h-6 text-white" />
+              </div>
+              <div className="hidden sm:block">
+                <h1 className={cn(
+                  "text-xl font-bold transition-colors",
+                  isScrolled ? "text-gray-900" : "text-white"
+                )}>
+                  PHCityRent
+                </h1>
+                <p className={cn(
+                  "text-xs transition-colors",
+                  isScrolled ? "text-gray-600" : "text-white/80"
+                )}>
+                  Trusted Properties
+                </p>
+              </div>
             </Link>
 
             {/* Desktop Navigation */}
@@ -67,10 +81,10 @@ const Navbar = () => {
                     className={cn(
                       "flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
                       isActivePath(item.path)
-                        ? "bg-pulse-100 text-pulse-700 shadow-sm"
+                        ? "bg-orange-100 text-orange-700 shadow-sm"
                         : isScrolled
-                          ? "text-gray-700 hover:text-pulse-600 hover:bg-pulse-50"
-                          : "text-white hover:text-pulse-200 hover:bg-white/10"
+                          ? "text-gray-700 hover:text-orange-600 hover:bg-orange-50"
+                          : "text-white hover:text-orange-200 hover:bg-white/10"
                     )}
                   >
                     <Icon className="w-4 h-4" />
@@ -93,7 +107,7 @@ const Navbar = () => {
                   className={cn(
                     "border-2 transition-all duration-200",
                     isScrolled
-                      ? "border-pulse-200 text-pulse-700 hover:bg-pulse-50"
+                      ? "border-orange-200 text-orange-700 hover:bg-orange-50"
                       : "border-white/30 text-white hover:bg-white/10 hover:border-white/50"
                   )}
                 >
@@ -133,8 +147,8 @@ const Navbar = () => {
                       className={cn(
                         "flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors duration-200",
                         isActivePath(item.path)
-                          ? "bg-pulse-100 text-pulse-700"
-                          : "text-gray-700 hover:text-pulse-600 hover:bg-pulse-50"
+                          ? "bg-orange-100 text-orange-700"
+                          : "text-gray-700 hover:text-orange-600 hover:bg-orange-50"
                       )}
                     >
                       <Icon className="w-5 h-5" />
@@ -150,7 +164,7 @@ const Navbar = () => {
                         setShowAuthModal(true);
                         setIsMenuOpen(false);
                       }}
-                      className="w-full bg-pulse-600 hover:bg-pulse-700 text-white"
+                      className="w-full bg-orange-600 hover:bg-orange-700 text-white"
                     >
                       Sign In
                     </Button>

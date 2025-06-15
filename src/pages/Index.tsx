@@ -1,6 +1,6 @@
 
 import React, { useEffect } from "react";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/navigation/Navbar";
 import Hero from "@/components/Hero";
 import FeaturedListings from "@/components/FeaturedListings";
 import HowItWorks from "@/components/HowItWorks";
@@ -18,7 +18,7 @@ const Index = () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("animate-fade-in");
-            observer.unobserve(entry.target);
+            observer.unob서ve(entry.target);
           }
         });
       },

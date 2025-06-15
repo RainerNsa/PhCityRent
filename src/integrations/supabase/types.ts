@@ -154,6 +154,133 @@ export type Database = {
           },
         ]
       }
+      properties: {
+        Row: {
+          agent_id: string | null
+          amenities: string[] | null
+          area_sqft: number | null
+          bathrooms: number
+          bedrooms: number
+          contact_email: string | null
+          contact_whatsapp: string | null
+          created_at: string | null
+          description: string | null
+          featured: boolean | null
+          id: string
+          images: string[] | null
+          is_available: boolean | null
+          is_verified: boolean | null
+          landlord_id: string | null
+          location: string
+          price_per_month: number | null
+          price_per_year: number
+          property_type: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          agent_id?: string | null
+          amenities?: string[] | null
+          area_sqft?: number | null
+          bathrooms?: number
+          bedrooms?: number
+          contact_email?: string | null
+          contact_whatsapp?: string | null
+          created_at?: string | null
+          description?: string | null
+          featured?: boolean | null
+          id?: string
+          images?: string[] | null
+          is_available?: boolean | null
+          is_verified?: boolean | null
+          landlord_id?: string | null
+          location: string
+          price_per_month?: number | null
+          price_per_year: number
+          property_type?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          agent_id?: string | null
+          amenities?: string[] | null
+          area_sqft?: number | null
+          bathrooms?: number
+          bedrooms?: number
+          contact_email?: string | null
+          contact_whatsapp?: string | null
+          created_at?: string | null
+          description?: string | null
+          featured?: boolean | null
+          id?: string
+          images?: string[] | null
+          is_available?: boolean | null
+          is_verified?: boolean | null
+          landlord_id?: string | null
+          location?: string
+          price_per_month?: number | null
+          price_per_year?: number
+          property_type?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "properties_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agent_applications"
+            referencedColumns: ["agent_id"]
+          },
+        ]
+      }
+      property_inquiries: {
+        Row: {
+          created_at: string | null
+          id: string
+          inquirer_email: string
+          inquirer_name: string
+          inquirer_phone: string | null
+          inquiry_type: string | null
+          message: string | null
+          property_id: string | null
+          responded_at: string | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          inquirer_email: string
+          inquirer_name: string
+          inquirer_phone?: string | null
+          inquiry_type?: string | null
+          message?: string | null
+          property_id?: string | null
+          responded_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          inquirer_email?: string
+          inquirer_name?: string
+          inquirer_phone?: string | null
+          inquiry_type?: string | null
+          message?: string | null
+          property_id?: string | null
+          responded_at?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_inquiries_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       referee_verifications: {
         Row: {
           application_id: string | null

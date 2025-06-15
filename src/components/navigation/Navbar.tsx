@@ -47,7 +47,7 @@ const Navbar = () => {
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         isScrolled 
           ? "bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-100" 
-          : "bg-transparent"
+          : "bg-gray-900/90 backdrop-blur-md"
       )}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
@@ -65,7 +65,7 @@ const Navbar = () => {
                 </h1>
                 <p className={cn(
                   "text-xs transition-colors",
-                  isScrolled ? "text-gray-600" : "text-white/80"
+                  isScrolled ? "text-gray-600" : "text-gray-300"
                 )}>
                   Trusted Properties
                 </p>
@@ -81,12 +81,14 @@ const Navbar = () => {
                     key={item.name}
                     to={item.path}
                     className={cn(
-                      "flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
+                      "flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105",
                       isActivePath(item.path)
-                        ? "bg-orange-100 text-orange-700 shadow-sm"
+                        ? isScrolled
+                          ? "bg-orange-100 text-orange-700 shadow-sm"
+                          : "bg-orange-600 text-white shadow-lg"
                         : isScrolled
-                          ? "text-gray-700 hover:text-orange-600 hover:bg-orange-50"
-                          : "text-white hover:text-orange-200 hover:bg-white/10"
+                          ? "text-gray-800 hover:text-orange-600 hover:bg-orange-50 hover:shadow-md"
+                          : "text-gray-100 hover:text-white hover:bg-white/20 hover:shadow-lg"
                     )}
                   >
                     <Icon className="w-4 h-4" />
@@ -114,10 +116,10 @@ const Navbar = () => {
                   onClick={() => setShowAuthModal(true)}
                   variant="outline"
                   className={cn(
-                    "border-2 transition-all duration-200",
+                    "border-2 transition-all duration-200 hover:scale-105",
                     isScrolled
-                      ? "border-orange-200 text-orange-700 hover:bg-orange-50"
-                      : "border-white/30 text-white hover:bg-white/10 hover:border-white/50"
+                      ? "border-orange-200 text-orange-700 hover:bg-orange-50 hover:border-orange-300"
+                      : "border-white/50 text-white hover:bg-white/10 hover:border-white bg-white/5"
                   )}
                 >
                   Sign In
@@ -137,10 +139,10 @@ const Navbar = () => {
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className={cn(
-                  "p-2 rounded-lg transition-colors duration-200",
+                  "p-2 rounded-lg transition-all duration-200 hover:scale-105",
                   isScrolled 
-                    ? "text-gray-700 hover:bg-gray-100" 
-                    : "text-white hover:bg-white/10"
+                    ? "text-gray-800 hover:bg-gray-100" 
+                    : "text-white hover:bg-white/20"
                 )}
               >
                 {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -160,10 +162,10 @@ const Navbar = () => {
                       to={item.path}
                       onClick={() => setIsMenuOpen(false)}
                       className={cn(
-                        "flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-colors duration-200",
+                        "flex items-center space-x-3 px-4 py-3 rounded-lg text-base font-medium transition-all duration-200 hover:scale-105",
                         isActivePath(item.path)
-                          ? "bg-orange-100 text-orange-700"
-                          : "text-gray-700 hover:text-orange-600 hover:bg-orange-50"
+                          ? "bg-orange-100 text-orange-700 shadow-sm"
+                          : "text-gray-800 hover:text-orange-600 hover:bg-orange-50"
                       )}
                     >
                       <Icon className="w-5 h-5" />
@@ -179,7 +181,7 @@ const Navbar = () => {
                         setShowAuthModal(true);
                         setIsMenuOpen(false);
                       }}
-                      className="w-full bg-orange-600 hover:bg-orange-700 text-white"
+                      className="w-full bg-orange-600 hover:bg-orange-700 text-white hover:scale-105 transition-all duration-200"
                     >
                       Sign In
                     </Button>

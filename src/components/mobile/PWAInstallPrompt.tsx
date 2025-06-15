@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download, X, Mobile } from 'lucide-react';
+import { Download, X, Smartphone } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface BeforeInstallPromptEvent extends Event {
@@ -75,7 +75,7 @@ const PWAInstallPrompt = () => {
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
           <div className="bg-orange-100 p-2 rounded-lg">
-            <Mobile className="w-5 h-5 text-orange-600" />
+            <Smartphone className="w-5 h-5 text-orange-600" />
           </div>
           <div className="flex-1">
             <h3 className="font-semibold text-sm">Install PHCityRent</h3>

@@ -2,16 +2,16 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { useCreateProperty } from '@/hooks/useProperties';
 import { useAuth } from '@/hooks/useAuth';
-import { Plus, Minus } from 'lucide-react';
 import PropertyImageUpload from './PropertyImageUpload';
+import BasicInfoSection from './form/BasicInfoSection';
+import PropertyDetailsSection from './form/PropertyDetailsSection';
+import PricingSection from './form/PricingSection';
+import AmenitiesSection from './form/AmenitiesSection';
+import ContactInfoSection from './form/ContactInfoSection';
+import PropertyStatusSection from './form/PropertyStatusSection';
 
 interface PropertyFormData {
   title: string;
@@ -54,34 +54,10 @@ const PropertyCreationForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     images: [],
   });
 
-  const [amenityInput, setAmenityInput] = useState('');
-
-  const commonAmenities = [
-    'Air Conditioning', 'Parking', 'Swimming Pool', 'Gym', 'Security',
-    'Generator', 'Water Supply', 'Internet', 'Furnished', 'Balcony'
-  ];
-
   const handleInputChange = (field: keyof PropertyFormData, value: any) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
-    }));
-  };
-
-  const addAmenity = (amenity: string) => {
-    if (amenity && !formData.amenities.includes(amenity)) {
-      setFormData(prev => ({
-        ...prev,
-        amenities: [...prev.amenities, amenity]
-      }));
-    }
-    setAmenityInput('');
-  };
-
-  const removeAmenity = (amenity: string) => {
-    setFormData(prev => ({
-      ...prev,
-      amenities: prev.amenities.filter(a => a !== amenity)
     }));
   };
 
@@ -126,219 +102,48 @@ const PropertyCreationForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Property Images */}
           <PropertyImageUpload
             images={formData.images}
             onImagesChange={(images) => handleInputChange('images', images)}
           />
 
-          {/* Basic Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="title">Property Title *</Label>
-              <Input
-                id="title"
-                value={formData.title}
-                onChange={(e) => handleInputChange('title', e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="location">Location *</Label>
-              <Input
-                id="location"
-                value={formData.location}
-                onChange={(e) => handleInputChange('location', e.target.value)}
-                placeholder="e.g., Old GRA, Port Harcourt"
-                required
-              />
-            </div>
-          </div>
+          <BasicInfoSection
+            title={formData.title}
+            location={formData.location}
+            description={formData.description}
+            onInputChange={handleInputChange}
+          />
 
-          <div>
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
-              rows={4}
-            />
-          </div>
+          <PropertyDetailsSection
+            propertyType={formData.property_type}
+            bedrooms={formData.bedrooms}
+            bathrooms={formData.bathrooms}
+            areaSqft={formData.area_sqft}
+            onInputChange={handleInputChange}
+          />
 
-          {/* Property Details */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <Label htmlFor="property_type">Property Type</Label>
-              <Select value={formData.property_type} onValueChange={(value) => handleInputChange('property_type', value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="apartment">Apartment</SelectItem>
-                  <SelectItem value="house">House</SelectItem>
-                  <SelectItem value="duplex">Duplex</SelectItem>
-                  <SelectItem value="bungalow">Bungalow</SelectItem>
-                  <SelectItem value="office">Office</SelectItem>
-                  <SelectItem value="shop">Shop</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="bedrooms">Bedrooms</Label>
-              <Input
-                id="bedrooms"
-                type="number"
-                min="0"
-                value={formData.bedrooms}
-                onChange={(e) => handleInputChange('bedrooms', parseInt(e.target.value))}
-              />
-            </div>
-            <div>
-              <Label htmlFor="bathrooms">Bathrooms</Label>
-              <Input
-                id="bathrooms"
-                type="number"
-                min="0"
-                value={formData.bathrooms}
-                onChange={(e) => handleInputChange('bathrooms', parseInt(e.target.value))}
-              />
-            </div>
-            <div>
-              <Label htmlFor="area_sqft">Area (sq ft)</Label>
-              <Input
-                id="area_sqft"
-                type="number"
-                min="0"
-                value={formData.area_sqft}
-                onChange={(e) => handleInputChange('area_sqft', parseInt(e.target.value))}
-              />
-            </div>
-          </div>
+          <PricingSection
+            pricePerYear={formData.price_per_year}
+            pricePerMonth={formData.price_per_month}
+            onInputChange={handleInputChange}
+          />
 
-          {/* Pricing */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="price_per_year">Annual Rent (₦) *</Label>
-              <Input
-                id="price_per_year"
-                type="number"
-                min="0"
-                value={formData.price_per_year}
-                onChange={(e) => handleInputChange('price_per_year', parseInt(e.target.value))}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="price_per_month">Monthly Rent (₦)</Label>
-              <Input
-                id="price_per_month"
-                type="number"
-                min="0"
-                value={formData.price_per_month}
-                onChange={(e) => handleInputChange('price_per_month', parseInt(e.target.value))}
-              />
-            </div>
-          </div>
+          <AmenitiesSection
+            amenities={formData.amenities}
+            onAmenitiesChange={(amenities) => handleInputChange('amenities', amenities)}
+          />
 
-          {/* Amenities */}
-          <div>
-            <Label>Amenities</Label>
-            <div className="space-y-3">
-              <div className="flex flex-wrap gap-2">
-                {commonAmenities.map((amenity) => (
-                  <Button
-                    key={amenity}
-                    type="button"
-                    variant={formData.amenities.includes(amenity) ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => 
-                      formData.amenities.includes(amenity) 
-                        ? removeAmenity(amenity)
-                        : addAmenity(amenity)
-                    }
-                  >
-                    {amenity}
-                  </Button>
-                ))}
-              </div>
-              
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Add custom amenity"
-                  value={amenityInput}
-                  onChange={(e) => setAmenityInput(e.target.value)}
-                />
-                <Button
-                  type="button"
-                  onClick={() => addAmenity(amenityInput)}
-                  disabled={!amenityInput}
-                >
-                  <Plus className="w-4 h-4" />
-                </Button>
-              </div>
+          <ContactInfoSection
+            contactEmail={formData.contact_email}
+            contactWhatsapp={formData.contact_whatsapp}
+            onInputChange={handleInputChange}
+          />
 
-              {formData.amenities.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {formData.amenities.map((amenity) => (
-                    <div key={amenity} className="flex items-center gap-1 bg-blue-100 px-2 py-1 rounded">
-                      <span className="text-sm">{amenity}</span>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeAmenity(amenity)}
-                        className="h-4 w-4 p-0"
-                      >
-                        <Minus className="w-3 h-3" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Contact Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="contact_email">Contact Email</Label>
-              <Input
-                id="contact_email"
-                type="email"
-                value={formData.contact_email}
-                onChange={(e) => handleInputChange('contact_email', e.target.value)}
-              />
-            </div>
-            <div>
-              <Label htmlFor="contact_whatsapp">WhatsApp Number</Label>
-              <Input
-                id="contact_whatsapp"
-                value={formData.contact_whatsapp}
-                onChange={(e) => handleInputChange('contact_whatsapp', e.target.value)}
-                placeholder="+234 xxx xxx xxxx"
-              />
-            </div>
-          </div>
-
-          {/* Property Status */}
-          <div className="flex items-center space-x-6">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="is_available"
-                checked={formData.is_available}
-                onCheckedChange={(checked) => handleInputChange('is_available', checked)}
-              />
-              <Label htmlFor="is_available">Available for rent</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="featured"
-                checked={formData.featured}
-                onCheckedChange={(checked) => handleInputChange('featured', checked)}
-              />
-              <Label htmlFor="featured">Featured property</Label>
-            </div>
-          </div>
+          <PropertyStatusSection
+            isAvailable={formData.is_available}
+            featured={formData.featured}
+            onInputChange={handleInputChange}
+          />
 
           <div className="flex justify-end space-x-4">
             <Button type="button" variant="outline">

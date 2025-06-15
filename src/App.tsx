@@ -7,6 +7,8 @@ import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
 import GlobalErrorHandler from "@/components/common/GlobalErrorHandler";
+import MobileNavigation from "@/components/mobile/MobileNavigation";
+import PWAInstallPrompt from "@/components/mobile/PWAInstallPrompt";
 import Index from "./pages/Index";
 import Properties from "./pages/Properties";
 import PropertyDetail from "./pages/PropertyDetail";
@@ -116,9 +118,21 @@ const App = () => (
             </ProtectedRoute>
           } 
         />
+        <Route 
+          path="/property-management" 
+          element={
+            <ProtectedRoute requireAuth={true}>
+              <ErrorBoundary>
+                <PropertyManagement />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          } 
+        />
         <Route path="/auth" element={<Auth />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <MobileNavigation />
+      <PWAInstallPrompt />
     </TooltipProvider>
   </ErrorBoundary>
 );

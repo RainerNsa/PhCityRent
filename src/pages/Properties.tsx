@@ -14,7 +14,7 @@ import PropertyCard from "@/components/properties/PropertyCard";
 import PropertyComparison from "@/components/properties/PropertyComparison";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Compare, X } from "lucide-react";
+import { GitCompare, X } from "lucide-react";
 import { useProperties } from "@/hooks/useProperties";
 import { useAuth } from "@/hooks/useAuth";
 import { usePropertyComparison } from "@/hooks/usePropertyComparison";
@@ -102,7 +102,7 @@ const Properties = () => {
             <div className="mb-6 bg-orange-50 border border-orange-200 rounded-lg p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <Compare className="w-5 h-5 text-orange-600" />
+                  <GitCompare className="w-5 h-5 text-orange-600" />
                   <span className="font-medium">
                     {comparisonCount} {comparisonCount === 1 ? 'property' : 'properties'} selected for comparison
                   </span>

@@ -2,6 +2,7 @@
 import React from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import ApplicationCard from '../ApplicationCard';
+import PaginationControls from './PaginationControls';
 import { Database } from '@/integrations/supabase/types';
 
 type ApplicationStatus = Database['public']['Enums']['application_status'];
@@ -33,6 +34,16 @@ interface ApplicationsGridProps {
   onSelectApplication: (applicationId: string, checked: boolean) => void;
   onSelectAll: (checked: boolean) => void;
   onViewDetails: (application: Application) => void;
+  // Pagination props
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  startIndex: number;
+  endIndex: number;
+  totalItems: number;
+  paginatedApplications: Application[];
 }
 
 const ApplicationsGrid = ({
@@ -40,7 +51,16 @@ const ApplicationsGrid = ({
   selectedApplications,
   onSelectApplication,
   onSelectAll,
-  onViewDetails
+  onViewDetails,
+  currentPage,
+  totalPages,
+  onPageChange,
+  hasNextPage,
+  hasPreviousPage,
+  startIndex,
+  endIndex,
+  totalItems,
+  paginatedApplications
 }: ApplicationsGridProps) => {
   if (applications.length === 0) {
     return (
@@ -56,15 +76,15 @@ const ApplicationsGrid = ({
       <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border">
         <Checkbox
           id="select-all"
-          checked={selectedApplications.length === applications.length}
+          checked={selectedApplications.length === paginatedApplications.length && paginatedApplications.length > 0}
           onCheckedChange={onSelectAll}
           className="min-w-[16px]"
         />
         <label htmlFor="select-all" className="text-sm font-medium cursor-pointer flex-1">
-          <span className="block sm:inline">Select all {applications.length} applications</span>
+          <span className="block sm:inline">Select all on this page ({paginatedApplications.length} applications)</span>
           {selectedApplications.length > 0 && (
             <span className="block sm:inline sm:ml-2 text-blue-600">
-              ({selectedApplications.length} selected)
+              ({selectedApplications.length} total selected)
             </span>
           )}
         </label>
@@ -72,7 +92,7 @@ const ApplicationsGrid = ({
 
       {/* Applications Grid - Mobile Optimized */}
       <div className="space-y-3">
-        {applications.map((application) => (
+        {paginatedApplications.map((application) => (
           <div key={application.id} className="flex items-start gap-3 p-1">
             <div className="pt-2">
               <Checkbox
@@ -90,6 +110,20 @@ const ApplicationsGrid = ({
           </div>
         ))}
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <PaginationControls
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          startIndex={startIndex}
+          endIndex={endIndex}
+          totalItems={totalItems}
+        />
+      )}
     </div>
   );
 };

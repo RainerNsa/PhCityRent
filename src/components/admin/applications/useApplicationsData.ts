@@ -30,10 +30,14 @@ interface Application {
 export const useApplicationsData = () => {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
   const fetchApplications = async () => {
     try {
+      setLoading(true);
+      setError(null);
+      
       const { data, error } = await supabase
         .from('agent_applications')
         .select(`
@@ -51,9 +55,11 @@ export const useApplicationsData = () => {
       setApplications(data || []);
     } catch (error) {
       console.error('Error fetching applications:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load applications';
+      setError(errorMessage);
       toast({
         title: "Error",
-        description: "Failed to load applications",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -68,6 +74,7 @@ export const useApplicationsData = () => {
   return {
     applications,
     loading,
+    error,
     refetch: fetchApplications
   };
 };

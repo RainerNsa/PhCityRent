@@ -1,4 +1,3 @@
-
 import React from "react";
 import { MapPin, Bed, Bath, DollarSign, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,8 +29,18 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
     "https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=800&q=80"  // Nigerian modern home exterior
   ];
 
-  // Always use Nigerian property images with consistent selection logic
-  const imageIndex = parseInt(property.id) % nigerianPropertyImages.length;
+  // Simple hash function to convert string to number for consistent image selection
+  const getImageIndex = (id: string) => {
+    let hash = 0;
+    for (let i = 0; i < id.length; i++) {
+      const char = id.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    return Math.abs(hash) % nigerianPropertyImages.length;
+  };
+
+  const imageIndex = getImageIndex(property.id);
   const propertyImage = nigerianPropertyImages[imageIndex];
 
   return (

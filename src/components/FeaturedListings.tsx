@@ -1,4 +1,3 @@
-
 import React from "react";
 import { MapPin, Bed, Bath, DollarSign, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,6 +23,17 @@ const FeaturedListings = () => {
     "https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=800&q=80"  // Nigerian modern home exterior
   ];
 
+  // Simple hash function to convert string to number for consistent image selection
+  const getImageIndex = (id: string) => {
+    let hash = 0;
+    for (let i = 0; i < id.length; i++) {
+      const char = id.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    return Math.abs(hash) % nigerianPropertyImages.length;
+  };
+
   return (
     <section className="section-container bg-white animate-on-scroll" id="listings">
       <div className="text-center mb-12">
@@ -48,8 +58,8 @@ const FeaturedListings = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {displayProperties.map((property, index) => {
-            // Use same image selection logic as PropertyCard for perfect synchronization
-            const imageIndex = parseInt(property.id) % nigerianPropertyImages.length;
+            // Use same hash function as PropertyCard for perfect synchronization
+            const imageIndex = getImageIndex(property.id);
             const propertyImage = nigerianPropertyImages[imageIndex];
             
             return (

@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/useAuth';
-import { User, Settings, LogOut, Shield } from 'lucide-react';
+import { User, Settings, LogOut, Shield, Heart, Bell } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const UserMenu = () => {
@@ -45,6 +45,21 @@ const UserMenu = () => {
           </div>
         </div>
         <DropdownMenuSeparator />
+        
+        <DropdownMenuItem onClick={() => navigate('/profile')}>
+          <User className="mr-2 h-4 w-4" />
+          <span>My Profile</span>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem onClick={() => navigate('/profile')}>
+          <Heart className="mr-2 h-4 w-4" />
+          <span>Saved Properties</span>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem onClick={() => navigate('/profile')}>
+          <Bell className="mr-2 h-4 w-4" />
+          <span>Property Alerts</span>
+        </DropdownMenuItem>
         
         <DropdownMenuItem onClick={() => navigate('/agent-dashboard')}>
           <User className="mr-2 h-4 w-4" />

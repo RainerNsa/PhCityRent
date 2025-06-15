@@ -2,9 +2,10 @@
 import React, { useState } from "react";
 import Navbar from "@/components/navigation/Navbar";
 import Footer from "@/components/Footer";
-import GlobalSearch from "@/components/search/GlobalSearch";
+import AdvancedSearch from "@/components/search/AdvancedSearch";
 import PropertyCard from "@/components/properties/PropertyCard";
-import { MapPin, Filter, SortAsc } from "lucide-react";
+import PropertyAuthPrompt from "@/components/properties/PropertyAuthPrompt";
+import { MapPin, SortAsc } from "lucide-react";
 
 const Search = () => {
   const [searchResults, setSearchResults] = useState([]);
@@ -23,6 +24,8 @@ const Search = () => {
         return b.price_per_year - a.price_per_year;
       case "newest":
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      case "featured":
+        return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
       default:
         return 0;
     }
@@ -35,15 +38,17 @@ const Search = () => {
         {/* Header */}
         <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white py-16">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl font-bold mb-4">Search Properties</h1>
-            <p className="text-xl opacity-90">Find your perfect home in Port Harcourt</p>
+            <h1 className="text-4xl font-bold mb-4">Advanced Property Search</h1>
+            <p className="text-xl opacity-90">Find your perfect home in Port Harcourt with powerful search tools</p>
           </div>
         </div>
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <PropertyAuthPrompt />
+          
           {/* Search Component */}
           <div className="mb-8">
-            <GlobalSearch onSearchResults={handleSearchResults} />
+            <AdvancedSearch onSearchResults={handleSearchResults} />
           </div>
 
           {/* Results Header */}
@@ -64,6 +69,7 @@ const Search = () => {
                   className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 text-sm"
                 >
                   <option value="newest">Newest First</option>
+                  <option value="featured">Featured First</option>
                   <option value="price-low">Price: Low to High</option>
                   <option value="price-high">Price: High to Low</option>
                 </select>
@@ -98,8 +104,8 @@ const Search = () => {
           {searchResults.length === 0 ? (
             <div className="text-center py-12">
               <MapPin className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-gray-600 mb-2">Start Your Search</h3>
-              <p className="text-gray-500">Enter your search criteria above to find properties</p>
+              <h3 className="text-xl font-bold text-gray-600 mb-2">Start Your Property Search</h3>
+              <p className="text-gray-500">Use the advanced search above to find properties that match your criteria</p>
             </div>
           ) : (
             <div className={

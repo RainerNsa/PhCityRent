@@ -1,12 +1,15 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { ArrowRight, Shield, Home, Users, AlertTriangle } from "lucide-react";
+import { ArrowRight, Shield, Home, Users, AlertTriangle, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 
 const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -38,6 +41,23 @@ const Hero = () => {
             <strong>Scam Alert:</strong> Over 200 rental scams reported in Port Harcourt last month. Report to EFCC: 0809 325 3322
           </p>
         </div>
+
+        {/* Authentication Prompt for Non-Users */}
+        {!user && (
+          <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-between gap-3 opacity-0 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+            <div className="flex items-center gap-3">
+              <UserPlus className="w-5 h-5 text-orange-600 flex-shrink-0" />
+              <p className="text-sm text-orange-700">
+                <strong>Join PHCityRent:</strong> Create an account to save searches, get property alerts, and contact verified agents directly.
+              </p>
+            </div>
+            <Link to="/auth">
+              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white whitespace-nowrap">
+                Sign Up Free
+              </Button>
+            </Link>
+          </div>
+        )}
 
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 items-center">
           <div className="w-full lg:w-1/2">
@@ -99,13 +119,23 @@ const Hero = () => {
                 <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
               
-              <Link 
-                to="/agents" 
-                className="button-secondary"
-              >
-                <Users className="mr-2 w-5 h-5" />
-                Report Fake Agent
-              </Link>
+              {!user ? (
+                <Link 
+                  to="/auth" 
+                  className="button-secondary"
+                >
+                  <UserPlus className="mr-2 w-5 h-5" />
+                  Join Free - No Scams
+                </Link>
+              ) : (
+                <Link 
+                  to="/agents" 
+                  className="button-secondary"
+                >
+                  <Users className="mr-2 w-5 h-5" />
+                  Report Fake Agent
+                </Link>
+              )}
             </div>
 
             {/* Trust Indicators */}

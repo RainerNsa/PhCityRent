@@ -17,6 +17,7 @@ import NotFound from "./pages/NotFound";
 import VerificationStatus from "./pages/VerificationStatus";
 import AgentDashboard from "./pages/AgentDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import UserProfile from "./pages/UserProfile";
 import Auth from "./pages/Auth";
 
 const App = () => (
@@ -33,6 +34,14 @@ const App = () => (
       <Route path="/landlords" element={<Landlords />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/verification-status" element={<VerificationStatus />} />
+      <Route 
+        path="/profile" 
+        element={
+          <ProtectedRoute requireAuth={true}>
+            <UserProfile />
+          </ProtectedRoute>
+        } 
+      />
       <Route 
         path="/agent-dashboard" 
         element={

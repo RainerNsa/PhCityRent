@@ -36,6 +36,14 @@ const ScamEducation = () => {
   return (
     <section className="py-16 bg-red-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Scam Alert Banner */}
+        <div className="mb-8 p-4 bg-red-100 border border-red-300 rounded-lg flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0" />
+          <p className="text-sm text-red-700">
+            <strong>Scam Alert:</strong> Over 200 rental scams reported in Port Harcourt last month. Report to EFCC: 0809 325 3322
+          </p>
+        </div>
+
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-red-100 text-red-700 px-4 py-2 rounded-full mb-4">
             <AlertTriangle className="w-5 h-5" />

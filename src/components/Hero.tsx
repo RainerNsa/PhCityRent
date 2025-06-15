@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { ArrowRight, Shield, Home, Users, AlertTriangle, UserPlus } from "lucide-react";
+import { ArrowRight, Shield, Home, Users, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -34,14 +34,6 @@ const Hero = () => {
       <div className="absolute -top-[10%] -right-[5%] w-1/2 h-[70%] bg-pulse-400/20 opacity-20 blur-3xl rounded-full"></div>
       
       <div className="container px-4 sm:px-6 lg:px-8" ref={containerRef}>
-        {/* Scam Alert Banner */}
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 opacity-0 animate-fade-in">
-          <AlertTriangle className="w-5 h-5 text-red-500 flex-shrink-0" />
-          <p className="text-sm text-red-700">
-            <strong>Scam Alert:</strong> Over 200 rental scams reported in Port Harcourt last month. Report to EFCC: 0809 325 3322
-          </p>
-        </div>
-
         {/* Authentication Prompt for Non-Users */}
         {!user && (
           <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-between gap-3 opacity-0 animate-fade-in" style={{ animationDelay: "0.2s" }}>

@@ -20,14 +20,17 @@ interface PropertyCardProps {
 }
 
 const PropertyCard = ({ property }: PropertyCardProps) => {
-  // Authentic Nigerian property images - always use these instead of database images
+  // Expanded array of authentic Nigerian/Port Harcourt property images
   const nigerianPropertyImages = [
-    "https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=800&q=80", // Modern Nigerian duplex
-    "https://images.unsplash.com/photo-1565402170291-8491f14678db?auto=format&fit=crop&w=800&q=80", // Nigerian residential building
-    "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?auto=format&fit=crop&w=800&q=80"  // Nigerian modern home
+    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80", // Modern Nigerian house with contemporary design
+    "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80", // Traditional Nigerian residential building
+    "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80", // Nigerian duplex with modern architecture
+    "https://images.unsplash.com/photo-1571055107559-3e67626fa8be?auto=format&fit=crop&w=800&q=80", // West African style residential home
+    "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=800&q=80", // Nigerian family house with compound
+    "https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=800&q=80"  // Nigerian modern home exterior
   ];
 
-  // Always use Nigerian property images instead of database images
+  // Always use Nigerian property images with consistent selection logic
   const imageIndex = parseInt(property.id) % nigerianPropertyImages.length;
   const propertyImage = nigerianPropertyImages[imageIndex];
 

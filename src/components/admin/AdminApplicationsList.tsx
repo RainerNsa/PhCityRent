@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+
+import React, { useState } from 'react';
 import ApplicationDetailsModal from './ApplicationDetailsModal';
-import AdvancedFilters from './AdvancedFilters';
-import ApplicationCard from './ApplicationCard';
-import EnhancedBulkActions from './EnhancedBulkActions';
-import ExportTools from './ExportTools';
-import { Checkbox } from '@/components/ui/checkbox';
+import ApplicationsFilter from './applications/ApplicationsFilter';
+import ApplicationsToolbar from './applications/ApplicationsToolbar';
+import ApplicationsGrid from './applications/ApplicationsGrid';
+import { useApplicationsData } from './applications/useApplicationsData';
+import { useApplicationsFilters } from './applications/useApplicationsFilters';
 import { Database } from '@/integrations/supabase/types';
 
 type ApplicationStatus = Database['public']['Enums']['application_status'];
@@ -33,69 +32,23 @@ interface Application {
 }
 
 const AdminApplicationsList = () => {
-  const [applications, setApplications] = useState<Application[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [areaFilter, setAreaFilter] = useState('all');
-  const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({});
+  const { applications, loading, refetch } = useApplicationsData();
+  const {
+    searchTerm,
+    setSearchTerm,
+    statusFilter,
+    setStatusFilter,
+    areaFilter,
+    setAreaFilter,
+    dateRange,
+    setDateRange,
+    filteredApplications,
+    getActiveFilters,
+    clearAllFilters
+  } = useApplicationsFilters(applications);
+
   const [selectedApplications, setSelectedApplications] = useState<string[]>([]);
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    fetchApplications();
-  }, []);
-
-  const fetchApplications = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('agent_applications')
-        .select(`
-          *,
-          referee_verifications (
-            status,
-            referee_full_name,
-            referee_whatsapp_number,
-            referee_role
-          )
-        `)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setApplications(data || []);
-    } catch (error) {
-      console.error('Error fetching applications:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load applications",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const filteredApplications = applications.filter(app => {
-    const matchesSearch = app.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         app.agent_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         app.whatsapp_number.includes(searchTerm);
-    const matchesStatus = statusFilter === 'all' || app.status === statusFilter;
-    const matchesArea = areaFilter === 'all' || app.operating_areas?.some(area => 
-      area.toLowerCase().includes(areaFilter.toLowerCase())
-    );
-    
-    let matchesDate = true;
-    if (dateRange.from) {
-      const appDate = new Date(app.created_at);
-      matchesDate = appDate >= dateRange.from;
-      if (dateRange.to) {
-        matchesDate = matchesDate && appDate <= dateRange.to;
-      }
-    }
-    
-    return matchesSearch && matchesStatus && matchesArea && matchesDate;
-  });
 
   const handleSelectApplication = (applicationId: string, checked: boolean) => {
     if (checked) {
@@ -113,22 +66,6 @@ const AdminApplicationsList = () => {
     }
   };
 
-  const getActiveFilters = () => {
-    const filters = [];
-    if (searchTerm) filters.push(`Search: ${searchTerm}`);
-    if (statusFilter !== 'all') filters.push(`Status: ${statusFilter}`);
-    if (areaFilter !== 'all') filters.push(`Area: ${areaFilter}`);
-    if (dateRange.from) filters.push('Date filtered');
-    return filters;
-  };
-
-  const clearAllFilters = () => {
-    setSearchTerm('');
-    setStatusFilter('all');
-    setAreaFilter('all');
-    setDateRange({});
-  };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -139,7 +76,7 @@ const AdminApplicationsList = () => {
 
   return (
     <div className="space-y-6">
-      <AdvancedFilters
+      <ApplicationsFilter
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         statusFilter={statusFilter}
@@ -152,60 +89,25 @@ const AdminApplicationsList = () => {
         onClearFilters={clearAllFilters}
       />
 
-      <div className="flex flex-col lg:flex-row gap-4">
-        <div className="flex-1">
-          <EnhancedBulkActions
-            selectedApplications={selectedApplications}
-            onBulkActionComplete={fetchApplications}
-            onClearSelection={() => setSelectedApplications([])}
-          />
-        </div>
-        
-        <ExportTools selectedApplications={selectedApplications} />
-      </div>
+      <ApplicationsToolbar
+        selectedApplications={selectedApplications}
+        onBulkActionComplete={refetch}
+        onClearSelection={() => setSelectedApplications([])}
+      />
 
-      {/* Select All Checkbox */}
-      {filteredApplications.length > 0 && (
-        <div className="flex items-center gap-2 p-2 bg-gray-50 rounded">
-          <Checkbox
-            id="select-all"
-            checked={selectedApplications.length === filteredApplications.length}
-            onCheckedChange={handleSelectAll}
-          />
-          <label htmlFor="select-all" className="text-sm font-medium cursor-pointer">
-            Select all {filteredApplications.length} applications
-          </label>
-        </div>
-      )}
-
-      <div className="grid gap-4">
-        {filteredApplications.map((application) => (
-          <div key={application.id} className="flex items-center gap-3">
-            <Checkbox
-              checked={selectedApplications.includes(application.id)}
-              onCheckedChange={(checked) => handleSelectApplication(application.id, checked as boolean)}
-            />
-            <div className="flex-1">
-              <ApplicationCard
-                application={application}
-                onViewDetails={setSelectedApplication}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {filteredApplications.length === 0 && (
-        <div className="text-center p-8 text-gray-600">
-          No applications found matching your criteria.
-        </div>
-      )}
+      <ApplicationsGrid
+        applications={filteredApplications}
+        selectedApplications={selectedApplications}
+        onSelectApplication={handleSelectApplication}
+        onSelectAll={handleSelectAll}
+        onViewDetails={setSelectedApplication}
+      />
 
       <ApplicationDetailsModal
         application={selectedApplication}
         isOpen={!!selectedApplication}
         onClose={() => setSelectedApplication(null)}
-        onUpdate={fetchApplications}
+        onUpdate={refetch}
       />
     </div>
   );

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -21,6 +20,7 @@ import AgentDashboard from "./pages/AgentDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import UserProfile from "./pages/UserProfile";
 import TenantPortal from "./pages/TenantPortal";
+import RentalApplication from "./pages/RentalApplication";
 import Auth from "./pages/Auth";
 
 const App = () => (
@@ -53,6 +53,16 @@ const App = () => (
         <Route path="/landlords" element={<Landlords />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/verification-status" element={<VerificationStatus />} />
+        <Route 
+          path="/apply/:propertyId?" 
+          element={
+            <ProtectedRoute requireAuth={true}>
+              <ErrorBoundary>
+                <RentalApplication />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          } 
+        />
         <Route 
           path="/profile" 
           element={

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,6 +31,7 @@ import {
   Plus
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import ApplicationStatusTracker from '@/components/rental/ApplicationStatusTracker';
 
 const TenantPortal = () => {
   const { user } = useAuth();
@@ -321,6 +321,186 @@ const TenantPortal = () => {
     </div>
   );
 
+  // Updated Applications Content
+  const ApplicationsContent = () => (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="w-5 h-5 text-blue-500" />
+                My Applications
+              </CardTitle>
+              <CardDescription>Track your rental applications and their status</CardDescription>
+            </div>
+            <Link to="/apply">
+              <Button className="flex items-center gap-2">
+                <Plus className="w-4 h-4" />
+                New Application
+              </Button>
+            </Link>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            {/* Sample application status - replace with real data */}
+            <ApplicationStatusTracker 
+              application={{
+                id: '1',
+                status: 'under_review',
+                submittedAt: '2024-01-15T10:00:00Z',
+                updatedAt: '2024-01-16T14:30:00Z',
+                propertyTitle: '3-Bedroom Apartment - GRA',
+                propertyLocation: 'Port Harcourt, Rivers State',
+                adminNotes: 'Application is being reviewed. Background check in progress.'
+              }}
+            />
+            
+            <ApplicationStatusTracker 
+              application={{
+                id: '2',
+                status: 'approved',
+                submittedAt: '2024-01-10T09:00:00Z',
+                updatedAt: '2024-01-12T16:45:00Z',
+                propertyTitle: '2-Bedroom House - Old GRA',
+                propertyLocation: 'Port Harcourt, Rivers State'
+              }}
+            />
+            
+            {/* Legacy application cards for backward compatibility */}
+            <div className="border rounded-lg p-4">
+              <div className="flex justify-between items-start mb-2">
+                <h4 className="font-medium">Studio Apartment - D-Line</h4>
+                <Badge variant="outline" className="bg-red-50 text-red-700">
+                  <AlertCircle className="w-3 h-3 mr-1" />
+                  Documents Required
+                </Badge>
+              </div>
+              <p className="text-sm text-gray-600 mb-2">₦250,000/year • Applied 3 days ago</p>
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-gray-500">Application ID: APP-2024-003</span>
+                <Button variant="outline" size="sm">View Details</Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Application Tips</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3 text-sm">
+            <div className="flex items-start gap-3">
+              <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+              <div>
+                <p className="font-medium">Complete all sections</p>
+                <p className="text-gray-600">Ensure all required fields are filled out accurately</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+              <div>
+                <p className="font-medium">Provide accurate information</p>
+                <p className="text-gray-600">Any false information may result in application rejection</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+              <div>
+                <p className="font-medium">Upload required documents</p>
+                <p className="text-gray-600">Have your ID, proof of income, and references ready</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  // Messages Content
+  const MessagesContent = () => (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <MessageSquare className="w-5 h-5 text-green-500" />
+          Messages
+        </CardTitle>
+        <CardDescription>Communication with agents and landlords</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          <div className="border rounded-lg p-4 hover:bg-gray-50">
+            <div className="flex justify-between items-start mb-2">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <User className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <h4 className="font-medium">Agent John Doe</h4>
+                  <p className="text-sm text-gray-600">Property viewing confirmation</p>
+                </div>
+              </div>
+              <span className="text-xs text-gray-500">2 hours ago</span>
+            </div>
+            <p className="text-sm text-gray-700 ml-13">
+              Hi there! I've confirmed your viewing appointment for tomorrow at 2 PM. Please bring a valid ID.
+            </p>
+          </div>
+
+          <div className="border rounded-lg p-4 hover:bg-gray-50">
+            <div className="flex justify-between items-start mb-2">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                  <User className="w-5 h-5 text-green-600" />
+                </div>
+                <div>
+                  <h4 className="font-medium">Landlord Mary Smith</h4>
+                  <p className="text-sm text-gray-600">Application update</p>
+                </div>
+              </div>
+              <span className="text-xs text-gray-500">1 day ago</span>
+            </div>
+            <p className="text-sm text-gray-700 ml-13">
+              Your application has been approved! Please contact me to discuss the next steps.
+            </p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  // Settings Content
+  const SettingsContent = () => (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Settings className="w-5 h-5" />
+          Account Settings
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex items-center justify-between p-4 border rounded-lg">
+          <div>
+            <h4 className="font-medium">Two-Factor Authentication</h4>
+            <p className="text-sm text-gray-600">Add an extra layer of security to your account</p>
+          </div>
+          <Button variant="outline">Enable</Button>
+        </div>
+        
+        <div className="flex items-center justify-between p-4 border rounded-lg">
+          <div>
+            <h4 className="font-medium">Change Password</h4>
+            <p className="text-sm text-gray-600">Update your account password</p>
+          </div>
+          <Button variant="outline">Change</Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
@@ -378,178 +558,15 @@ const TenantPortal = () => {
           </TabsContent>
 
           <TabsContent value="applications" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-blue-500" />
-                  My Applications
-                </CardTitle>
-                <CardDescription>Track your rental applications</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-medium">3-Bedroom Apartment - GRA</h4>
-                      <Badge variant="outline" className="bg-yellow-50 text-yellow-700">
-                        <Clock className="w-3 h-3 mr-1" />
-                        Pending
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-2">₦450,000/year • Applied 2 days ago</p>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-500">Application ID: APP-2024-001</span>
-                      <Button variant="outline" size="sm">View Details</Button>
-                    </div>
-                  </div>
-
-                  <div className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-medium">2-Bedroom House - Old GRA</h4>
-                      <Badge variant="outline" className="bg-green-50 text-green-700">
-                        <CheckCircle className="w-3 h-3 mr-1" />
-                        Approved
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-2">₦350,000/year • Applied 1 week ago</p>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-500">Application ID: APP-2024-002</span>
-                      <Button variant="outline" size="sm">View Details</Button>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <ApplicationsContent />
           </TabsContent>
 
           <TabsContent value="messages" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MessageSquare className="w-5 h-5 text-green-500" />
-                  Messages
-                </CardTitle>
-                <CardDescription>Communication with agents and landlords</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="border rounded-lg p-4 hover:bg-gray-50">
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                          <User className="w-5 h-5 text-blue-600" />
-                        </div>
-                        <div>
-                          <h4 className="font-medium">Agent John Doe</h4>
-                          <p className="text-sm text-gray-600">Property viewing confirmation</p>
-                        </div>
-                      </div>
-                      <span className="text-xs text-gray-500">2 hours ago</span>
-                    </div>
-                    <p className="text-sm text-gray-700 ml-13">
-                      Hi there! I've confirmed your viewing appointment for tomorrow at 2 PM. Please bring a valid ID.
-                    </p>
-                  </div>
-
-                  <div className="border rounded-lg p-4 hover:bg-gray-50">
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                          <User className="w-5 h-5 text-green-600" />
-                        </div>
-                        <div>
-                          <h4 className="font-medium">Landlord Mary Smith</h4>
-                          <p className="text-sm text-gray-600">Application update</p>
-                        </div>
-                      </div>
-                      <span className="text-xs text-gray-500">1 day ago</span>
-                    </div>
-                    <p className="text-sm text-gray-700 ml-13">
-                      Your application has been approved! Please contact me to discuss the next steps.
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <MessagesContent />
           </TabsContent>
 
           <TabsContent value="settings" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="w-5 h-5" />
-                  Account Settings
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div>
-                    <h4 className="font-medium">Two-Factor Authentication</h4>
-                    <p className="text-sm text-gray-600">Add an extra layer of security to your account</p>
-                  </div>
-                  <Button variant="outline">Enable</Button>
-                </div>
-                
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div>
-                    <h4 className="font-medium">Change Password</h4>
-                    <p className="text-sm text-gray-600">Update your account password</p>
-                  </div>
-                  <Button variant="outline">Change</Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="w-5 h-5" />
-                  Privacy Settings
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div>
-                    <h4 className="font-medium">Profile Visibility</h4>
-                    <p className="text-sm text-gray-600">Control who can see your profile information</p>
-                  </div>
-                  <select className="border rounded px-3 py-1">
-                    <option>Public</option>
-                    <option>Agents Only</option>
-                    <option>Private</option>
-                  </select>
-                </div>
-                
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div>
-                    <h4 className="font-medium">Data Sharing</h4>
-                    <p className="text-sm text-gray-600">Allow sharing anonymized data for market insights</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" defaultChecked className="sr-only peer" />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                  </label>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-red-600 flex items-center gap-2">
-                  <Trash2 className="w-5 h-5" />
-                  Danger Zone
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="p-4 border border-red-200 rounded-lg bg-red-50">
-                  <h4 className="font-medium text-red-800 mb-2">Delete Account</h4>
-                  <p className="text-sm text-red-600 mb-4">
-                    Once you delete your account, there is no going back. Please be certain.
-                  </p>
-                  <Button variant="destructive">Delete My Account</Button>
-                </div>
-              </CardContent>
-            </Card>
+            <SettingsContent />
           </TabsContent>
         </Tabs>
       </div>

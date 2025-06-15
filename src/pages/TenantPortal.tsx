@@ -1,160 +1,558 @@
 
 import React, { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import Navbar from '@/components/navigation/Navbar';
-import Footer from '@/components/Footer';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/useAuth';
-import { User, Home, Bell, FileText, MessageSquare, Settings } from 'lucide-react';
-import TenantProfile from '@/components/tenant/TenantProfile';
-import TenantProperties from '@/components/tenant/TenantProperties';
-import TenantAlerts from '@/components/tenant/TenantAlerts';
-import TenantApplications from '@/components/tenant/TenantApplications';
-import TenantMessages from '@/components/tenant/TenantMessages';
-import TenantSettings from '@/components/tenant/TenantSettings';
+import SavedPropertiesList from '@/components/properties/SavedPropertiesList';
+import SavedSearches from '@/components/tenant/SavedSearches';
+import { 
+  User, 
+  Home, 
+  Bell, 
+  FileText, 
+  MessageSquare, 
+  Settings,
+  Heart,
+  Search,
+  Shield,
+  Trash2,
+  Edit,
+  MapPin,
+  Phone,
+  Mail,
+  Calendar,
+  DollarSign,
+  CheckCircle,
+  Clock,
+  AlertCircle,
+  Plus
+} from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const TenantPortal = () => {
   const { user } = useAuth();
-  const [searchParams] = useSearchParams();
-  const defaultTab = searchParams.get('tab') || 'dashboard';
+  const [activeTab, setActiveTab] = useState('dashboard');
 
-  if (!user) {
-    return (
-      <div className="min-h-screen">
-        <Navbar />
-        <div className="pt-20 pb-12">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="text-2xl font-bold mb-4">Please sign in to access your tenant portal</h1>
-          </div>
-        </div>
-        <Footer />
+  // Dashboard Content
+  const DashboardContent = () => (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Saved Properties</CardTitle>
+            <Heart className="h-4 w-4 text-red-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">12</div>
+            <p className="text-xs text-muted-foreground">Properties you've liked</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Active Applications</CardTitle>
+            <FileText className="h-4 w-4 text-blue-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">3</div>
+            <p className="text-xs text-muted-foreground">Applications in progress</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Unread Messages</CardTitle>
+            <MessageSquare className="h-4 w-4 text-green-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">7</div>
+            <p className="text-xs text-muted-foreground">New messages</p>
+          </CardContent>
+        </Card>
       </div>
-    );
-  }
 
-  return (
-    <div className="min-h-screen">
-      <Navbar />
-      <main className="pt-20 pb-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-6xl mx-auto">
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Tenant Portal</h1>
-              <p className="text-gray-600">Welcome back, {user.user_metadata?.full_name || user.email}</p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Activity</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <div className="flex-1">
+                  <p className="text-sm">Application submitted for 3-bedroom apartment</p>
+                  <p className="text-xs text-gray-500">2 hours ago</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <div className="flex-1">
+                  <p className="text-sm">Property saved: Modern house in GRA</p>
+                  <p className="text-xs text-gray-500">1 day ago</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                <div className="flex-1">
+                  <p className="text-sm">Message from Agent John Doe</p>
+                  <p className="text-xs text-gray-500">2 days ago</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Quick Actions</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-4">
+              <Link to="/properties">
+                <Button className="w-full h-20 flex flex-col items-center justify-center space-y-2">
+                  <Search className="w-6 h-6" />
+                  <span className="text-sm">Browse Properties</span>
+                </Button>
+              </Link>
+              <Button className="w-full h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
+                <Plus className="w-6 h-6" />
+                <span className="text-sm">Create Alert</span>
+              </Button>
+              <Button className="w-full h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
+                <MessageSquare className="w-6 h-6" />
+                <span className="text-sm">Contact Agent</span>
+              </Button>
+              <Button className="w-full h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
+                <FileText className="w-6 h-6" />
+                <span className="text-sm">Apply Now</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+
+  // Profile Content
+  const ProfileContent = () => (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Personal Information</CardTitle>
+          <CardDescription>Update your personal details</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Full Name</label>
+              <Input defaultValue={user?.user_metadata?.full_name || ""} />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Email</label>
+              <Input defaultValue={user?.email || ""} disabled />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Phone Number</label>
+              <Input placeholder="+234 xxx xxx xxxx" />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Date of Birth</label>
+              <Input type="date" />
+            </div>
+          </div>
+          <div>
+            <label className="text-sm font-medium">Address</label>
+            <Textarea placeholder="Your current address" />
+          </div>
+          <Button>Save Changes</Button>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Employment Information</CardTitle>
+          <CardDescription>Provide employment details for rental applications</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium">Employer</label>
+              <Input placeholder="Company name" />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Job Title</label>
+              <Input placeholder="Your position" />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Monthly Income</label>
+              <Input placeholder="₦ 0.00" />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Employment Duration</label>
+              <Input placeholder="e.g., 2 years" />
+            </div>
+          </div>
+          <Button>Update Employment Info</Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  // Properties Content
+  const PropertiesContent = () => (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Heart className="w-5 h-5 text-red-500" />
+                Saved Properties
+              </CardTitle>
+              <CardDescription>Properties you've bookmarked for later viewing</CardDescription>
+            </div>
+            <Link to="/properties">
+              <Button className="flex items-center gap-2">
+                <Search className="w-4 h-4" />
+                Browse Properties
+              </Button>
+            </Link>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <SavedPropertiesList />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Property Preferences</CardTitle>
+          <CardDescription>Set your preferences to get better property recommendations</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-4 border rounded-lg">
+              <h4 className="font-medium mb-2">Budget Range</h4>
+              <p className="text-sm text-gray-600">₦200,000 - ₦500,000/year</p>
+              <Button variant="outline" size="sm" className="mt-2">Update</Button>
+            </div>
+            <div className="p-4 border rounded-lg">
+              <h4 className="font-medium mb-2">Preferred Areas</h4>
+              <p className="text-sm text-gray-600">Port Harcourt, GRA</p>
+              <Button variant="outline" size="sm" className="mt-2">Update</Button>
+            </div>
+            <div className="p-4 border rounded-lg">
+              <h4 className="font-medium mb-2">Property Type</h4>
+              <p className="text-sm text-gray-600">Apartment, House</p>
+              <Button variant="outline" size="sm" className="mt-2">Update</Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  // Alerts Content
+  const AlertsContent = () => (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Bell className="w-5 h-5 text-blue-500" />
+            Property Alerts
+          </CardTitle>
+          <CardDescription>Manage your saved searches and get notified when new properties match your criteria</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <SavedSearches />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Settings className="w-5 h-5" />
+            Notification Preferences
+          </CardTitle>
+          <CardDescription>Choose how and when you want to receive notifications</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div>
+                <h4 className="font-medium">Email Notifications</h4>
+                <p className="text-sm text-gray-600">Receive property alerts via email</p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" defaultChecked className="sr-only peer" />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              </label>
+            </div>
+            
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div>
+                <h4 className="font-medium">SMS Notifications</h4>
+                <p className="text-sm text-gray-600">Receive urgent alerts via SMS</p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" className="sr-only peer" />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              </label>
             </div>
 
-            <Tabs defaultValue={defaultTab} className="space-y-6">
-              <TabsList className="grid w-full grid-cols-6">
-                <TabsTrigger value="dashboard" className="flex items-center gap-2">
-                  <Home className="w-4 h-4" />
-                  <span className="hidden sm:inline">Dashboard</span>
-                </TabsTrigger>
-                <TabsTrigger value="profile" className="flex items-center gap-2">
-                  <User className="w-4 h-4" />
-                  <span className="hidden sm:inline">Profile</span>
-                </TabsTrigger>
-                <TabsTrigger value="properties" className="flex items-center gap-2">
-                  <Home className="w-4 h-4" />
-                  <span className="hidden sm:inline">Properties</span>
-                </TabsTrigger>
-                <TabsTrigger value="alerts" className="flex items-center gap-2">
-                  <Bell className="w-4 h-4" />
-                  <span className="hidden sm:inline">Alerts</span>
-                </TabsTrigger>
-                <TabsTrigger value="applications" className="flex items-center gap-2">
-                  <FileText className="w-4 h-4" />
-                  <span className="hidden sm:inline">Applications</span>
-                </TabsTrigger>
-                <TabsTrigger value="messages" className="flex items-center gap-2">
-                  <MessageSquare className="w-4 h-4" />
-                  <span className="hidden sm:inline">Messages</span>
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="dashboard">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Home className="w-5 h-5 text-blue-500" />
-                        Saved Properties
-                      </CardTitle>
-                      <CardDescription>Properties you've bookmarked</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold text-blue-600 mb-2">0</div>
-                      <p className="text-sm text-gray-600">No saved properties yet</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Bell className="w-5 h-5 text-orange-500" />
-                        Active Alerts
-                      </CardTitle>
-                      <CardDescription>Property search alerts</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold text-orange-600 mb-2">0</div>
-                      <p className="text-sm text-gray-600">No active alerts</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <FileText className="w-5 h-5 text-green-500" />
-                        Applications
-                      </CardTitle>
-                      <CardDescription>Rental applications submitted</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold text-green-600 mb-2">0</div>
-                      <p className="text-sm text-gray-600">No applications submitted</p>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <Card className="mt-6">
-                  <CardHeader>
-                    <CardTitle>Recent Activity</CardTitle>
-                    <CardDescription>Your latest interactions and updates</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-center py-8 text-gray-500">
-                      <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                      <p>No recent activity to display</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="profile">
-                <TenantProfile />
-              </TabsContent>
-
-              <TabsContent value="properties">
-                <TenantProperties />
-              </TabsContent>
-
-              <TabsContent value="alerts">
-                <TenantAlerts />
-              </TabsContent>
-
-              <TabsContent value="applications">
-                <TenantApplications />
-              </TabsContent>
-
-              <TabsContent value="messages">
-                <TenantMessages />
-              </TabsContent>
-            </Tabs>
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <div>
+                <h4 className="font-medium">Price Drop Alerts</h4>
+                <p className="text-sm text-gray-600">Get notified when saved properties drop in price</p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" defaultChecked className="sr-only peer" />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              </label>
+            </div>
           </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Tenant Portal</h1>
+          <p className="text-gray-600">Welcome back, {user?.user_metadata?.full_name || 'Tenant'}!</p>
         </div>
-      </main>
-      <Footer />
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-7">
+            <TabsTrigger value="dashboard" className="flex items-center gap-2">
+              <Home className="w-4 h-4" />
+              <span className="hidden sm:inline">Dashboard</span>
+            </TabsTrigger>
+            <TabsTrigger value="profile" className="flex items-center gap-2">
+              <User className="w-4 h-4" />
+              <span className="hidden sm:inline">Profile</span>
+            </TabsTrigger>
+            <TabsTrigger value="properties" className="flex items-center gap-2">
+              <Heart className="w-4 h-4" />
+              <span className="hidden sm:inline">Properties</span>
+            </TabsTrigger>
+            <TabsTrigger value="alerts" className="flex items-center gap-2">
+              <Bell className="w-4 h-4" />
+              <span className="hidden sm:inline">Alerts</span>
+            </TabsTrigger>
+            <TabsTrigger value="applications" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              <span className="hidden sm:inline">Applications</span>
+            </TabsTrigger>
+            <TabsTrigger value="messages" className="flex items-center gap-2">
+              <MessageSquare className="w-4 h-4" />
+              <span className="hidden sm:inline">Messages</span>
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="flex items-center gap-2">
+              <Settings className="w-4 h-4" />
+              <span className="hidden sm:inline">Settings</span>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="dashboard" className="space-y-6">
+            <DashboardContent />
+          </TabsContent>
+
+          <TabsContent value="profile" className="space-y-6">
+            <ProfileContent />
+          </TabsContent>
+
+          <TabsContent value="properties" className="space-y-6">
+            <PropertiesContent />
+          </TabsContent>
+
+          <TabsContent value="alerts" className="space-y-6">
+            <AlertsContent />
+          </TabsContent>
+
+          <TabsContent value="applications" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-blue-500" />
+                  My Applications
+                </CardTitle>
+                <CardDescription>Track your rental applications</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="border rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <h4 className="font-medium">3-Bedroom Apartment - GRA</h4>
+                      <Badge variant="outline" className="bg-yellow-50 text-yellow-700">
+                        <Clock className="w-3 h-3 mr-1" />
+                        Pending
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-2">₦450,000/year • Applied 2 days ago</p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-500">Application ID: APP-2024-001</span>
+                      <Button variant="outline" size="sm">View Details</Button>
+                    </div>
+                  </div>
+
+                  <div className="border rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <h4 className="font-medium">2-Bedroom House - Old GRA</h4>
+                      <Badge variant="outline" className="bg-green-50 text-green-700">
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                        Approved
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-2">₦350,000/year • Applied 1 week ago</p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-500">Application ID: APP-2024-002</span>
+                      <Button variant="outline" size="sm">View Details</Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="messages" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5 text-green-500" />
+                  Messages
+                </CardTitle>
+                <CardDescription>Communication with agents and landlords</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="border rounded-lg p-4 hover:bg-gray-50">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                          <User className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium">Agent John Doe</h4>
+                          <p className="text-sm text-gray-600">Property viewing confirmation</p>
+                        </div>
+                      </div>
+                      <span className="text-xs text-gray-500">2 hours ago</span>
+                    </div>
+                    <p className="text-sm text-gray-700 ml-13">
+                      Hi there! I've confirmed your viewing appointment for tomorrow at 2 PM. Please bring a valid ID.
+                    </p>
+                  </div>
+
+                  <div className="border rounded-lg p-4 hover:bg-gray-50">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                          <User className="w-5 h-5 text-green-600" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium">Landlord Mary Smith</h4>
+                          <p className="text-sm text-gray-600">Application update</p>
+                        </div>
+                      </div>
+                      <span className="text-xs text-gray-500">1 day ago</span>
+                    </div>
+                    <p className="text-sm text-gray-700 ml-13">
+                      Your application has been approved! Please contact me to discuss the next steps.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="settings" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="w-5 h-5" />
+                  Account Settings
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div>
+                    <h4 className="font-medium">Two-Factor Authentication</h4>
+                    <p className="text-sm text-gray-600">Add an extra layer of security to your account</p>
+                  </div>
+                  <Button variant="outline">Enable</Button>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div>
+                    <h4 className="font-medium">Change Password</h4>
+                    <p className="text-sm text-gray-600">Update your account password</p>
+                  </div>
+                  <Button variant="outline">Change</Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="w-5 h-5" />
+                  Privacy Settings
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div>
+                    <h4 className="font-medium">Profile Visibility</h4>
+                    <p className="text-sm text-gray-600">Control who can see your profile information</p>
+                  </div>
+                  <select className="border rounded px-3 py-1">
+                    <option>Public</option>
+                    <option>Agents Only</option>
+                    <option>Private</option>
+                  </select>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 border rounded-lg">
+                  <div>
+                    <h4 className="font-medium">Data Sharing</h4>
+                    <p className="text-sm text-gray-600">Allow sharing anonymized data for market insights</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" defaultChecked className="sr-only peer" />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  </label>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-red-600 flex items-center gap-2">
+                  <Trash2 className="w-5 h-5" />
+                  Danger Zone
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="p-4 border border-red-200 rounded-lg bg-red-50">
+                  <h4 className="font-medium text-red-800 mb-2">Delete Account</h4>
+                  <p className="text-sm text-red-600 mb-4">
+                    Once you delete your account, there is no going back. Please be certain.
+                  </p>
+                  <Button variant="destructive">Delete My Account</Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 };

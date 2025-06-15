@@ -18,7 +18,7 @@ const Index = () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("animate-fade-in");
-            observer.unob서ve(entry.target);
+            observer.unobserve(entry.target); // Fixed typo here
           }
         });
       },

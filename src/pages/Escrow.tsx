@@ -1,187 +1,145 @@
 
 import React from "react";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/navigation/Navbar";
 import Footer from "@/components/Footer";
-import { Shield, Lock, CheckCircle, Clock, CreditCard, AlertTriangle, Phone } from "lucide-react";
+import { Shield, Lock, CheckCircle, Clock, DollarSign, FileText } from "lucide-react";
 
 const Escrow = () => {
-  const steps = [
-    {
-      icon: Lock,
-      title: "Secure Payment with Nigerian Banks",
-      description: "Your rent is held safely in partnership with GTBank, First Bank, and Access Bank"
-    },
-    {
-      icon: CheckCircle,
-      title: "Physical Property Verification",
-      description: "Our Port Harcourt team physically visits and verifies every property exists"
-    },
-    {
-      icon: Shield,
-      title: "Keys-in-Hand Guarantee",
-      description: "Funds only release when you confirm you have the keys and property access"
-    }
-  ];
-
-  const protectionStats = [
-    { amount: "₦50,000,000+", label: "Protected from Scams" },
-    { amount: "1,200+", label: "Successful Transactions" },
-    { amount: "0", label: "Money Lost by Users" },
-    { amount: "24hrs", label: "Average Resolution Time" }
-  ];
-
   return (
     <div className="min-h-screen">
       <Navbar />
       <main className="pt-20">
-        <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white py-16">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-16">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto text-center">
-              <div className="inline-flex items-center gap-2 bg-white/20 px-4 py-2 rounded-full mb-4">
-                <Shield className="w-5 h-5" />
-                <span>Bank-Grade Security</span>
-              </div>
-              <h1 className="text-4xl font-bold mb-4">Never Lose Your Rent Money Again</h1>
-              <p className="text-xl opacity-90">
-                Port Harcourt's most trusted escrow service. Your money stays safe until you get your keys.
-              </p>
-            </div>
+            <h1 className="text-4xl font-bold mb-4">Secure Escrow Service</h1>
+            <p className="text-xl opacity-90">Safe and secure transactions for peace of mind</p>
           </div>
         </div>
 
+        {/* How It Works */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          {/* Protection Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
-            {protectionStats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-3xl font-bold text-purple-600 mb-2">{stat.amount}</div>
-                <div className="text-sm text-gray-600">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Alert Box */}
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-12">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="w-6 h-6 text-yellow-600 flex-shrink-0 mt-1" />
-              <div>
-                <h3 className="font-bold text-yellow-800 mb-2">Common Port Harcourt Rental Scams Prevented:</h3>
-                <ul className="text-yellow-700 space-y-1 text-sm">
-                  <li>• Fake agents collecting rent for properties they don't own</li>
-                  <li>• Multiple people paying for the same property</li>
-                  <li>• Advance fee fraud before property viewing</li>
-                  <li>• Property photos that don't match reality</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          {/* How It Works */}
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">How Our Escrow Service Protects You</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Backed by Nigerian banks and regulated financial institutions
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">How Our Escrow Service Works</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Our secure escrow service protects both landlords and tenants during rental transactions
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            {steps.map((step, index) => {
-              const Icon = step.icon;
-              return (
-                <div key={index} className="text-center">
-                  <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Icon className="w-8 h-8 text-purple-600" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-2">{step.title}</h3>
-                  <p className="text-gray-600">{step.description}</p>
-                </div>
-              );
-            })}
-          </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <DollarSign className="w-8 h-8 text-blue-600" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">1. Deposit Funds</h3>
+              <p className="text-gray-600">
+                Tenant deposits rent and security fees into our secure escrow account
+              </p>
+            </div>
 
-          {/* Banking Partners */}
-          <div className="bg-gray-50 rounded-2xl p-8 mb-16">
-            <h3 className="text-2xl font-bold text-center mb-6">Trusted by Major Nigerian Banks</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 items-center justify-items-center">
-              <div className="text-center">
-                <div className="bg-red-600 text-white p-4 rounded-lg mb-2">
-                  <span className="font-bold text-lg">GTB</span>
-                </div>
-                <span className="text-sm text-gray-600">Guaranty Trust Bank</span>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-8 h-8 text-blue-600" />
               </div>
-              <div className="text-center">
-                <div className="bg-blue-900 text-white p-4 rounded-lg mb-2">
-                  <span className="font-bold text-lg">FBN</span>
-                </div>
-                <span className="text-sm text-gray-600">First Bank Nigeria</span>
+              <h3 className="text-xl font-semibold mb-2">2. Verify Agreement</h3>
+              <p className="text-gray-600">
+                We verify the rental agreement and property details with both parties
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-blue-600" />
               </div>
-              <div className="text-center">
-                <div className="bg-orange-600 text-white p-4 rounded-lg mb-2">
-                  <span className="font-bold text-lg">ACC</span>
-                </div>
-                <span className="text-sm text-gray-600">Access Bank</span>
-              </div>
-              <div className="text-center">
-                <div className="bg-purple-700 text-white p-4 rounded-lg mb-2">
-                  <span className="font-bold text-lg">PST</span>
-                </div>
-                <span className="text-sm text-gray-600">Paystack</span>
-              </div>
+              <h3 className="text-xl font-semibold mb-2">3. Release Payment</h3>
+              <p className="text-gray-600">
+                Once conditions are met, funds are securely released to the landlord
+              </p>
             </div>
           </div>
 
-          {/* Transaction Form */}
-          <div className="bg-white border-2 border-purple-200 rounded-2xl p-8 mb-16">
-            <h3 className="text-2xl font-bold mb-6 text-center">Start Your Protected Transaction</h3>
-            <div className="max-w-md mx-auto space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Property Address in Port Harcourt</label>
-                <input 
-                  type="text" 
-                  placeholder="e.g., 123 Trans Amadi Industrial Layout" 
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Annual Rent Amount</label>
-                <input 
-                  type="text" 
-                  placeholder="e.g., ₦800,000" 
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Verified Agent/Landlord Contact</label>
-                <input 
-                  type="text" 
-                  placeholder="Agent's verified phone number" 
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                />
-              </div>
+          {/* Features */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">Why Use Our Escrow Service?</h2>
               
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-bold text-blue-800 mb-2">Transaction Fee: Only 2%</h4>
-                <p className="text-sm text-blue-700">
-                  Much cheaper than losing your entire rent to scammers. Fee only charged on successful transactions.
-                </p>
+              <div className="space-y-6">
+                <div className="flex items-start space-x-4">
+                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Shield className="w-4 h-4 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-1">Secure Transactions</h3>
+                    <p className="text-gray-600">Your money is protected in regulated escrow accounts</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Lock className="w-4 h-4 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-1">Fraud Prevention</h3>
+                    <p className="text-gray-600">Eliminates risk of fraudulent transactions and fake properties</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Clock className="w-4 h-4 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-1">Fast Processing</h3>
+                    <p className="text-gray-600">Quick verification and release process, usually within 24-48 hours</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-1">Dispute Resolution</h3>
+                    <p className="text-gray-600">Professional mediation service for any transaction disputes</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Start Secure Transaction</h3>
+              
+              <div className="space-y-4 mb-6">
+                <div className="bg-white rounded-lg p-4">
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium text-gray-900">Escrow Fee</span>
+                    <span className="text-blue-600 font-semibold">2.5% of transaction</span>
+                  </div>
+                </div>
+                
+                <div className="bg-white rounded-lg p-4">
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium text-gray-900">Processing Time</span>
+                    <span className="text-green-600 font-semibold">24-48 hours</span>
+                  </div>
+                </div>
+                
+                <div className="bg-white rounded-lg p-4">
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium text-gray-900">Security</span>
+                    <span className="text-green-600 font-semibold">Bank-level encryption</span>
+                  </div>
+                </div>
               </div>
 
-              <button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center">
-                <CreditCard className="w-5 h-5 mr-2" />
-                Start Protected Transaction
+              <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
+                Start Escrow Process
               </button>
+              
+              <p className="text-sm text-gray-600 mt-4 text-center">
+                Secure, regulated, and trusted by thousands of users
+              </p>
             </div>
-          </div>
-
-          {/* Support */}
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 text-green-600 bg-green-50 px-6 py-3 rounded-full">
-              <Phone className="w-5 h-5" />
-              <span className="font-medium">24/7 WhatsApp Support: +234 801 ESCROW (372769)</span>
-            </div>
-            <p className="text-sm text-gray-500 mt-2">
-              Speak to a real person in Port Harcourt, not a bot
-            </p>
           </div>
         </div>
       </main>

@@ -1,6 +1,6 @@
 
 import React from "react";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/navigation/Navbar";
 import Footer from "@/components/Footer";
 import VerificationStatus from "@/components/VerificationStatus";
 

@@ -1,5 +1,6 @@
+
 import React, { useState } from "react";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/navigation/Navbar";
 import Footer from "@/components/Footer";
 import VerificationForm from "@/components/VerificationForm";
 import { Star, Phone, Mail, MapPin, Home, Calendar, Shield, CheckCircle, Filter, UserPlus } from "lucide-react";

@@ -6,6 +6,8 @@ import { Menu, X, Home, Users, Building, Phone, FileCheck, Shield } from "lucide
 import { Button } from "@/components/ui/button";
 import UserMenu from "@/components/auth/UserMenu";
 import AuthModal from "@/components/auth/AuthModal";
+import NotificationCenter from "@/components/notifications/NotificationCenter";
+import MessageCenter from "@/components/messaging/MessageCenter";
 import { useAuth } from "@/hooks/useAuth";
 
 const Navbar = () => {
@@ -94,8 +96,15 @@ const Navbar = () => {
               })}
             </div>
 
-            {/* Auth Section */}
-            <div className="hidden lg:flex items-center space-x-4">
+            {/* Auth Section with Notifications & Messages */}
+            <div className="hidden lg:flex items-center space-x-2">
+              {!loading && user && (
+                <>
+                  <NotificationCenter />
+                  <MessageCenter />
+                </>
+              )}
+              
               {loading ? (
                 <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" />
               ) : user ? (
@@ -118,6 +127,12 @@ const Navbar = () => {
 
             {/* Mobile Menu Button */}
             <div className="lg:hidden flex items-center space-x-2">
+              {!loading && user && (
+                <>
+                  <NotificationCenter />
+                  <MessageCenter />
+                </>
+              )}
               {!loading && user && <UserMenu />}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}

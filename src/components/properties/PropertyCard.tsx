@@ -20,16 +20,16 @@ interface PropertyCardProps {
 }
 
 const PropertyCard = ({ property }: PropertyCardProps) => {
-  // Authentic Nigerian property images - same as FeaturedListings
+  // Authentic Nigerian property images - always use these instead of database images
   const nigerianPropertyImages = [
     "https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=800&q=80", // Modern Nigerian duplex
     "https://images.unsplash.com/photo-1565402170291-8491f14678db?auto=format&fit=crop&w=800&q=80", // Nigerian residential building
     "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?auto=format&fit=crop&w=800&q=80"  // Nigerian modern home
   ];
 
-  // Use property images or fallback to Nigerian property images
+  // Always use Nigerian property images instead of database images
   const imageIndex = parseInt(property.id) % nigerianPropertyImages.length;
-  const propertyImage = property.images?.[0] || nigerianPropertyImages[imageIndex];
+  const propertyImage = nigerianPropertyImages[imageIndex];
 
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">

@@ -7,6 +7,7 @@ import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Index from "./pages/Index";
 import Properties from "./pages/Properties";
+import PropertyDetail from "./pages/PropertyDetail";
 import Search from "./pages/Search";
 import Escrow from "./pages/Escrow";
 import Agents from "./pages/Agents";
@@ -25,6 +26,7 @@ const App = () => (
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/properties" element={<Properties />} />
+      <Route path="/properties/:id" element={<PropertyDetail />} />
       <Route path="/search" element={<Search />} />
       <Route path="/escrow" element={<Escrow />} />
       <Route path="/agents" element={<Agents />} />

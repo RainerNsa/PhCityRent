@@ -1,5 +1,7 @@
+
 import React from "react";
-import { MapPin, Bed, Bath, DollarSign, Shield } from "lucide-react";
+import { Link } from "react-router-dom";
+import { MapPin, Bed, Bath, DollarSign,  } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Property {
@@ -46,11 +48,14 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
       <div className="relative">
-        <img 
-          src={propertyImage}
-          alt={property.title}
-          className="w-full h-48 object-cover"
-        />
+        <Link to={`/properties/${property.id}`}>
+          <img 
+            src={propertyImage}
+            alt={property.title}
+            className="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
+            loading="lazy"
+          />
+        </Link>
         {property.is_verified && (
           <div className="absolute top-4 right-4 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center">
             <Shield className="w-3 h-3 mr-1" />
@@ -65,7 +70,9 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
       </div>
       
       <div className="p-6">
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">{property.title}</h3>
+        <Link to={`/properties/${property.id}`}>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2 hover:text-orange-500 transition-colors">{property.title}</h3>
+        </Link>
         
         <div className="flex items-center text-gray-600 mb-3">
           <MapPin className="w-4 h-4 mr-1" />
@@ -90,9 +97,11 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
             <DollarSign className="w-4 h-4 mr-1" />
             <span>₦{property.price_per_year.toLocaleString()}/year</span>
           </div>
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white">
-            View Details
-          </Button>
+          <Link to={`/properties/${property.id}`}>
+            <Button className="bg-orange-500 hover:bg-orange-600 text-white">
+              View Details
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

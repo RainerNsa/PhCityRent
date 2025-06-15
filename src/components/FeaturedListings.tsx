@@ -1,3 +1,4 @@
+
 import React from "react";
 import { MapPin, Bed, Bath, DollarSign, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -65,11 +66,14 @@ const FeaturedListings = () => {
             return (
               <div key={property.id} className={`glass-card feature-card hover-lift fadeIn stagger-${(index % 3) + 1}`}>
                 <div className="relative">
-                  <img 
-                    src={propertyImage}
-                    alt={property.title}
-                    className="w-full h-48 object-cover rounded-lg"
-                  />
+                  <Link to={`/properties/${property.id}`}>
+                    <img 
+                      src={propertyImage}
+                      alt={property.title}
+                      className="w-full h-48 object-cover rounded-lg hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                  </Link>
                   {property.is_verified && (
                     <div className="absolute top-4 right-4 bg-pulse-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center">
                       <Shield className="w-3 h-3 mr-1" />
@@ -79,7 +83,9 @@ const FeaturedListings = () => {
                 </div>
                 
                 <div className="pt-4">
-                  <h3 className="text-xl font-display font-semibold text-gray-900 mb-2">{property.title}</h3>
+                  <Link to={`/properties/${property.id}`}>
+                    <h3 className="text-xl font-display font-semibold text-gray-900 mb-2 hover:text-pulse-500 transition-colors">{property.title}</h3>
+                  </Link>
                   
                   <div className="flex items-center text-gray-600 mb-3">
                     <MapPin className="w-4 h-4 mr-1" />
@@ -104,7 +110,7 @@ const FeaturedListings = () => {
                       <DollarSign className="w-4 h-4 mr-1" />
                       <span>₦{property.price_per_year.toLocaleString()}/year</span>
                     </div>
-                    <Link to="/properties">
+                    <Link to={`/properties/${property.id}`}>
                       <button className="button-primary text-sm py-2 px-4">
                         View Details
                       </button>

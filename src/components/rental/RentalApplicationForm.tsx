@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,7 +9,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
@@ -20,13 +18,7 @@ import {
   Briefcase, 
   Home, 
   FileText, 
-  Check,
-  Upload,
-  DollarSign,
-  Phone,
-  Mail,
-  Calendar,
-  MapPin
+  Check
 } from 'lucide-react';
 
 const applicationSchema = z.object({
@@ -143,7 +135,8 @@ const RentalApplicationForm: React.FC<RentalApplicationFormProps> = ({
         submitted_at: new Date().toISOString()
       };
 
-      const { error } = await supabase
+      // Using any type to work around the TypeScript issue until types are regenerated
+      const { error } = await (supabase as any)
         .from('rental_applications')
         .insert(applicationData);
 

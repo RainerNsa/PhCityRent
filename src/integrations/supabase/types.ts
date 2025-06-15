@@ -113,6 +113,118 @@ export type Database = {
           },
         ]
       }
+      escrow_milestones: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          milestone_type: string
+          notes: string | null
+          status: string | null
+          transaction_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          milestone_type: string
+          notes?: string | null
+          status?: string | null
+          transaction_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          milestone_type?: string
+          notes?: string | null
+          status?: string | null
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escrow_milestones_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "escrow_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escrow_transactions: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          created_at: string
+          currency: string | null
+          dispute_reason: string | null
+          escrow_fee: number | null
+          funds_released_at: string | null
+          id: string
+          landlord_id: string | null
+          property_id: string | null
+          status: string | null
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          tenant_email: string
+          tenant_name: string
+          tenant_phone: string | null
+          transaction_type: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount: number
+          created_at?: string
+          currency?: string | null
+          dispute_reason?: string | null
+          escrow_fee?: number | null
+          funds_released_at?: string | null
+          id?: string
+          landlord_id?: string | null
+          property_id?: string | null
+          status?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          tenant_email: string
+          tenant_name: string
+          tenant_phone?: string | null
+          transaction_type?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          created_at?: string
+          currency?: string | null
+          dispute_reason?: string | null
+          escrow_fee?: number | null
+          funds_released_at?: string | null
+          id?: string
+          landlord_id?: string | null
+          property_id?: string | null
+          status?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          tenant_email?: string
+          tenant_name?: string
+          tenant_phone?: string | null
+          transaction_type?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escrow_transactions_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           agent_id: string | null
@@ -234,6 +346,41 @@ export type Database = {
           },
         ]
       }
+      property_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string
+          id: string
+          is_read: boolean | null
+          property_id: string
+          user_id: string
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          property_id: string
+          user_id: string
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          property_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_alerts_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_inquiries: {
         Row: {
           created_at: string | null
@@ -330,6 +477,69 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      saved_searches: {
+        Row: {
+          alert_frequency: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          last_alert_sent: string | null
+          search_criteria: Json
+          search_name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          alert_frequency?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          last_alert_sent?: string | null
+          search_criteria: Json
+          search_name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          alert_frequency?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          last_alert_sent?: string | null
+          search_criteria?: Json
+          search_name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      system_analytics: {
+        Row: {
+          additional_data: Json | null
+          created_at: string
+          id: string
+          metric_date: string
+          metric_name: string
+          metric_value: number
+        }
+        Insert: {
+          additional_data?: Json | null
+          created_at?: string
+          id?: string
+          metric_date?: string
+          metric_name: string
+          metric_value: number
+        }
+        Update: {
+          additional_data?: Json | null
+          created_at?: string
+          id?: string
+          metric_date?: string
+          metric_name?: string
+          metric_value?: number
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {

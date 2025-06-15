@@ -20,6 +20,7 @@ import VerificationStatus from "./pages/VerificationStatus";
 import AgentDashboard from "./pages/AgentDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import UserProfile from "./pages/UserProfile";
+import TenantPortal from "./pages/TenantPortal";
 import Auth from "./pages/Auth";
 
 const App = () => (
@@ -58,6 +59,16 @@ const App = () => (
             <ProtectedRoute requireAuth={true}>
               <ErrorBoundary>
                 <UserProfile />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/tenant-portal" 
+          element={
+            <ProtectedRoute requireAuth={true}>
+              <ErrorBoundary>
+                <TenantPortal />
               </ErrorBoundary>
             </ProtectedRoute>
           } 

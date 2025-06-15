@@ -37,7 +37,7 @@ const ApplicationAnalytics = () => {
 
       if (applications) {
         const approved = applications.filter(app => app.status === 'approved').length;
-        const pending = applications.filter(app => app.status === 'pending').length;
+        const pending = applications.filter(app => app.status === 'pending_review').length;
         const thisMonth = applications.filter(app => 
           new Date(app.created_at).getMonth() === new Date().getMonth()
         ).length;
@@ -55,7 +55,7 @@ const ApplicationAnalytics = () => {
         const statusDistribution = [
           { name: 'Approved', value: approved, color: '#10b981' },
           { name: 'Pending', value: pending, color: '#f59e0b' },
-          { name: 'Rejected', value: applications.length - approved - pending, color: '#ef4444' },
+          { name: 'Rejected', value: applications.filter(app => app.status === 'rejected').length, color: '#ef4444' },
         ];
 
         setChartData({
@@ -117,7 +117,7 @@ const ApplicationAnalytics = () => {
         </TabsContent>
 
         <TabsContent value="agents" className="space-y-4">
-          <AgentPerformanceAnalytics data={agentData} isLoading={isLoading} />
+          <AgentPerformanceAnalytics isLoading={isLoading} />
         </TabsContent>
       </Tabs>
     </div>

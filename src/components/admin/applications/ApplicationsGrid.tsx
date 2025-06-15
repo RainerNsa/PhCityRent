@@ -3,6 +3,7 @@ import React from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import ApplicationCard from '../ApplicationCard';
 import PaginationControls from './PaginationControls';
+import ErrorState from '@/components/common/ErrorState';
 import { Database } from '@/integrations/supabase/types';
 
 type ApplicationStatus = Database['public']['Enums']['application_status'];
@@ -64,9 +65,13 @@ const ApplicationsGrid = ({
 }: ApplicationsGridProps) => {
   if (applications.length === 0) {
     return (
-      <div className="text-center p-8 text-gray-600">
-        No applications found matching your criteria.
-      </div>
+      <ErrorState
+        title="No Applications Found"
+        message="No applications found matching your criteria."
+        variant="default"
+        showRetry={false}
+        showHome={false}
+      />
     );
   }
 

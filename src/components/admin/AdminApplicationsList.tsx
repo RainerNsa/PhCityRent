@@ -1,13 +1,12 @@
-
-import React, { useState, useEffect } from 'react';
-import ApplicationDetailsModal from './ApplicationDetailsModal';
-import ApplicationsFilter from './applications/ApplicationsFilter';
-import ApplicationsToolbar from './applications/ApplicationsToolbar';
-import ApplicationsGrid from './applications/ApplicationsGrid';
-import ApplicationsLoadingSkeleton from './applications/ApplicationsLoadingSkeleton';
+import React, { useState } from 'react';
 import { useApplicationsData } from './applications/useApplicationsData';
 import { useApplicationsFilters } from './applications/useApplicationsFilters';
 import { usePagination } from '@/hooks/usePagination';
+import ApplicationsToolbar from './applications/ApplicationsToolbar';
+import ApplicationsGrid from './applications/ApplicationsGrid';
+import ApplicationsLoadingSkeleton from './applications/ApplicationsLoadingSkeleton';
+import ApplicationDetailsModal from './ApplicationDetailsModal';
+import ErrorState from '@/components/common/ErrorState';
 import { Database } from '@/integrations/supabase/types';
 
 type ApplicationStatus = Database['public']['Enums']['application_status'];
@@ -34,150 +33,135 @@ interface Application {
 }
 
 const AdminApplicationsList = () => {
-  const { applications, loading, refetch } = useApplicationsData();
-  const {
-    searchTerm,
-    setSearchTerm,
-    statusFilter,
-    setStatusFilter,
-    areaFilter,
-    setAreaFilter,
-    dateRange,
-    setDateRange,
-    filteredApplications,
-    getActiveFilters,
-    clearAllFilters
-  } = useApplicationsFilters(applications);
-
+  const { applications, loading, error, refetch } = useApplicationsData();
   const [selectedApplications, setSelectedApplications] = useState<string[]>([]);
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
 
-  // Pagination hook
-  const {
-    currentPage,
-    totalPages,
-    paginatedData: paginatedApplications,
-    goToPage,
-    hasNextPage,
-    hasPreviousPage,
-    totalItems,
-    startIndex,
-    endIndex,
-    resetPage
-  } = usePagination({
+  const [filters, setFilters] = useState({
+    status: '',
+    operatingArea: '',
+    dateRange: null,
+    searchTerm: '',
+  });
+
+  const handleFiltersChange = (newFilters: any) => {
+    setFilters(newFilters);
+  };
+
+  const filteredApplications = React.useMemo(() => {
+    let filtered = [...applications];
+
+    if (filters.status) {
+      filtered = filtered.filter(app => app.status === filters.status);
+    }
+
+    if (filters.operatingArea) {
+      filtered = filtered.filter(app => app.operating_areas.includes(filters.operatingArea));
+    }
+
+    if (filters.dateRange) {
+      const [startDate, endDate] = filters.dateRange;
+      filtered = filtered.filter(app => {
+        const appDate = new Date(app.created_at);
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+
+        if (start && appDate < start) return false;
+        if (end && appDate > end) return false;
+
+        return true;
+      });
+    }
+
+    if (filters.searchTerm) {
+      const term = filters.searchTerm.toLowerCase();
+      filtered = filtered.filter(app =>
+        app.full_name.toLowerCase().includes(term) ||
+        app.email.toLowerCase().includes(term) ||
+        app.whatsapp_number.includes(term) ||
+        app.agent_id.toLowerCase().includes(term)
+      );
+    }
+
+    return filtered;
+  }, [applications, filters]);
+
+  const pagination = usePagination({
     data: filteredApplications,
     itemsPerPage: 10
   });
 
-  // Reset pagination when filters change
-  useEffect(() => {
-    resetPage();
-  }, [searchTerm, statusFilter, areaFilter, dateRange, resetPage]);
-
-  // Clear selection when page changes
-  useEffect(() => {
-    setSelectedApplications([]);
-  }, [currentPage]);
-
   const handleSelectApplication = (applicationId: string, checked: boolean) => {
-    if (checked) {
-      setSelectedApplications(prev => [...prev, applicationId]);
-    } else {
-      setSelectedApplications(prev => prev.filter(id => id !== applicationId));
-    }
+    setSelectedApplications(prev => {
+      if (checked) {
+        return [...prev, applicationId];
+      } else {
+        return prev.filter(id => id !== applicationId);
+      }
+    });
   };
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      // Select all applications on current page
-      setSelectedApplications(prev => {
-        const currentPageIds = paginatedApplications.map(app => app.id);
-        const newIds = currentPageIds.filter(id => !prev.includes(id));
-        return [...prev, ...newIds];
-      });
+      setSelectedApplications(pagination.paginatedData.map(app => app.id));
     } else {
-      // Deselect all applications on current page
-      const currentPageIds = paginatedApplications.map(app => app.id);
-      setSelectedApplications(prev => prev.filter(id => !currentPageIds.includes(id)));
+      setSelectedApplications([]);
     }
   };
 
-  const handleBulkActionComplete = () => {
+  const handleClearSelection = () => {
     setSelectedApplications([]);
-    refetch();
+  };
+
+  const handleBulkAction = (action: string) => {
+    console.log(`Bulk action: ${action} on ${selectedApplications.length} applications`);
+    // Implement bulk action logic here
   };
 
   if (loading) {
+    return <ApplicationsLoadingSkeleton count={10} />;
+  }
+
+  if (error) {
     return (
-      <div className="space-y-4 sm:space-y-6 p-4 sm:p-0">
-        <div className="bg-white rounded-lg shadow-sm">
-          <div className="p-4">
-            <div className="animate-pulse">
-              <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
-              <div className="space-y-3">
-                <div className="h-10 bg-gray-200 rounded"></div>
-                <div className="flex gap-2">
-                  <div className="h-8 bg-gray-200 rounded w-24"></div>
-                  <div className="h-8 bg-gray-200 rounded w-32"></div>
-                  <div className="h-8 bg-gray-200 rounded w-28"></div>
-                </div>
-              </div>
-            </div>
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Agent Applications</h1>
+            <p className="text-gray-600 mt-1">Manage and review agent applications</p>
           </div>
         </div>
-        <ApplicationsLoadingSkeleton count={5} />
+        
+        <ErrorState
+          title="Failed to Load Applications"
+          message={error}
+          onRetry={refetch}
+          showRetry={true}
+          showHome={true}
+        />
       </div>
     );
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6 p-4 sm:p-0">
-      {/* Filters Section */}
-      <div className="bg-white rounded-lg shadow-sm">
-        <ApplicationsFilter
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          statusFilter={statusFilter}
-          onStatusChange={setStatusFilter}
-          dateRange={dateRange}
-          onDateRangeChange={setDateRange}
-          areaFilter={areaFilter}
-          onAreaChange={setAreaFilter}
-          activeFilters={getActiveFilters()}
-          onClearFilters={clearAllFilters}
-        />
-      </div>
-
-      {/* Results Summary - Mobile Optimized */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
-        <div className="text-sm text-gray-600">
-          <span className="font-medium">{totalItems}</span> applications found
-          {getActiveFilters().length > 0 && (
-            <span className="block sm:inline sm:ml-2 text-xs text-gray-500">
-              ({getActiveFilters().length} filters active)
-            </span>
-          )}
-          {totalItems > 0 && (
-            <span className="block sm:inline sm:ml-2 text-xs text-gray-500">
-              Page {currentPage} of {totalPages}
-            </span>
-          )}
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Agent Applications</h1>
+          <p className="text-gray-600 mt-1">Manage and review agent applications</p>
         </div>
-        {selectedApplications.length > 0 && (
-          <div className="text-sm font-medium text-blue-600">
-            {selectedApplications.length} selected across all pages
-          </div>
-        )}
       </div>
 
       {/* Toolbar */}
-      {selectedApplications.length > 0 && (
-        <ApplicationsToolbar
-          selectedApplications={selectedApplications}
-          onBulkActionComplete={handleBulkActionComplete}
-          onClearSelection={() => setSelectedApplications([])}
-        />
-      )}
+      <ApplicationsToolbar
+        selectedCount={selectedApplications.length}
+        totalCount={filteredApplications.length}
+        onClearSelection={handleClearSelection}
+        filters={filters}
+        onFiltersChange={handleFiltersChange}
+        onBulkAction={handleBulkAction}
+      />
 
       {/* Applications Grid */}
       <ApplicationsGrid
@@ -186,24 +170,26 @@ const AdminApplicationsList = () => {
         onSelectApplication={handleSelectApplication}
         onSelectAll={handleSelectAll}
         onViewDetails={setSelectedApplication}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={goToPage}
-        hasNextPage={hasNextPage}
-        hasPreviousPage={hasPreviousPage}
-        startIndex={startIndex}
-        endIndex={endIndex}
-        totalItems={totalItems}
-        paginatedApplications={paginatedApplications}
+        // Pagination props
+        currentPage={pagination.currentPage}
+        totalPages={pagination.totalPages}
+        onPageChange={pagination.goToPage}
+        hasNextPage={pagination.hasNextPage}
+        hasPreviousPage={pagination.hasPreviousPage}
+        startIndex={pagination.startIndex}
+        endIndex={pagination.endIndex}
+        totalItems={pagination.totalItems}
+        paginatedApplications={pagination.paginatedData}
       />
 
       {/* Application Details Modal */}
-      <ApplicationDetailsModal
-        application={selectedApplication}
-        isOpen={!!selectedApplication}
-        onClose={() => setSelectedApplication(null)}
-        onUpdate={refetch}
-      />
+      {selectedApplication && (
+        <ApplicationDetailsModal
+          application={selectedApplication}
+          isOpen={!!selectedApplication}
+          onClose={() => setSelectedApplication(null)}
+        />
+      )}
     </div>
   );
 };

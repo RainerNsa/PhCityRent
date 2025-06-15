@@ -10,6 +10,7 @@ import GlobalErrorHandler from "@/components/common/GlobalErrorHandler";
 import Index from "./pages/Index";
 import Properties from "./pages/Properties";
 import PropertyDetail from "./pages/PropertyDetail";
+import PropertyManagement from "./pages/PropertyManagement";
 import Search from "./pages/Search";
 import Escrow from "./pages/Escrow";
 import Agents from "./pages/Agents";

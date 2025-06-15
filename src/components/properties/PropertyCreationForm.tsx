@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useCreateProperty } from '@/hooks/useProperties';
 import { useAuth } from '@/hooks/useAuth';
 import { Plus, Minus } from 'lucide-react';
+import PropertyImageUpload from './PropertyImageUpload';
 
 interface PropertyFormData {
   title: string;
@@ -27,6 +28,7 @@ interface PropertyFormData {
   contact_whatsapp: string;
   is_available: boolean;
   featured: boolean;
+  images: string[];
 }
 
 const PropertyCreationForm = ({ onSuccess }: { onSuccess?: () => void }) => {
@@ -49,6 +51,7 @@ const PropertyCreationForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     contact_whatsapp: '',
     is_available: true,
     featured: false,
+    images: [],
   });
 
   const [amenityInput, setAmenityInput] = useState('');
@@ -98,7 +101,7 @@ const PropertyCreationForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       await createProperty.mutateAsync({
         ...formData,
         landlord_id: user.id,
-        agent_id: null, // Set if user is an agent
+        agent_id: null,
       });
 
       toast({
@@ -123,6 +126,12 @@ const PropertyCreationForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Property Images */}
+          <PropertyImageUpload
+            images={formData.images}
+            onImagesChange={(images) => handleInputChange('images', images)}
+          />
+
           {/* Basic Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

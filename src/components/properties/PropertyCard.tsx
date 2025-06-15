@@ -2,7 +2,8 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Bed, Bath, Square, Star } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { MapPin, Bed, Bath, Square, Star, Plus, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import SavePropertyButton from './SavePropertyButton';
 
@@ -17,13 +18,25 @@ interface Property {
   images?: string[];
   featured?: boolean;
   is_verified?: boolean;
+  amenities?: string[];
+  property_type?: string;
 }
 
 interface PropertyCardProps {
   property: Property;
+  showCompareButton?: boolean;
+  isInComparison?: boolean;
+  onAddToComparison?: (property: Property) => void;
+  onRemoveFromComparison?: (propertyId: string) => void;
 }
 
-const PropertyCard = ({ property }: PropertyCardProps) => {
+const PropertyCard = ({ 
+  property, 
+  showCompareButton = true,
+  isInComparison = false,
+  onAddToComparison,
+  onRemoveFromComparison 
+}: PropertyCardProps) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -35,6 +48,15 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
       return `₦${(price / 1000000).toFixed(1)}M`;
     }
     return `₦${price.toLocaleString()}`;
+  };
+
+  const handleCompareClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isInComparison) {
+      onRemoveFromComparison?.(property.id);
+    } else {
+      onAddToComparison?.(property);
+    }
   };
 
   return (
@@ -69,9 +91,21 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
           )}
         </div>
 
-        {/* Save Button */}
-        <div className="absolute top-3 right-3">
+        {/* Action Buttons */}
+        <div className="absolute top-3 right-3 flex gap-2">
           <SavePropertyButton propertyId={property.id} />
+          {showCompareButton && (
+            <Button
+              size="sm"
+              variant={isInComparison ? "default" : "secondary"}
+              onClick={handleCompareClick}
+              className={`opacity-0 group-hover:opacity-100 transition-opacity ${
+                isInComparison ? 'bg-orange-500 hover:bg-orange-600' : ''
+              }`}
+            >
+              {isInComparison ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+            </Button>
+          )}
         </div>
       </div>
 
@@ -112,6 +146,22 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
               </div>
             )}
           </div>
+
+          {/* Amenities Preview */}
+          {property.amenities && property.amenities.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {property.amenities.slice(0, 2).map((amenity) => (
+                <Badge key={amenity} variant="outline" className="text-xs">
+                  {amenity}
+                </Badge>
+              ))}
+              {property.amenities.length > 2 && (
+                <Badge variant="outline" className="text-xs">
+                  +{property.amenities.length - 2} more
+                </Badge>
+              )}
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -31,13 +30,17 @@ const EnhancedBulkActions = ({ selectedApplications, onBulkActionComplete, onCle
     try {
       const newStatus = bulkAction as ApplicationStatus;
       
+      // Get current user ID once
+      const { data: { user } } = await supabase.auth.getUser();
+      const currentUserId = user?.id;
+      
       // Start bulk operation logging
       const { data: bulkLog, error: logError } = await supabase
         .from('bulk_operations_log')
         .insert({
           operation_type: `bulk_status_change_${newStatus}`,
           application_ids: selectedApplications,
-          admin_id: (await supabase.auth.getUser()).data.user?.id,
+          admin_id: currentUserId,
           operation_data: { new_status: newStatus, notes: bulkNotes }
         })
         .select()
@@ -64,7 +67,7 @@ const EnhancedBulkActions = ({ selectedApplications, onBulkActionComplete, onCle
         new_status: newStatus,
         change_reason: `Bulk action: ${bulkAction}`,
         notes: bulkNotes,
-        changed_by: (await supabase.auth.getUser()).data.user?.id
+        changed_by: currentUserId
       }));
 
       const { error: logStatusError } = await supabase

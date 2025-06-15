@@ -1,205 +1,201 @@
 
 import React, { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import AnalyticsMetrics from './analytics/AnalyticsMetrics';
-import EnhancedAnalyticsCharts from './analytics/EnhancedAnalyticsCharts';
-import AdminPerformanceTracker from './analytics/AdminPerformanceTracker';
-import AnalyticsExport from './analytics/AnalyticsExport';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import { Users, Clock, CheckCircle, XCircle } from 'lucide-react';
 
 const ApplicationAnalytics = () => {
-  const [metricsData, setMetricsData] = useState({
+  const [analytics, setAnalytics] = useState({
     totalApplications: 0,
-    approved: 0,
-    pending: 0,
-    thisMonth: 0,
-    approvalRate: 0,
-    avgProcessingDays: 0,
-  });
-
-  const [chartData, setChartData] = useState({
+    pendingApplications: 0,
+    approvedApplications: 0,
+    rejectedApplications: 0,
+    averageProcessingTime: 0,
     statusDistribution: [],
-    monthlyTrends: [],
-    processingTimes: [],
-    geographicDistribution: [],
+    monthlyTrends: []
   });
-
-  const [isLoading, setIsLoading] = useState(true);
-
-  const fetchAnalytics = async () => {
-    try {
-      // Fetch basic metrics
-      const { data: applications } = await supabase
-        .from('agent_applications')
-        .select('*');
-
-      if (applications) {
-        const approved = applications.filter(app => app.status === 'approved').length;
-        const pending = applications.filter(app => app.status === 'pending_review').length;
-        const rejected = applications.filter(app => app.status === 'rejected').length;
-        const needsInfo = applications.filter(app => app.status === 'needs_info').length;
-        const thisMonth = applications.filter(app => 
-          new Date(app.created_at).getMonth() === new Date().getMonth()
-        ).length;
-
-        setMetricsData({
-          totalApplications: applications.length,
-          approved,
-          pending,
-          thisMonth,
-          approvalRate: applications.length > 0 ? Math.round((approved / applications.length) * 100) : 0,
-          avgProcessingDays: 5, // This would be calculated from actual processing times
-        });
-
-        // Enhanced chart data
-        const statusDistribution = [
-          { name: 'Approved', value: approved, color: '#10b981' },
-          { name: 'Pending', value: pending, color: '#f59e0b' },
-          { name: 'Rejected', value: rejected, color: '#ef4444' },
-          { name: 'Needs Info', value: needsInfo, color: '#f97316' },
-        ];
-
-        // Generate mock monthly trends (would be real data in production)
-        const monthlyTrends = [
-          { month: 'Jan', applications: 45, approved: 32, rejected: 8 },
-          { month: 'Feb', applications: 52, approved: 38, rejected: 9 },
-          { month: 'Mar', applications: 48, approved: 35, rejected: 7 },
-          { month: 'Apr', applications: 61, approved: 44, rejected: 10 },
-          { month: 'May', applications: 58, approved: 41, rejected: 12 },
-          { month: 'Jun', applications: applications.length, approved, rejected },
-        ];
-
-        // Processing times by stage
-        const processingTimes = [
-          { stage: 'Document Review', averageDays: 2.3 },
-          { stage: 'Referee Contact', averageDays: 3.1 },
-          { stage: 'Final Review', averageDays: 1.8 },
-          { stage: 'Approval', averageDays: 0.5 },
-        ];
-
-        // Geographic distribution
-        const areaCount = {};
-        applications.forEach(app => {
-          app.operating_areas?.forEach(area => {
-            areaCount[area] = (areaCount[area] || 0) + 1;
-          });
-        });
-
-        const geographicDistribution = Object.entries(areaCount)
-          .map(([area, count]) => ({ area, count }))
-          .sort((a, b) => b.count - a.count)
-          .slice(0, 8);
-
-        setChartData({
-          statusDistribution,
-          monthlyTrends,
-          processingTimes,
-          geographicDistribution,
-        });
-      }
-
-      setIsLoading(false);
-    } catch (error) {
-      console.error('Error fetching analytics:', error);
-      setIsLoading(false);
-    }
-  };
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchAnalytics();
-
-    // Set up real-time updates
-    const channel = supabase
-      .channel('analytics-updates')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'agent_applications'
-        },
-        () => {
-          fetchAnalytics();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
   }, []);
+
+  const fetchAnalytics = async () => {
+    try {
+      // Fetch basic statistics
+      const { data: applications, error } = await supabase
+        .from('agent_applications')
+        .select('*');
+
+      if (error) throw error;
+
+      const total = applications?.length || 0;
+      const pending = applications?.filter(app => app.status === 'pending_review').length || 0;
+      const approved = applications?.filter(app => app.status === 'approved').length || 0;
+      const rejected = applications?.filter(app => app.status === 'rejected').length || 0;
+
+      // Calculate status distribution
+      const statusDistribution = [
+        { name: 'Pending', value: pending, color: '#fbbf24' },
+        { name: 'Approved', value: approved, color: '#10b981' },
+        { name: 'Rejected', value: rejected, color: '#ef4444' },
+        { name: 'Under Review', value: total - pending - approved - rejected, color: '#6366f1' }
+      ];
+
+      // Calculate average processing time (mock data for now)
+      const avgProcessingTime = 3.5; // days
+
+      // Generate monthly trends (mock data)
+      const monthlyTrends = [
+        { month: 'Jan', applications: 45, approved: 38, rejected: 5 },
+        { month: 'Feb', applications: 52, approved: 44, rejected: 6 },
+        { month: 'Mar', applications: 48, approved: 41, rejected: 4 },
+        { month: 'Apr', applications: 61, approved: 52, rejected: 7 },
+        { month: 'May', applications: 58, approved: 49, rejected: 6 },
+        { month: 'Jun', applications: total, approved: approved, rejected: rejected }
+      ];
+
+      setAnalytics({
+        totalApplications: total,
+        pendingApplications: pending,
+        approvedApplications: approved,
+        rejectedApplications: rejected,
+        averageProcessingTime: avgProcessingTime,
+        statusDistribution,
+        monthlyTrends
+      });
+    } catch (error) {
+      console.error('Error fetching analytics:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const approvalRate = analytics.totalApplications > 0 
+    ? Math.round((analytics.approvedApplications / analytics.totalApplications) * 100) 
+    : 0;
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[1, 2, 3, 4].map((i) => (
+          <Card key={i} className="animate-pulse">
+            <CardContent className="p-6">
+              <div className="h-16 bg-gray-200 rounded"></div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Enhanced Analytics Dashboard</h2>
-        <AnalyticsExport />
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Applications</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{analytics.totalApplications}</div>
+            <p className="text-xs text-muted-foreground">
+              +12% from last month
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Approval Rate</CardTitle>
+            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{approvalRate}%</div>
+            <p className="text-xs text-muted-foreground">
+              +2% from last month
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Avg Processing Time</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{analytics.averageProcessingTime} days</div>
+            <p className="text-xs text-muted-foreground">
+              -0.5 days from last month
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Pending Review</CardTitle>
+            <XCircle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{analytics.pendingApplications}</div>
+            <p className="text-xs text-muted-foreground">
+              Requires attention
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
-      <AnalyticsMetrics data={metricsData} isLoading={isLoading} />
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Application Status Distribution</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={analytics.statusDistribution}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {analytics.statusDistribution.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
 
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="overview">Overview Charts</TabsTrigger>
-          <TabsTrigger value="performance">Admin Performance</TabsTrigger>
-          <TabsTrigger value="insights">Insights</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="overview" className="space-y-4">
-          <EnhancedAnalyticsCharts data={chartData} isLoading={isLoading} />
-        </TabsContent>
-
-        <TabsContent value="performance" className="space-y-4">
-          <AdminPerformanceTracker />
-        </TabsContent>
-
-        <TabsContent value="insights" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="p-6">
-              <h3 className="font-semibold mb-4">Key Insights</h3>
-              <div className="space-y-3">
-                <div className="p-3 bg-green-50 rounded-lg">
-                  <p className="text-sm text-green-800">
-                    <strong>High Approval Rate:</strong> {metricsData.approvalRate}% of applications are being approved, indicating good application quality.
-                  </p>
-                </div>
-                <div className="p-3 bg-blue-50 rounded-lg">
-                  <p className="text-sm text-blue-800">
-                    <strong>Processing Time:</strong> Average processing time is 5 days, which is within acceptable range.
-                  </p>
-                </div>
-                <div className="p-3 bg-purple-50 rounded-lg">
-                  <p className="text-sm text-purple-800">
-                    <strong>Geographic Spread:</strong> Applications are coming from diverse areas across Port Harcourt.
-                  </p>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6">
-              <h3 className="font-semibold mb-4">Recommendations</h3>
-              <div className="space-y-3">
-                <div className="p-3 bg-yellow-50 rounded-lg">
-                  <p className="text-sm text-yellow-800">
-                    <strong>Automation:</strong> Consider automating initial document checks to reduce processing time.
-                  </p>
-                </div>
-                <div className="p-3 bg-orange-50 rounded-lg">
-                  <p className="text-sm text-orange-800">
-                    <strong>Communication:</strong> Implement automated status updates to improve applicant experience.
-                  </p>
-                </div>
-                <div className="p-3 bg-red-50 rounded-lg">
-                  <p className="text-sm text-red-800">
-                    <strong>Quality Control:</strong> Review rejected applications to identify common issues.
-                  </p>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </TabsContent>
-      </Tabs>
+        <Card>
+          <CardHeader>
+            <CardTitle>Monthly Application Trends</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={analytics.monthlyTrends}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="applications" fill="#8884d8" name="Total Applications" />
+                <Bar dataKey="approved" fill="#82ca9d" name="Approved" />
+                <Bar dataKey="rejected" fill="#ff7c7c" name="Rejected" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };

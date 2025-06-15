@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import ApplicationDetailsModal from './ApplicationDetailsModal';
 import AdvancedFilters from './AdvancedFilters';
 import ApplicationCard from './ApplicationCard';
-import BulkActions from './BulkActions';
+import EnhancedBulkActions from './EnhancedBulkActions';
 import ExportTools from './ExportTools';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Database } from '@/integrations/supabase/types';
@@ -155,7 +154,7 @@ const AdminApplicationsList = () => {
 
       <div className="flex flex-col lg:flex-row gap-4">
         <div className="flex-1">
-          <BulkActions
+          <EnhancedBulkActions
             selectedApplications={selectedApplications}
             onBulkActionComplete={fetchApplications}
             onClearSelection={() => setSelectedApplications([])}

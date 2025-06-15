@@ -9,6 +9,36 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      admin_performance: {
+        Row: {
+          additional_data: Json | null
+          admin_id: string | null
+          created_at: string | null
+          id: string
+          metric_date: string | null
+          metric_name: string
+          metric_value: number
+        }
+        Insert: {
+          additional_data?: Json | null
+          admin_id?: string | null
+          created_at?: string | null
+          id?: string
+          metric_date?: string | null
+          metric_name: string
+          metric_value: number
+        }
+        Update: {
+          additional_data?: Json | null
+          admin_id?: string | null
+          created_at?: string | null
+          id?: string
+          metric_date?: string | null
+          metric_name?: string
+          metric_value?: number
+        }
+        Relationships: []
+      }
       agent_applications: {
         Row: {
           agent_id: string
@@ -109,6 +139,89 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "agent_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bulk_operations_log: {
+        Row: {
+          admin_id: string | null
+          application_ids: string[]
+          completed_at: string | null
+          completed_count: number | null
+          created_at: string | null
+          error_details: Json | null
+          failed_count: number | null
+          id: string
+          operation_data: Json | null
+          operation_type: string
+          status: string | null
+        }
+        Insert: {
+          admin_id?: string | null
+          application_ids: string[]
+          completed_at?: string | null
+          completed_count?: number | null
+          created_at?: string | null
+          error_details?: Json | null
+          failed_count?: number | null
+          id?: string
+          operation_data?: Json | null
+          operation_type: string
+          status?: string | null
+        }
+        Update: {
+          admin_id?: string | null
+          application_ids?: string[]
+          completed_at?: string | null
+          completed_count?: number | null
+          created_at?: string | null
+          error_details?: Json | null
+          failed_count?: number | null
+          id?: string
+          operation_data?: Json | null
+          operation_type?: string
+          status?: string | null
+        }
+        Relationships: []
+      }
+      document_validation: {
+        Row: {
+          confidence_score: number | null
+          document_id: string | null
+          id: string
+          validated_at: string | null
+          validated_by: string | null
+          validation_details: Json | null
+          validation_status: string
+          validation_type: string
+        }
+        Insert: {
+          confidence_score?: number | null
+          document_id?: string | null
+          id?: string
+          validated_at?: string | null
+          validated_by?: string | null
+          validation_details?: Json | null
+          validation_status: string
+          validation_type: string
+        }
+        Update: {
+          confidence_score?: number | null
+          document_id?: string | null
+          id?: string
+          validated_at?: string | null
+          validated_by?: string | null
+          validation_details?: Json | null
+          validation_status?: string
+          validation_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_validation_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "verification_documents"
             referencedColumns: ["id"]
           },
         ]
@@ -221,6 +334,56 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_log: {
+        Row: {
+          application_id: string | null
+          created_at: string | null
+          delivered_at: string | null
+          error_message: string | null
+          id: string
+          message: string
+          notification_type: string
+          recipient_number: string
+          recipient_type: string
+          sent_at: string | null
+          status: string | null
+        }
+        Insert: {
+          application_id?: string | null
+          created_at?: string | null
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          message: string
+          notification_type: string
+          recipient_number: string
+          recipient_type: string
+          sent_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          application_id?: string | null
+          created_at?: string | null
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          message?: string
+          notification_type?: string
+          recipient_number?: string
+          recipient_type?: string
+          sent_at?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_log_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "agent_applications"
             referencedColumns: ["id"]
           },
         ]
@@ -687,6 +850,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_admin_metrics: {
+        Args: { admin_user_id: string; metric_date?: string }
+        Returns: {
+          applications_reviewed: number
+          average_review_time_hours: number
+          approval_rate: number
+        }[]
+      }
       create_agent_profile: {
         Args: { application_id: string }
         Returns: undefined

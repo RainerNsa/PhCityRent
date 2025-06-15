@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Phone, Mail, MapPin, Clock, Send } from "lucide-react";
 import Navbar from "@/components/navigation/Navbar";
@@ -50,8 +51,8 @@ const Contact = () => {
         {/* Header */}
         <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white py-16">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
-            <p className="text-xl opacity-90">Get in touch with our team for any questions or support</p>
+            <h1 className="text-4xl font-bold mb-4">Contact Our Port Harcourt Team</h1>
+            <p className="text-xl opacity-90">Get in touch with our Rivers State team for safe rental solutions</p>
           </div>
         </div>
 
@@ -59,10 +60,10 @@ const Contact = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Information */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Get in Touch</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Get in Touch - Port Harcourt Office</h2>
               <p className="text-gray-600 mb-8">
-                We're here to help you find your perfect home or grow your real estate business. 
-                Reach out to us through any of the channels below.
+                We're here to help you find your perfect home safely in Port Harcourt, Rivers State. 
+                Our verified agents cover GRA, Trans Amadi, D-Line, Eliozu and all major areas.
               </p>
 
               <div className="space-y-6">
@@ -71,9 +72,10 @@ const Contact = () => {
                     <Phone className="w-6 h-6 text-orange-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">Phone</h3>
-                    <p className="text-gray-600">+234 803 123 4567</p>
-                    <p className="text-gray-600">+234 806 987 6543</p>
+                    <h3 className="font-semibold text-gray-900">Phone Numbers</h3>
+                    <p className="text-gray-600">+234 803 123 4567 (Primary)</p>
+                    <p className="text-gray-600">+234 806 987 6543 (Alternative)</p>
+                    <p className="text-sm text-gray-500">WhatsApp available on both numbers</p>
                   </div>
                 </div>
 
@@ -85,6 +87,7 @@ const Contact = () => {
                     <h3 className="font-semibold text-gray-900">Email</h3>
                     <p className="text-gray-600">info@phcityrent.com</p>
                     <p className="text-gray-600">support@phcityrent.com</p>
+                    <p className="text-gray-600">scam.report@phcityrent.com</p>
                   </div>
                 </div>
 
@@ -93,11 +96,12 @@ const Contact = () => {
                     <MapPin className="w-6 h-6 text-orange-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">Office</h3>
+                    <h3 className="font-semibold text-gray-900">Port Harcourt Office</h3>
                     <p className="text-gray-600">
-                      Plot 123, Trans Amadi Industrial Layout<br />
+                      Plot 15, Aba Road, GRA Phase 2<br />
                       Port Harcourt, Rivers State, Nigeria
                     </p>
+                    <p className="text-sm text-gray-500">Near First Bank, GRA Junction</p>
                   </div>
                 </div>
 
@@ -106,13 +110,23 @@ const Contact = () => {
                     <Clock className="w-6 h-6 text-orange-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">Business Hours</h3>
+                    <h3 className="font-semibold text-gray-900">Business Hours (WAT)</h3>
                     <p className="text-gray-600">
-                      Monday - Friday: 9:00 AM - 6:00 PM<br />
-                      Saturday: 10:00 AM - 4:00 PM<br />
-                      Sunday: Closed
+                      Monday - Friday: 8:00 AM - 6:00 PM<br />
+                      Saturday: 9:00 AM - 4:00 PM<br />
+                      Sunday: Emergency calls only
                     </p>
                   </div>
+                </div>
+              </div>
+
+              {/* Emergency Contacts */}
+              <div className="mt-8 p-6 bg-red-50 rounded-lg border border-red-200">
+                <h3 className="font-semibold text-red-800 mb-3">Emergency Scam Reporting</h3>
+                <div className="space-y-2 text-sm">
+                  <p className="text-red-700"><strong>EFCC (Economic Crimes):</strong> 0809 325 3322</p>
+                  <p className="text-red-700"><strong>Rivers State Police:</strong> 08037723634</p>
+                  <p className="text-red-700"><strong>Nigeria Police Force:</strong> 199</p>
                 </div>
               </div>
             </div>
@@ -185,10 +199,11 @@ const Contact = () => {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     >
                       <option value="">Select a subject</option>
-                      <option value="property-inquiry">Property Inquiry</option>
+                      <option value="property-inquiry">Property Inquiry (GRA/Trans Amadi)</option>
                       <option value="agent-verification">Agent Verification</option>
+                      <option value="scam-report">Report Rental Scam</option>
                       <option value="technical-support">Technical Support</option>
-                      <option value="partnership">Partnership</option>
+                      <option value="partnership">Business Partnership</option>
                       <option value="other">Other</option>
                     </select>
                   </div>
@@ -206,7 +221,7 @@ const Contact = () => {
                     value={formData.message}
                     onChange={handleInputChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
-                    placeholder="Tell us how we can help you..."
+                    placeholder="Tell us how we can help you with your Port Harcourt rental needs..."
                   />
                 </div>
 

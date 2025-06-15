@@ -35,7 +35,7 @@ const Hero = () => {
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 opacity-0 animate-fade-in">
           <AlertTriangle className="w-5 h-5 text-red-500 flex-shrink-0" />
           <p className="text-sm text-red-700">
-            <strong>Scam Alert:</strong> Over 200 rental scams reported in Port Harcourt last month. Don't be the next victim.
+            <strong>Scam Alert:</strong> Over 200 rental scams reported in Port Harcourt last month. Report to EFCC: 0809 325 3322
           </p>
         </div>
 
@@ -46,7 +46,7 @@ const Hero = () => {
               style={{ animationDelay: "0.1s" }}
             >
               <Shield className="w-4 h-4 mr-2" />
-              <span>ID Verified Agents Only</span>
+              <span>Rivers State Verified Agents Only</span>
             </div>
             
             <h1 
@@ -61,7 +61,7 @@ const Hero = () => {
               style={{ animationDelay: "0.5s" }} 
               className="section-subtitle opacity-0 animate-fade-in"
             >
-              No more WhatsApp chaos, fake agents, or losing your rent money. Find verified properties with ID-checked agents and secure your rent through bank-protected escrow. Your keys guaranteed or money back.
+              No more WhatsApp wahala, fake agents, or losing your hard-earned money. Find verified properties in GRA, Trans Amadi, D-Line and other Port Harcourt areas with ID-checked agents. Your keys guaranteed or full refund.
             </p>
 
             {/* Problem Points */}
@@ -77,11 +77,11 @@ const Hero = () => {
                 </div>
                 <div className="flex items-center text-gray-600">
                   <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
-                  No more property lies
+                  No more property lies in GRA
                 </div>
                 <div className="flex items-center text-gray-600">
                   <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
-                  No more paper receipts
+                  No more fake receipts
                 </div>
               </div>
             </div>
@@ -122,8 +122,8 @@ const Hero = () => {
           <div className="w-full lg:w-1/2 relative mt-6 lg:mt-0">
             <div className="robot-image-container bg-white">
               <img 
-                src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80" 
-                alt="Verified apartments in Port Harcourt" 
+                src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=800&q=80" 
+                alt="Modern duplex house in Port Harcourt GRA" 
                 className="w-full h-auto object-cover transition-transform duration-500 ease-out" 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-pulse-500/20 to-transparent"></div>
@@ -131,7 +131,7 @@ const Hero = () => {
               {/* Trust Badge Overlay */}
               <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-2 rounded-lg text-sm font-medium">
                 <Shield className="w-4 h-4 inline mr-1" />
-                Verified Property
+                PH Verified Property
               </div>
             </div>
           </div>

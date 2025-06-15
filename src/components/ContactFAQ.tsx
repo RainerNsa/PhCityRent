@@ -12,28 +12,28 @@ const ContactFAQ = () => {
 
   const faqs: FAQItem[] = [
     {
-      question: "How do I know if a listing is verified?",
-      answer: "All verified listings display a green 'Verified' badge. Our team physically inspects each property and verifies the agent's credentials before approval."
+      question: "How do I know if a Port Harcourt listing is verified?",
+      answer: "All verified listings display a green 'PH Verified' badge. Our local team physically inspects each property in areas like GRA, Trans Amadi, and Eliozu, and verifies the agent's credentials with Rivers State authorities."
     },
     {
-      question: "How does the escrow service work?",
-      answer: "You pay your rent into our secure escrow account. The funds are only released to the landlord after you've inspected the property and received the keys."
+      question: "How does the naira escrow service work?",
+      answer: "You pay your rent in naira into our secure escrow account through your Nigerian bank. Funds are only released to the landlord after you've inspected the property in Port Harcourt and received the keys."
     },
     {
-      question: "What happens if I encounter a scam?",
-      answer: "Report it immediately through our platform. We investigate all reports and provide full refunds for verified scam cases through our protection guarantee."
+      question: "What happens if I encounter a rental scam in Port Harcourt?",
+      answer: "Report it immediately to EFCC (0809 325 3322) and through our platform. We investigate all reports and provide full naira refunds for verified scam cases through our protection guarantee."
     },
     {
-      question: "How long does agent verification take?",
-      answer: "Agent verification typically takes 3-5 business days. We verify identity, business registration, and past client references."
+      question: "How long does Rivers State agent verification take?",
+      answer: "Agent verification typically takes 3-5 business days. We verify identity with valid Nigerian ID, Rivers State business registration, and references from past Port Harcourt clients."
     },
     {
-      question: "Are there any hidden fees?",
-      answer: "No hidden fees. Our service fee is clearly stated upfront, and the escrow service has a small transaction fee that's disclosed before payment."
+      question: "Are there any hidden fees in naira?",
+      answer: "No hidden fees. Our service fee is clearly stated in naira upfront, and the escrow service has a small transaction fee disclosed before payment - all in Nigerian naira."
     },
     {
-      question: "Can I cancel my rental agreement?",
-      answer: "Cancellation terms depend on your specific rental agreement with the landlord. Our escrow service protects your deposit during the initial verification period."
+      question: "Can I cancel my Port Harcourt rental agreement?",
+      answer: "Cancellation terms depend on your specific rental agreement with the Rivers State landlord. Our escrow service protects your naira deposit during the initial verification period."
     }
   ];
 
@@ -48,10 +48,10 @@ const ContactFAQ = () => {
         <div>
           <div className="mb-8">
             <h2 className="section-title text-gray-900 mb-4">
-              Get in Touch
+              Get in Touch - Port Harcourt Office
             </h2>
             <p className="section-subtitle">
-              Have questions? We're here to help you find your perfect home safely and securely.
+              Have questions? We're here to help you find your perfect home safely in Port Harcourt, Rivers State.
             </p>
           </div>
           
@@ -84,7 +84,7 @@ const ContactFAQ = () => {
               </div>
               <div>
                 <h3 className="font-display font-semibold text-gray-900 mb-1">Email</h3>
-                <p className="text-gray-600">support@rentphsafe.com</p>
+                <p className="text-gray-600">support@phcityrent.com</p>
                 <p className="text-sm text-gray-500">We'll respond within 24 hours</p>
               </div>
             </div>
@@ -94,21 +94,26 @@ const ContactFAQ = () => {
                 <MapPin className="w-6 h-6 text-orange-600" />
               </div>
               <div>
-                <h3 className="font-display font-semibold text-gray-900 mb-1">Office</h3>
-                <p className="text-gray-600">123 Aba Road, GRA Phase 2</p>
-                <p className="text-gray-600">Port Harcourt, Rivers State</p>
+                <h3 className="font-display font-semibold text-gray-900 mb-1">Port Harcourt Office</h3>
+                <p className="text-gray-600">Plot 15, Aba Road, GRA Phase 2</p>
+                <p className="text-gray-600">Port Harcourt, Rivers State, Nigeria</p>
               </div>
             </div>
           </div>
           
           <div className="mt-8 glass-card feature-card">
-            <h3 className="font-display font-semibold text-gray-900 mb-2">Need Immediate Help?</h3>
+            <h3 className="font-display font-semibold text-gray-900 mb-2">Need Immediate Help with Scams?</h3>
             <p className="text-gray-600 mb-4">
-              For urgent issues or suspected scams, contact our emergency hotline
+              For urgent rental scam issues in Port Harcourt, contact Nigerian authorities immediately
             </p>
-            <button className="bg-red-600 text-white px-6 py-2 rounded-full font-medium hover:bg-red-700 transition-colors">
-              Emergency Hotline: +234 (0) 700 SCAM HELP
-            </button>
+            <div className="space-y-2">
+              <button className="w-full bg-red-600 text-white px-6 py-2 rounded-full font-medium hover:bg-red-700 transition-colors">
+                EFCC Hotline: 0809 325 3322
+              </button>
+              <button className="w-full bg-blue-600 text-white px-6 py-2 rounded-full font-medium hover:bg-blue-700 transition-colors">
+                Rivers Police: 08037723634
+              </button>
+            </div>
           </div>
         </div>
         
@@ -116,10 +121,10 @@ const ContactFAQ = () => {
         <div>
           <div className="mb-8">
             <h2 className="section-title text-gray-900 mb-4">
-              Frequently Asked Questions
+              Port Harcourt Rental FAQ
             </h2>
             <p className="section-subtitle">
-              Find answers to common questions about our platform and services.
+              Find answers to common questions about renting safely in Port Harcourt, Rivers State.
             </p>
           </div>
           
@@ -147,9 +152,9 @@ const ContactFAQ = () => {
           </div>
           
           <div className="mt-8 text-center">
-            <p className="text-gray-600 mb-4">Still have questions?</p>
+            <p className="text-gray-600 mb-4">Still have questions about Port Harcourt rentals?</p>
             <button className="button-primary">
-              Contact Support
+              Contact PH Support
             </button>
           </div>
         </div>

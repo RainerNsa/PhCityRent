@@ -14,18 +14,25 @@ const FeaturedListings = () => {
     ? featuredProperties 
     : properties.slice(0, 3);
 
+  // Authentic Nigerian property images
+  const nigerianPropertyImages = [
+    "https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=800&q=80", // Modern Nigerian duplex
+    "https://images.unsplash.com/photo-1565402170291-8491f14678db?auto=format&fit=crop&w=800&q=80", // Nigerian residential building
+    "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?auto=format&fit=crop&w=800&q=80"  // Nigerian modern home
+  ];
+
   return (
     <section className="section-container bg-white animate-on-scroll" id="listings">
       <div className="text-center mb-12">
         <div className="pulse-chip mb-4">
           <Shield className="w-4 h-4 mr-2" />
-          <span>Verified Listings</span>
+          <span>Port Harcourt Verified Listings</span>
         </div>
         <h2 className="section-title text-gray-900 mb-4">
-          Featured Properties
+          Featured Properties in Port Harcourt
         </h2>
         <p className="section-subtitle">
-          Discover verified rental properties from trusted agents across Port Harcourt
+          Discover verified rental properties from trusted agents across GRA, Trans Amadi, D-Line and other Port Harcourt areas
         </p>
       </div>
 
@@ -41,14 +48,14 @@ const FeaturedListings = () => {
             <div key={property.id} className={`glass-card feature-card hover-lift fadeIn stagger-${(index % 3) + 1}`}>
               <div className="relative">
                 <img 
-                  src={property.images?.[0] || '/placeholder.svg'} 
+                  src={property.images?.[0] || nigerianPropertyImages[index % nigerianPropertyImages.length]} 
                   alt={property.title}
                   className="w-full h-48 object-cover rounded-lg"
                 />
                 {property.is_verified && (
                   <div className="absolute top-4 right-4 bg-pulse-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center">
                     <Shield className="w-3 h-3 mr-1" />
-                    Verified
+                    PH Verified
                   </div>
                 )}
               </div>
@@ -94,7 +101,7 @@ const FeaturedListings = () => {
       <div className="text-center mt-12">
         <Link to="/properties">
           <button className="button-primary">
-            View All Properties
+            View All Port Harcourt Properties
           </button>
         </Link>
       </div>

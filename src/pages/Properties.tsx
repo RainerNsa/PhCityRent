@@ -3,10 +3,11 @@ import React, { useState } from "react";
 import Navbar from "@/components/navigation/Navbar";
 import Footer from "@/components/Footer";
 import PropertyCard from "@/components/properties/PropertyCard";
+import PropertyMap from "@/components/properties/PropertyMap";
 import AdvancedSearch from "@/components/search/AdvancedSearch";
 import PropertyAuthPrompt from "@/components/properties/PropertyAuthPrompt";
 import { useProperties } from "@/hooks/useProperties";
-import { Home, SortAsc } from "lucide-react";
+import { Home, SortAsc, MapPin, Grid3X3 } from "lucide-react";
 
 const Properties = () => {
   const [filters, setFilters] = useState({
@@ -17,7 +18,7 @@ const Properties = () => {
     propertyType: "all"
   });
   const [sortBy, setSortBy] = useState("newest");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [viewMode, setViewMode] = useState<"grid" | "list" | "map">("grid");
 
   const { data: properties = [], isLoading, error } = useProperties({
     search: filters.search,
@@ -30,6 +31,11 @@ const Properties = () => {
 
   const handleFilterChange = (newFilters: typeof filters) => {
     setFilters(newFilters);
+  };
+
+  const handlePropertySelect = (property: any) => {
+    // Scroll to property in list view or navigate to detail page
+    window.location.href = `/properties/${property.id}`;
   };
 
   const sortedProperties = [...properties].sort((a, b) => {
@@ -92,12 +98,13 @@ const Properties = () => {
               <div className="flex border border-gray-300 rounded-lg overflow-hidden">
                 <button
                   onClick={() => setViewMode("grid")}
-                  className={`px-3 py-2 text-sm ${
+                  className={`px-3 py-2 text-sm flex items-center gap-1 ${
                     viewMode === "grid"
                       ? "bg-orange-500 text-white"
                       : "bg-white text-gray-700 hover:bg-gray-50"
                   }`}
                 >
+                  <Grid3X3 className="w-4 h-4" />
                   Grid
                 </button>
                 <button
@@ -109,6 +116,17 @@ const Properties = () => {
                   }`}
                 >
                   List
+                </button>
+                <button
+                  onClick={() => setViewMode("map")}
+                  className={`px-3 py-2 text-sm flex items-center gap-1 ${
+                    viewMode === "map"
+                      ? "bg-orange-500 text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  <MapPin className="w-4 h-4" />
+                  Map
                 </button>
               </div>
             </div>
@@ -141,8 +159,37 @@ const Properties = () => {
             </div>
           )}
 
-          {/* Properties Grid */}
-          {!isLoading && !error && sortedProperties.length > 0 && (
+          {/* Map View */}
+          {!isLoading && !error && viewMode === "map" && (
+            <div className="space-y-6">
+              <PropertyMap 
+                properties={sortedProperties} 
+                onPropertySelect={handlePropertySelect}
+                height="600px"
+              />
+              
+              {/* Properties list below map */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {sortedProperties.slice(0, 6).map((property) => (
+                  <PropertyCard key={property.id} property={property} />
+                ))}
+              </div>
+              
+              {sortedProperties.length > 6 && (
+                <div className="text-center">
+                  <button
+                    onClick={() => setViewMode("grid")}
+                    className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+                  >
+                    View All {sortedProperties.length} Properties
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Grid/List View */}
+          {!isLoading && !error && viewMode !== "map" && sortedProperties.length > 0 && (
             <div className={
               viewMode === "grid"
                 ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"

@@ -15,8 +15,8 @@ const ApplicationsToolbar = ({
   onClearSelection
 }: ApplicationsToolbarProps) => {
   return (
-    <div className="flex flex-col lg:flex-row gap-4">
-      <div className="flex-1">
+    <div className="flex flex-col space-y-4">
+      <div className="w-full">
         <EnhancedBulkActions
           selectedApplications={selectedApplications}
           onBulkActionComplete={onBulkActionComplete}
@@ -24,7 +24,9 @@ const ApplicationsToolbar = ({
         />
       </div>
       
-      <ExportTools selectedApplications={selectedApplications} />
+      <div className="w-full">
+        <ExportTools selectedApplications={selectedApplications} />
+      </div>
     </div>
   );
 };

@@ -75,26 +75,50 @@ const AdminApplicationsList = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <ApplicationsFilter
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        statusFilter={statusFilter}
-        onStatusChange={setStatusFilter}
-        dateRange={dateRange}
-        onDateRangeChange={setDateRange}
-        areaFilter={areaFilter}
-        onAreaChange={setAreaFilter}
-        activeFilters={getActiveFilters()}
-        onClearFilters={clearAllFilters}
-      />
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-0">
+      {/* Filters Section */}
+      <div className="bg-white rounded-lg shadow-sm">
+        <ApplicationsFilter
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          statusFilter={statusFilter}
+          onStatusChange={setStatusFilter}
+          dateRange={dateRange}
+          onDateRangeChange={setDateRange}
+          areaFilter={areaFilter}
+          onAreaChange={setAreaFilter}
+          activeFilters={getActiveFilters()}
+          onClearFilters={clearAllFilters}
+        />
+      </div>
 
-      <ApplicationsToolbar
-        selectedApplications={selectedApplications}
-        onBulkActionComplete={refetch}
-        onClearSelection={() => setSelectedApplications([])}
-      />
+      {/* Results Summary - Mobile Optimized */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
+        <div className="text-sm text-gray-600">
+          <span className="font-medium">{filteredApplications.length}</span> applications found
+          {getActiveFilters().length > 0 && (
+            <span className="block sm:inline sm:ml-2 text-xs text-gray-500">
+              ({getActiveFilters().length} filters active)
+            </span>
+          )}
+        </div>
+        {selectedApplications.length > 0 && (
+          <div className="text-sm font-medium text-blue-600">
+            {selectedApplications.length} selected
+          </div>
+        )}
+      </div>
 
+      {/* Toolbar */}
+      {selectedApplications.length > 0 && (
+        <ApplicationsToolbar
+          selectedApplications={selectedApplications}
+          onBulkActionComplete={refetch}
+          onClearSelection={() => setSelectedApplications([])}
+        />
+      )}
+
+      {/* Applications Grid */}
       <ApplicationsGrid
         applications={filteredApplications}
         selectedApplications={selectedApplications}
@@ -103,6 +127,7 @@ const AdminApplicationsList = () => {
         onViewDetails={setSelectedApplication}
       />
 
+      {/* Application Details Modal */}
       <ApplicationDetailsModal
         application={selectedApplication}
         isOpen={!!selectedApplication}

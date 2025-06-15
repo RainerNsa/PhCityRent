@@ -52,27 +52,36 @@ const ApplicationsGrid = ({
 
   return (
     <div className="space-y-4">
-      {/* Select All Checkbox */}
-      <div className="flex items-center gap-2 p-2 bg-gray-50 rounded">
+      {/* Select All Checkbox - Mobile Optimized */}
+      <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border">
         <Checkbox
           id="select-all"
           checked={selectedApplications.length === applications.length}
           onCheckedChange={onSelectAll}
+          className="min-w-[16px]"
         />
-        <label htmlFor="select-all" className="text-sm font-medium cursor-pointer">
-          Select all {applications.length} applications
+        <label htmlFor="select-all" className="text-sm font-medium cursor-pointer flex-1">
+          <span className="block sm:inline">Select all {applications.length} applications</span>
+          {selectedApplications.length > 0 && (
+            <span className="block sm:inline sm:ml-2 text-blue-600">
+              ({selectedApplications.length} selected)
+            </span>
+          )}
         </label>
       </div>
 
-      {/* Applications Grid */}
-      <div className="grid gap-4">
+      {/* Applications Grid - Mobile Optimized */}
+      <div className="space-y-3">
         {applications.map((application) => (
-          <div key={application.id} className="flex items-center gap-3">
-            <Checkbox
-              checked={selectedApplications.includes(application.id)}
-              onCheckedChange={(checked) => onSelectApplication(application.id, checked as boolean)}
-            />
-            <div className="flex-1">
+          <div key={application.id} className="flex items-start gap-3 p-1">
+            <div className="pt-2">
+              <Checkbox
+                checked={selectedApplications.includes(application.id)}
+                onCheckedChange={(checked) => onSelectApplication(application.id, checked as boolean)}
+                className="min-w-[16px]"
+              />
+            </div>
+            <div className="flex-1 min-w-0">
               <ApplicationCard
                 application={application}
                 onViewDetails={onViewDetails}

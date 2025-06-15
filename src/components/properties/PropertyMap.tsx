@@ -146,7 +146,12 @@ const PropertyMap = ({ properties, onPropertySelect, height = "400px", selectedP
     const selectedMarker = markers.current.find(marker => {
       // This is a bit hacky, but we need to identify the marker somehow
       const popup = marker.getPopup();
-      return popup && popup.getHTML().includes(selectedProperty.id);
+      if (popup) {
+        // Get popup content and check if it contains the property ID
+        const popupElement = popup.getElement();
+        return popupElement && popupElement.innerHTML.includes(selectedProperty.id);
+      }
+      return false;
     });
 
     if (selectedMarker) {

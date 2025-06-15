@@ -5,8 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { useCreateEscrowPayment } from '@/hooks/useEscrow';
+import { usePaystack } from '@/hooks/usePaystack';
 import { DollarSign, Shield, Clock } from 'lucide-react';
 
 interface EscrowFormProps {
@@ -23,9 +22,9 @@ const EscrowForm = ({ propertyId, propertyTitle }: EscrowFormProps) => {
     transactionType: 'rent_deposit',
   });
 
-  const createPayment = useCreateEscrowPayment();
+  const { initializePayment, isLoading } = usePaystack();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!propertyId) {
@@ -33,16 +32,31 @@ const EscrowForm = ({ propertyId, propertyTitle }: EscrowFormProps) => {
       return;
     }
 
-    const amount = parseInt(formData.amount) * 100; // Convert to cents
+    const amount = parseInt(formData.amount);
+    const escrowFee = amount * 0.025;
+    const totalAmount = amount + escrowFee;
     
-    createPayment.mutate({
-      propertyId,
-      amount,
-      tenantName: formData.tenantName,
-      tenantEmail: formData.tenantEmail,
-      tenantPhone: formData.tenantPhone,
-      transactionType: formData.transactionType,
-    });
+    // Generate unique reference
+    const reference = `escrow_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+    try {
+      await initializePayment({
+        email: formData.tenantEmail,
+        amount: totalAmount,
+        reference,
+        metadata: {
+          propertyId,
+          tenantName: formData.tenantName,
+          tenantPhone: formData.tenantPhone,
+          transactionType: formData.transactionType,
+          originalAmount: amount,
+          escrowFee,
+        },
+        callback_url: `${window.location.origin}/escrow/success`,
+      });
+    } catch (error) {
+      console.error('Payment initialization failed:', error);
+    }
   };
 
   const escrowFee = formData.amount ? (parseInt(formData.amount) * 0.025).toFixed(2) : '0.00';
@@ -112,7 +126,7 @@ const EscrowForm = ({ propertyId, propertyTitle }: EscrowFormProps) => {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="amount">Amount ($)</Label>
+              <Label htmlFor="amount">Amount (₦)</Label>
               <Input
                 id="amount"
                 type="number"
@@ -130,15 +144,15 @@ const EscrowForm = ({ propertyId, propertyTitle }: EscrowFormProps) => {
               <div className="space-y-1 text-sm">
                 <div className="flex justify-between">
                   <span>Transaction Amount:</span>
-                  <span>${formData.amount}</span>
+                  <span>₦{parseInt(formData.amount).toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Escrow Fee (2.5%):</span>
-                  <span>${escrowFee}</span>
+                  <span>₦{parseFloat(escrowFee).toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between font-semibold border-t pt-1">
                   <span>Total to Pay:</span>
-                  <span>${totalAmount}</span>
+                  <span>₦{parseFloat(totalAmount).toLocaleString()}</span>
                 </div>
               </div>
             </div>
@@ -171,9 +185,9 @@ const EscrowForm = ({ propertyId, propertyTitle }: EscrowFormProps) => {
           <Button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700"
-            disabled={createPayment.isPending}
+            disabled={isLoading}
           >
-            {createPayment.isPending ? 'Processing...' : 'Proceed to Secure Payment'}
+            {isLoading ? 'Processing...' : 'Proceed to Secure Payment'}
           </Button>
         </form>
       </CardContent>

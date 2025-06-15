@@ -5,11 +5,13 @@ import Footer from "@/components/Footer";
 import PropertyCard from "@/components/properties/PropertyCard";
 import PropertyMap from "@/components/properties/PropertyMap";
 import AdvancedSearch from "@/components/search/AdvancedSearch";
-import PropertyAuthPrompt from "@/components/properties/PropertyAuthPrompt";
+import AuthPrompt from "@/components/auth/AuthPrompt";
 import { useProperties } from "@/hooks/useProperties";
+import { useAuth } from "@/hooks/useAuth";
 import { Home, SortAsc, MapPin, Grid3X3 } from "lucide-react";
 
 const Properties = () => {
+  const { user } = useAuth();
   const [filters, setFilters] = useState({
     search: "",
     location: "all",
@@ -34,7 +36,6 @@ const Properties = () => {
   };
 
   const handlePropertySelect = (property: any) => {
-    // Scroll to property in list view or navigate to detail page
     window.location.href = `/properties/${property.id}`;
   };
 
@@ -65,7 +66,16 @@ const Properties = () => {
         </div>
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <PropertyAuthPrompt />
+          {/* Authentication Prompt for Non-Users */}
+          {!user && (
+            <div className="mb-8">
+              <AuthPrompt 
+                variant="compact"
+                title="Get the Full Experience"
+                description="Sign up to save properties, get alerts, and contact agents directly"
+              />
+            </div>
+          )}
           
           <div className="mb-8">
             <AdvancedSearch onFiltersChange={handleFilterChange} />
@@ -207,6 +217,13 @@ const Properties = () => {
               <Home className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-gray-600 mb-2">No Properties Found</h3>
               <p className="text-gray-500">Try adjusting your search criteria to find more properties.</p>
+            </div>
+          )}
+
+          {/* Auth Prompt for Non-Users at Bottom */}
+          {!user && sortedProperties.length > 0 && (
+            <div className="mt-12">
+              <AuthPrompt />
             </div>
           )}
         </div>

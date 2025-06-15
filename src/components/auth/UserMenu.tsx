@@ -51,12 +51,12 @@ const UserMenu = () => {
           <span>My Profile</span>
         </DropdownMenuItem>
 
-        <DropdownMenuItem onClick={() => navigate('/profile')}>
+        <DropdownMenuItem onClick={() => navigate('/profile?tab=saved')}>
           <Heart className="mr-2 h-4 w-4" />
           <span>Saved Properties</span>
         </DropdownMenuItem>
 
-        <DropdownMenuItem onClick={() => navigate('/profile')}>
+        <DropdownMenuItem onClick={() => navigate('/profile?tab=alerts')}>
           <Bell className="mr-2 h-4 w-4" />
           <span>Property Alerts</span>
         </DropdownMenuItem>

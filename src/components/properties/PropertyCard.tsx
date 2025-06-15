@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { MapPin, Bed, Bath, DollarSign,  } from "lucide-react";
+import { MapPin, Bed, Bath, DollarSign, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Property {

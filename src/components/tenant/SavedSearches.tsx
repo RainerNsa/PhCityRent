@@ -10,6 +10,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useSavedSearches, useCreateSavedSearch, useDeleteSavedSearch } from '@/hooks/useSavedSearches';
 import { Search, Bell, Trash2, Plus } from 'lucide-react';
 
+// Define the search criteria type
+interface SearchCriteria {
+  location?: string;
+  priceRange?: string;
+  bedrooms?: string;
+}
+
 const SavedSearches = () => {
   const { data: searches, isLoading } = useSavedSearches();
   const createSearch = useCreateSavedSearch();
@@ -28,7 +35,7 @@ const SavedSearches = () => {
   const handleCreateSearch = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const searchCriteria = {
+    const searchCriteria: SearchCriteria = {
       location: newSearch.location,
       priceRange: newSearch.priceMin && newSearch.priceMax ? 
         `${parseInt(newSearch.priceMin) * 12}-${parseInt(newSearch.priceMax) * 12}` : '',
@@ -186,56 +193,61 @@ const SavedSearches = () => {
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {searches.map((search) => (
-            <Card key={search.id}>
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg">{search.search_name}</CardTitle>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => deleteSearch.mutate(search.id)}
-                    className="text-red-600 hover:text-red-700"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="space-y-2 text-sm">
-                  {search.search_criteria.location && (
-                    <div>
-                      <span className="font-medium">Location:</span> {search.search_criteria.location}
-                    </div>
-                  )}
-                  {search.search_criteria.priceRange && (
-                    <div>
-                      <span className="font-medium">Price:</span> ${Math.round(search.search_criteria.priceRange.split('-')[0] / 12)}-${Math.round(search.search_criteria.priceRange.split('-')[1] / 12)}/month
-                    </div>
-                  )}
-                  {search.search_criteria.bedrooms && (
-                    <div>
-                      <span className="font-medium">Bedrooms:</span> {search.search_criteria.bedrooms}
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Bell className="w-4 h-4 text-blue-600" />
-                    <Badge variant="outline">{search.alert_frequency}</Badge>
+          {searches.map((search) => {
+            // Type cast the search_criteria to our SearchCriteria interface
+            const criteria = search.search_criteria as SearchCriteria;
+            
+            return (
+              <Card key={search.id}>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">{search.search_name}</CardTitle>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => deleteSearch.mutate(search.id)}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
                   </div>
-                  <Badge variant={search.is_active ? "default" : "secondary"}>
-                    {search.is_active ? 'Active' : 'Paused'}
-                  </Badge>
-                </div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="space-y-2 text-sm">
+                    {criteria?.location && (
+                      <div>
+                        <span className="font-medium">Location:</span> {criteria.location}
+                      </div>
+                    )}
+                    {criteria?.priceRange && (
+                      <div>
+                        <span className="font-medium">Price:</span> ${Math.round(parseInt(criteria.priceRange.split('-')[0]) / 12)}-${Math.round(parseInt(criteria.priceRange.split('-')[1]) / 12)}/month
+                      </div>
+                    )}
+                    {criteria?.bedrooms && (
+                      <div>
+                        <span className="font-medium">Bedrooms:</span> {criteria.bedrooms}
+                      </div>
+                    )}
+                  </div>
 
-                <div className="text-xs text-gray-500">
-                  Created {new Date(search.created_at).toLocaleDateString()}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Bell className="w-4 h-4 text-blue-600" />
+                      <Badge variant="outline">{search.alert_frequency}</Badge>
+                    </div>
+                    <Badge variant={search.is_active ? "default" : "secondary"}>
+                      {search.is_active ? 'Active' : 'Paused'}
+                    </Badge>
+                  </div>
+
+                  <div className="text-xs text-gray-500">
+                    Created {new Date(search.created_at).toLocaleDateString()}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       )}
     </div>

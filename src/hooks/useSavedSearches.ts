@@ -28,9 +28,17 @@ export const useCreateSavedSearch = () => {
       searchCriteria: any;
       alertFrequency: string;
     }) => {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) throw new Error('User not authenticated');
+
       const { data: result, error } = await supabase
         .from('saved_searches')
-        .insert(data)
+        .insert({
+          search_name: data.searchName,
+          search_criteria: data.searchCriteria,
+          alert_frequency: data.alertFrequency,
+          user_id: user.id,
+        })
         .select()
         .single();
 

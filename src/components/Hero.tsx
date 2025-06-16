@@ -1,166 +1,132 @@
 
-import React, { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
-import { ArrowRight, Shield, Home, Users, UserPlus } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import React from "react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Building2, MapPin, Users, Shield, ArrowRight, Star } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
-  const { user } = useAuth();
+  const stats = [
+    { icon: Building2, value: "500+", label: "Premium Properties" },
+    { icon: Users, value: "2000+", label: "Happy Tenants" },
+    { icon: Shield, value: "100%", label: "Verified Listings" },
+    { icon: Star, value: "4.9", label: "Average Rating" },
+  ];
 
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-  
   return (
-    <section 
-      className="overflow-hidden relative" 
-      id="hero" 
-      style={{
-        background: 'linear-gradient(180deg, rgba(249,115,22,0.03) 0%, rgba(249,115,22,0.08) 50%, rgba(249,115,22,0.03) 100%)',
-        padding: isMobile ? '100px 12px 40px' : '120px 20px 60px'
-      }}
-    >
-      <div className="absolute -top-[10%] -right-[5%] w-1/2 h-[70%] bg-pulse-400/20 opacity-20 blur-3xl rounded-full"></div>
-      
-      <div className="container px-4 sm:px-6 lg:px-8" ref={containerRef}>
-        {/* Authentication Prompt for Non-Users */}
-        {!user && (
-          <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-between gap-3 opacity-0 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            <div className="flex items-center gap-3">
-              <UserPlus className="w-5 h-5 text-orange-600 flex-shrink-0" />
-              <p className="text-sm text-orange-700">
-                <strong>Join PHCityRent:</strong> Create an account to save searches, get property alerts, and contact verified agents directly.
-              </p>
-            </div>
-            <Link to="/auth">
-              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white whitespace-nowrap">
-                Sign Up Free
-              </Button>
-            </Link>
-          </div>
-        )}
+    <section className="relative min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-orange-200/30 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-red-200/30 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-orange-100/20 to-red-100/20 rounded-full blur-3xl"></div>
+      </div>
 
-        <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 items-center">
-          <div className="w-full lg:w-1/2">
-            <div 
-              className="pulse-chip mb-3 sm:mb-6 opacity-0 animate-fade-in" 
-              style={{ animationDelay: "0.1s" }}
-            >
-              <Shield className="w-4 h-4 mr-2" />
-              <span>Rivers State Verified Agents Only</span>
+      <div className="relative container mx-auto px-4 pt-32 pb-20">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left Content */}
+          <div className="space-y-8">
+            <div className="space-y-2">
+              <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white border-0 px-4 py-2 text-sm font-medium">
+                🏆 #1 Rental Platform in Port Harcourt
+              </Badge>
+              <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
+                Find Your
+                <span className="block bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                  Perfect Home
+                </span>
+                in Port Harcourt
+              </h1>
             </div>
-            
-            <h1 
-              className="section-title opacity-0 animate-fade-in text-gray-900" 
-              style={{ animationDelay: "0.3s" }}
-            >
-              Stop Paying Double Rent<br className="hidden sm:inline" />
-              <span className="text-mask-image bg-hero-gradient">in Port Harcourt</span>
-            </h1>
-            
-            <p 
-              style={{ animationDelay: "0.5s" }} 
-              className="section-subtitle opacity-0 animate-fade-in"
-            >
-              No more WhatsApp wahala, fake agents, or losing your hard-earned money. Find verified properties in GRA, Trans Amadi, D-Line and other Port Harcourt areas with ID-checked agents. Your keys guaranteed or full refund.
+
+            <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
+              Discover premium rental properties with verified listings, transparent pricing, 
+              and secure transactions. Your dream home is just a click away.
             </p>
 
-            {/* Problem Points */}
-            <div className="mb-6 opacity-0 animate-fade-in" style={{ animationDelay: "0.6s" }}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                <div className="flex items-center text-gray-600">
-                  <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
-                  No more fake agent numbers
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link to="/properties">
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 group"
+                >
+                  Explore Properties
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
+                </Button>
+              </Link>
+              <Link to="/agents">
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="border-2 border-orange-300 text-orange-600 hover:bg-orange-50 px-8 py-4 text-lg font-semibold"
+                >
+                  Find an Agent
+                </Button>
+              </Link>
+            </div>
+
+            {/* Quick Search */}
+            <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800">Quick Property Search</h3>
+              <div className="grid sm:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-600">Location</label>
+                  <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
+                    <MapPin className="h-4 w-4 text-orange-500" />
+                    <span className="text-sm text-gray-700">Port Harcourt, Rivers</span>
+                  </div>
                 </div>
-                <div className="flex items-center text-gray-600">
-                  <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
-                  No more double payments
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-600">Property Type</label>
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <span className="text-sm text-gray-700">Apartment</span>
+                  </div>
                 </div>
-                <div className="flex items-center text-gray-600">
-                  <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
-                  No more property lies in GRA
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-600">Budget</label>
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <span className="text-sm text-gray-700">₦200k - ₦500k</span>
+                  </div>
                 </div>
-                <div className="flex items-center text-gray-600">
-                  <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
-                  No more fake receipts
+              </div>
+              <Link to="/properties">
+                <Button className="w-full mt-4 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white">
+                  Search Properties
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Right Content - Image */}
+          <div className="relative">
+            <div className="relative z-10">
+              <img 
+                src="https://images.unsplash.com/photo-1721322800607-8c38375eef04?auto=format&fit=crop&w=800&q=80" 
+                alt="Modern apartment interior"
+                className="rounded-3xl shadow-2xl w-full h-[600px] object-cover"
+              />
+              
+              {/* Floating Stats Card */}
+              <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                <div className="grid grid-cols-2 gap-4">
+                  {stats.map((stat, index) => (
+                    <div key={index} className="text-center">
+                      <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mb-2 mx-auto">
+                        <stat.icon className="h-5 w-5 text-white" />
+                      </div>
+                      <div className="text-lg font-bold text-gray-900">{stat.value}</div>
+                      <div className="text-xs text-gray-600">{stat.label}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
             
-            <div 
-              className="flex flex-col sm:flex-row gap-4 opacity-0 animate-fade-in" 
-              style={{ animationDelay: "0.7s" }}
-            >
-              <Link 
-                to="/properties" 
-                className="button-primary group"
-              >
-                <Home className="mr-2 w-5 h-5" />
-                Find Verified Property
-                <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-              
-              {!user ? (
-                <Link 
-                  to="/auth" 
-                  className="button-secondary"
-                >
-                  <UserPlus className="mr-2 w-5 h-5" />
-                  Join Free - No Scams
-                </Link>
-              ) : (
-                <Link 
-                  to="/agents" 
-                  className="button-secondary"
-                >
-                  <Users className="mr-2 w-5 h-5" />
-                  Report Fake Agent
-                </Link>
-              )}
-            </div>
-
-            {/* Trust Indicators */}
-            <div className="mt-6 opacity-0 animate-fade-in" style={{ animationDelay: "0.8s" }}>
-              <p className="text-sm text-gray-500 mb-2">Trusted by Port Harcourt residents:</p>
-              <div className="flex items-center gap-4 text-xs text-gray-400">
-                <span>✓ NYSC Corps Members</span>
-                <span>✓ UNIPORT Students</span>
-                <span>✓ Oil & Gas Workers</span>
-              </div>
-            </div>
-          </div>
-          
-          <div className="w-full lg:w-1/2 relative mt-6 lg:mt-0">
-            <div className="robot-image-container bg-white">
-              <img 
-                src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=800&q=80" 
-                alt="Modern duplex house in Port Harcourt GRA" 
-                className="w-full h-auto object-cover transition-transform duration-500 ease-out" 
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-pulse-500/20 to-transparent"></div>
-              
-              {/* Trust Badge Overlay */}
-              <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-2 rounded-lg text-sm font-medium">
-                <Shield className="w-4 h-4 inline mr-1" />
-                PH Verified Property
-              </div>
-            </div>
+            {/* Background decoration */}
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-200/20 to-red-200/20 rounded-3xl transform rotate-3 scale-105 -z-10"></div>
           </div>
         </div>
       </div>
-      
-      <div className="hidden lg:block absolute bottom-0 left-1/4 w-64 h-64 bg-pulse-100/30 rounded-full blur-3xl -z-10"></div>
     </section>
   );
 };

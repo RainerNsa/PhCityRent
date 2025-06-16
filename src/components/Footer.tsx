@@ -1,131 +1,178 @@
 
 import React from "react";
+import { Building2, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Home, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
+  const footerLinks = {
+    company: [
+      { name: "About Us", href: "/about" },
+      { name: "Properties", href: "/properties" },
+      { name: "Agents", href: "/agents" },
+      { name: "Landlords", href: "/landlords" },
+    ],
+    services: [
+      { name: "Property Search", href: "/properties" },
+      { name: "Rental Management", href: "/property-management" },
+      { name: "Tenant Portal", href: "/tenant-portal" },
+      { name: "Agent Services", href: "/agents" },
+    ],
+    support: [
+      { name: "Contact Us", href: "/contact" },
+      { name: "Help Center", href: "/help" },
+      { name: "Privacy Policy", href: "/privacy" },
+      { name: "Terms of Service", href: "/terms" },
+    ]
+  };
+
+  const contactInfo = [
+    { icon: Phone, text: "+234 (0) 813 456 7890", href: "tel:+2348134567890" },
+    { icon: Mail, text: "hello@phcityrent.com", href: "mailto:hello@phcityrent.com" },
+    { icon: MapPin, text: "Port Harcourt, Rivers State, Nigeria", href: "#" },
+  ];
+
+  const socialLinks = [
+    { icon: Facebook, href: "#", label: "Facebook" },
+    { icon: Twitter, href: "#", label: "Twitter" },
+    { icon: Instagram, href: "#", label: "Instagram" },
+    { icon: Linkedin, href: "#", label: "LinkedIn" },
+  ];
+
   return (
-    <footer className="w-full bg-gray-900 text-white py-12">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Company Info */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <div className="bg-orange-500 p-2 rounded-lg">
-                <Home className="h-5 w-5 text-white" />
+    <footer className="bg-gray-900 text-white">
+      <div className="container mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+          {/* Brand Section */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl shadow-lg">
+                <Building2 className="h-7 w-7 text-white" />
               </div>
-              <span className="text-xl font-bold">PHCityRent</span>
+              <div>
+                <h3 className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+                  PhCityRent
+                </h3>
+                <p className="text-sm text-gray-400">Premium Rentals</p>
+              </div>
             </div>
-            <p className="text-gray-300 text-sm leading-relaxed">
-              Port Harcourt's most trusted rental platform. Find verified properties, connect with reliable agents, and secure your rent payments in Port Harcourt.
+            
+            <p className="text-gray-300 leading-relaxed max-w-md">
+              Your trusted partner for premium rental properties in Port Harcourt. 
+              We connect tenants with verified landlords and provide secure, 
+              transparent rental experiences.
             </p>
-            <div className="flex space-x-4">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" 
-                 className="text-gray-400 hover:text-white transition-colors">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"
-                 className="text-gray-400 hover:text-white transition-colors">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"
-                 className="text-gray-400 hover:text-white transition-colors">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"
-                 className="text-gray-400 hover:text-white transition-colors">
-                <Linkedin className="w-5 h-5" />
-              </a>
+            
+            <div className="space-y-3">
+              {contactInfo.map((item, index) => (
+                <a
+                  key={index}
+                  href={item.href}
+                  className="flex items-center space-x-3 text-gray-300 hover:text-orange-400 transition-colors duration-200"
+                >
+                  <item.icon className="h-5 w-5 text-orange-500" />
+                  <span>{item.text}</span>
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Company Links */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Quick Links</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link to="/properties" className="text-gray-300 hover:text-white transition-colors">
-                  Browse Properties
-                </Link>
-              </li>
-              <li>
-                <Link to="/agents" className="text-gray-300 hover:text-white transition-colors">
-                  Find Agents
-                </Link>
-              </li>
-              <li>
-                <Link to="/escrow" className="text-gray-300 hover:text-white transition-colors">
-                  Escrow Service
-                </Link>
-              </li>
-              <li>
-                <Link to="/landlords" className="text-gray-300 hover:text-white transition-colors">
-                  For Landlords
-                </Link>
-              </li>
+            <h4 className="text-lg font-semibold text-white">Company</h4>
+            <ul className="space-y-2">
+              {footerLinks.company.map((link, index) => (
+                <li key={index}>
+                  <Link
+                    to={link.href}
+                    className="text-gray-300 hover:text-orange-400 transition-colors duration-200"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Services */}
+          {/* Services Links */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Our Services</h3>
-            <ul className="space-y-2 text-sm">
-              <li className="text-gray-300">Property Verification</li>
-              <li className="text-gray-300">Agent Verification</li>
-              <li className="text-gray-300">Secure Rent Payments</li>
-              <li className="text-gray-300">Property Management</li>
-              <li className="text-gray-300">Tenant Screening</li>
-              <li className="text-gray-300">Legal Support</li>
+            <h4 className="text-lg font-semibold text-white">Services</h4>
+            <ul className="space-y-2">
+              {footerLinks.services.map((link, index) => (
+                <li key={index}>
+                  <Link
+                    to={link.href}
+                    className="text-gray-300 hover:text-orange-400 transition-colors duration-200"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Contact Info */}
+          {/* Support Links */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Contact Us</h3>
-            <div className="space-y-3 text-sm">
-              <div className="flex items-start space-x-3">
-                <MapPin className="w-4 h-4 text-orange-500 mt-1 flex-shrink-0" />
-                <span className="text-gray-300">
-                  123 Trans Amadi Industrial Layout,<br />
-                  Port Harcourt, Rivers State
-                </span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Phone className="w-4 h-4 text-orange-500 flex-shrink-0" />
-                <span className="text-gray-300">+234 803 123 4567</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Mail className="w-4 h-4 text-orange-500 flex-shrink-0" />
-                <span className="text-gray-300">hello@phcityrent.com</span>
-              </div>
+            <h4 className="text-lg font-semibold text-white">Support</h4>
+            <ul className="space-y-2">
+              {footerLinks.support.map((link, index) => (
+                <li key={index}>
+                  <Link
+                    to={link.href}
+                    className="text-gray-300 hover:text-orange-400 transition-colors duration-200"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Newsletter Section */}
+        <div className="mt-12 pt-8 border-t border-gray-800">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h4 className="text-xl font-semibold text-white mb-2">
+                Stay Updated with PhCityRent
+              </h4>
+              <p className="text-gray-300">
+                Get the latest property listings and rental insights delivered to your inbox.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input
+                type="email"
+                placeholder="Enter your email address"
+                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+              <button className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold rounded-lg transition-all duration-200">
+                Subscribe
+              </button>
             </div>
           </div>
         </div>
 
         {/* Bottom Section */}
-        <div className="border-t border-gray-800 mt-8 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="text-sm text-gray-400">
-              <p>&copy; 2024 PHCityRent. All rights reserved.</p>
-            </div>
-            
-            <div className="flex flex-wrap justify-center md:justify-end space-x-6 text-sm">
-              <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors">
-                Privacy Policy
-              </Link>
-              <Link to="/terms" className="text-gray-400 hover:text-white transition-colors">
-                Terms of Service
-              </Link>
-              <Link to="/contact" className="text-gray-400 hover:text-white transition-colors">
-                Support
-              </Link>
-            </div>
-          </div>
-          
-          <div className="text-center mt-4 pt-4 border-t border-gray-800">
-            <p className="text-xs text-gray-500">
-              Built with ❤️ for Port Harcourt renters - Making housing safe and accessible
+        <div className="mt-12 pt-8 border-t border-gray-800">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-gray-400 text-sm">
+              © {currentYear} PhCityRent. All rights reserved. Built with ❤️ in Port Harcourt.
             </p>
+            
+            <div className="flex items-center space-x-4">
+              {socialLinks.map((social, index) => (
+                <a
+                  key={index}
+                  href={social.href}
+                  aria-label={social.label}
+                  className="flex items-center justify-center w-10 h-10 bg-gray-800 hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 rounded-full transition-all duration-200 group"
+                >
+                  <social.icon className="h-5 w-5 text-gray-400 group-hover:text-white" />
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </div>

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -27,6 +26,7 @@ import TenantPortal from "./pages/TenantPortal";
 import RentalApplication from "./pages/RentalApplication";
 import Messages from "./pages/Messages";
 import Auth from "./pages/Auth";
+import AdminSeedData from "./pages/AdminSeedData";
 
 const App = () => (
   <ErrorBoundary>
@@ -114,6 +114,16 @@ const App = () => (
             <ProtectedRoute requireAdmin={true}>
               <ErrorBoundary>
                 <AdminDashboard />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/admin/seed-data" 
+          element={
+            <ProtectedRoute requireAdmin={true}>
+              <ErrorBoundary>
+                <AdminSeedData />
               </ErrorBoundary>
             </ProtectedRoute>
           } 

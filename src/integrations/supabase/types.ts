@@ -90,6 +90,65 @@ export type Database = {
         }
         Relationships: []
       }
+      agent_commissions: {
+        Row: {
+          agent_id: string
+          commission_amount: number
+          commission_rate: number
+          commission_type: string
+          created_at: string
+          earned_date: string
+          id: string
+          notes: string | null
+          paid_date: string | null
+          payment_reference: string | null
+          property_id: string | null
+          status: string
+          transaction_amount: number
+          updated_at: string
+        }
+        Insert: {
+          agent_id: string
+          commission_amount: number
+          commission_rate: number
+          commission_type?: string
+          created_at?: string
+          earned_date?: string
+          id?: string
+          notes?: string | null
+          paid_date?: string | null
+          payment_reference?: string | null
+          property_id?: string | null
+          status?: string
+          transaction_amount: number
+          updated_at?: string
+        }
+        Update: {
+          agent_id?: string
+          commission_amount?: number
+          commission_rate?: number
+          commission_type?: string
+          created_at?: string
+          earned_date?: string
+          id?: string
+          notes?: string | null
+          paid_date?: string | null
+          payment_reference?: string | null
+          property_id?: string | null
+          status?: string
+          transaction_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_commissions_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agent_profiles: {
         Row: {
           agent_id: string
@@ -331,6 +390,92 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "escrow_transactions_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      maintenance_requests: {
+        Row: {
+          actual_cost: number | null
+          agent_id: string | null
+          category: string
+          completed_date: string | null
+          contractor_contact: string | null
+          contractor_name: string | null
+          created_at: string
+          description: string
+          estimated_cost: number | null
+          id: string
+          images: string[] | null
+          landlord_id: string | null
+          priority: string
+          property_id: string
+          receipt_images: string[] | null
+          scheduled_date: string | null
+          status: string
+          tenant_feedback: string | null
+          tenant_id: string | null
+          tenant_satisfaction_rating: number | null
+          title: string
+          updated_at: string
+          urgency_level: number | null
+        }
+        Insert: {
+          actual_cost?: number | null
+          agent_id?: string | null
+          category: string
+          completed_date?: string | null
+          contractor_contact?: string | null
+          contractor_name?: string | null
+          created_at?: string
+          description: string
+          estimated_cost?: number | null
+          id?: string
+          images?: string[] | null
+          landlord_id?: string | null
+          priority?: string
+          property_id: string
+          receipt_images?: string[] | null
+          scheduled_date?: string | null
+          status?: string
+          tenant_feedback?: string | null
+          tenant_id?: string | null
+          tenant_satisfaction_rating?: number | null
+          title: string
+          updated_at?: string
+          urgency_level?: number | null
+        }
+        Update: {
+          actual_cost?: number | null
+          agent_id?: string | null
+          category?: string
+          completed_date?: string | null
+          contractor_contact?: string | null
+          contractor_name?: string | null
+          created_at?: string
+          description?: string
+          estimated_cost?: number | null
+          id?: string
+          images?: string[] | null
+          landlord_id?: string | null
+          priority?: string
+          property_id?: string
+          receipt_images?: string[] | null
+          scheduled_date?: string | null
+          status?: string
+          tenant_feedback?: string | null
+          tenant_id?: string | null
+          tenant_satisfaction_rating?: number | null
+          title?: string
+          updated_at?: string
+          urgency_level?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_requests_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
@@ -681,6 +826,86 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "agent_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rental_agreements: {
+        Row: {
+          agent_id: string | null
+          agreement_terms: Json
+          agreement_type: string
+          created_at: string
+          document_url: string | null
+          generated_at: string
+          id: string
+          landlord_id: string
+          landlord_signature: string | null
+          lease_duration_months: number
+          lease_end_date: string
+          lease_start_date: string
+          property_id: string
+          rent_amount: number
+          security_deposit: number
+          signed_at: string | null
+          status: string
+          tenant_id: string | null
+          tenant_signature: string | null
+          updated_at: string
+          witness_signature: string | null
+        }
+        Insert: {
+          agent_id?: string | null
+          agreement_terms?: Json
+          agreement_type?: string
+          created_at?: string
+          document_url?: string | null
+          generated_at?: string
+          id?: string
+          landlord_id: string
+          landlord_signature?: string | null
+          lease_duration_months: number
+          lease_end_date: string
+          lease_start_date: string
+          property_id: string
+          rent_amount: number
+          security_deposit: number
+          signed_at?: string | null
+          status?: string
+          tenant_id?: string | null
+          tenant_signature?: string | null
+          updated_at?: string
+          witness_signature?: string | null
+        }
+        Update: {
+          agent_id?: string | null
+          agreement_terms?: Json
+          agreement_type?: string
+          created_at?: string
+          document_url?: string | null
+          generated_at?: string
+          id?: string
+          landlord_id?: string
+          landlord_signature?: string | null
+          lease_duration_months?: number
+          lease_end_date?: string
+          lease_start_date?: string
+          property_id?: string
+          rent_amount?: number
+          security_deposit?: number
+          signed_at?: string | null
+          status?: string
+          tenant_id?: string | null
+          tenant_signature?: string | null
+          updated_at?: string
+          witness_signature?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rental_agreements_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
             referencedColumns: ["id"]
           },
         ]

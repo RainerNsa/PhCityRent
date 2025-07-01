@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,7 +8,7 @@ import { Database, Upload, Users, Building2, FileText, CheckCircle } from 'lucid
 
 const SeedDataManager = () => {
   const [isSeeding, setIsSeeding] = useState(false);
-  const [seedingStatus, setSee{isSeeding, setIsSeeding] = useState<Record<string, boolean>>({});
+  const [seedingStatus, setSeedingStatus] = useState<Record<string, boolean>>({});
   const { toast } = useToast();
 
   const sampleProperties = [

@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -27,6 +28,7 @@ import RentalApplication from "./pages/RentalApplication";
 import Messages from "./pages/Messages";
 import Auth from "./pages/Auth";
 import AdminSeedData from "./pages/AdminSeedData";
+import AdvancedFeatures from "./pages/AdvancedFeatures";
 
 const App = () => (
   <ErrorBoundary>
@@ -58,6 +60,7 @@ const App = () => (
         <Route path="/landlords" element={<Landlords />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/verification-status" element={<VerificationStatus />} />
+        <Route path="/advanced-features" element={<AdvancedFeatures />} />
         <Route 
           path="/apply/:propertyId?" 
           element={

@@ -1,153 +1,84 @@
 
-import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Routes, Route } from "react-router-dom";
-import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import ErrorBoundary from "@/components/common/ErrorBoundary";
-import GlobalErrorHandler from "@/components/common/GlobalErrorHandler";
-import MobileNavigation from "@/components/mobile/MobileNavigation";
-import PWAInstallPrompt from "@/components/mobile/PWAInstallPrompt";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/hooks/useAuth";
+import { TranslationProvider } from "@/components/localization/LanguageManager";
 import Index from "./pages/Index";
 import Properties from "./pages/Properties";
 import PropertyDetail from "./pages/PropertyDetail";
-import PropertyManagement from "./pages/PropertyManagement";
-import Search from "./pages/Search";
-import Escrow from "./pages/Escrow";
 import Agents from "./pages/Agents";
 import Landlords from "./pages/Landlords";
 import Contact from "./pages/Contact";
-import NotFound from "./pages/NotFound";
-import VerificationStatus from "./pages/VerificationStatus";
-import AgentDashboard from "./pages/AgentDashboard";
-import AdminDashboard from "./pages/AdminDashboard";
-import UserProfile from "./pages/UserProfile";
-import TenantPortal from "./pages/TenantPortal";
-import RentalApplication from "./pages/RentalApplication";
-import Messages from "./pages/Messages";
 import Auth from "./pages/Auth";
+import UserProfile from "./pages/UserProfile";
+import Search from "./pages/Search";
+import Messages from "./pages/Messages";
+import PropertyManagement from "./pages/PropertyManagement";
+import TenantPortal from "./pages/TenantPortal";
+import LandlordPortal from "./pages/LandlordPortal";
+import AgentDashboard from "./pages/AgentDashboard";
+import EnhancedAgentDashboard from "./pages/EnhancedAgentDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 import AdminSeedData from "./pages/AdminSeedData";
 import AdvancedFeatures from "./pages/AdvancedFeatures";
+import ScalingOptimization from "./pages/ScalingOptimization";
+import RentalApplication from "./pages/RentalApplication";
+import VerificationStatus from "./pages/VerificationStatus";
+import Escrow from "./pages/Escrow";
+import NotFound from "./pages/NotFound";
 
-const App = () => (
-  <ErrorBoundary>
-    <TooltipProvider>
-      <GlobalErrorHandler />
-      <Toaster />
-      <Sonner />
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route 
-          path="/properties" 
-          element={
-            <ErrorBoundary>
-              <Properties />
-            </ErrorBoundary>
-          } 
-        />
-        <Route 
-          path="/properties/:id" 
-          element={
-            <ErrorBoundary>
-              <PropertyDetail />
-            </ErrorBoundary>
-          } 
-        />
-        <Route path="/search" element={<Search />} />
-        <Route path="/escrow" element={<Escrow />} />
-        <Route path="/agents" element={<Agents />} />
-        <Route path="/landlords" element={<Landlords />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/verification-status" element={<VerificationStatus />} />
-        <Route path="/advanced-features" element={<AdvancedFeatures />} />
-        <Route 
-          path="/apply/:propertyId?" 
-          element={
-            <ProtectedRoute requireAuth={true}>
-              <ErrorBoundary>
-                <RentalApplication />
-              </ErrorBoundary>
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/messages" 
-          element={
-            <ProtectedRoute requireAuth={true}>
-              <ErrorBoundary>
-                <Messages />
-              </ErrorBoundary>
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/profile" 
-          element={
-            <ProtectedRoute requireAuth={true}>
-              <ErrorBoundary>
-                <UserProfile />
-              </ErrorBoundary>
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/tenant-portal" 
-          element={
-            <ProtectedRoute requireAuth={true}>
-              <ErrorBoundary>
-                <TenantPortal />
-              </ErrorBoundary>
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/agent-dashboard" 
-          element={
-            <ProtectedRoute requireAuth={true}>
-              <ErrorBoundary>
-                <AgentDashboard />
-              </ErrorBoundary>
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/admin" 
-          element={
-            <ProtectedRoute requireAdmin={true}>
-              <ErrorBoundary>
-                <AdminDashboard />
-              </ErrorBoundary>
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/admin/seed-data" 
-          element={
-            <ProtectedRoute requireAdmin={true}>
-              <ErrorBoundary>
-                <AdminSeedData />
-              </ErrorBoundary>
-            </ProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/property-management" 
-          element={
-            <ProtectedRoute requireAuth={true}>
-              <ErrorBoundary>
-                <PropertyManagement />
-              </ErrorBoundary>
-            </ProtectedRoute>
-          } 
-        />
-        <Route path="/auth" element={<Auth />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      <MobileNavigation />
-      <PWAInstallPrompt />
-    </TooltipProvider>
-  </ErrorBoundary>
-);
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 1,
+    },
+  },
+});
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <TranslationProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/properties" element={<Properties />} />
+                <Route path="/properties/:id" element={<PropertyDetail />} />
+                <Route path="/agents" element={<Agents />} />
+                <Route path="/landlords" element={<Landlords />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/profile" element={<UserProfile />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/messages" element={<Messages />} />
+                <Route path="/property-management" element={<PropertyManagement />} />
+                <Route path="/tenant-portal" element={<TenantPortal />} />
+                <Route path="/landlord-portal" element={<LandlordPortal />} />
+                <Route path="/agent-dashboard" element={<AgentDashboard />} />
+                <Route path="/enhanced-agent-dashboard" element={<EnhancedAgentDashboard />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/admin/seed-data" element={<AdminSeedData />} />
+                <Route path="/advanced-features" element={<AdvancedFeatures />} />
+                <Route path="/scaling-optimization" element={<ScalingOptimization />} />
+                <Route path="/rental-application" element={<RentalApplication />} />
+                <Route path="/verification-status" element={<VerificationStatus />} />
+                <Route path="/escrow" element={<Escrow />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </TranslationProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  );
+}
 
 export default App;

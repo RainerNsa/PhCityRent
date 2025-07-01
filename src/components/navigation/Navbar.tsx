@@ -1,276 +1,143 @@
 
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
-import { useTheme } from "@/hooks/useTheme";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Moon, Sun, Home, Search, Building2, Users, Phone, Bell } from "lucide-react";
-import RealTimeNotificationCenter from "@/components/notifications/RealTimeNotificationCenter";
+import { useAuth } from "@/hooks/useAuth";
+import UserMenu from "@/components/auth/UserMenu";
+import { Menu, X, Home, Search, Users, Building, MessageSquare, Settings, Zap, TrendingUp } from "lucide-react";
 
 const Navbar = () => {
-  const { user, signOut } = useAuth();
-  const { theme, setTheme } = useTheme();
-  const navigate = useNavigate();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const { user } = useAuth();
+  const location = useLocation();
 
-  const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light");
-  };
+  const isActive = (path: string) => location.pathname === path;
 
-  const navItems = [
-    { href: "/properties", label: "Properties", icon: Building2 },
-    { href: "/agents", label: "Agents", icon: Users },
-    { href: "/landlords", label: "Landlords", icon: Home },
-    { href: "/contact", label: "Contact", icon: Phone },
+  const navigationItems = [
+    { name: "Home", href: "/", icon: Home },
+    { name: "Properties", href: "/properties", icon: Building },
+    { name: "Agents", href: "/agents", icon: Users },
+    { name: "Search", href: "/search", icon: Search },
+    { name: "Advanced Features", href: "/advanced-features", icon: Zap },
+    { name: "Scaling & Optimization", href: "/scaling-optimization", icon: TrendingUp },
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 group">
-            <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-              <Building2 className="h-5 w-5 text-white" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+    <nav className="bg-white shadow-lg fixed w-full top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          <div className="flex items-center">
+            <Link to="/" className="flex-shrink-0 flex items-center">
+              <div className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
                 PhCityRent
-              </span>
-              <span className="text-xs text-gray-500 -mt-1">Premium Rentals</span>
-            </div>
-          </Link>
+              </div>
+            </Link>
+          </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
-            {navItems.map((item) => (
+          <div className="hidden md:flex items-center space-x-4">
+            {navigationItems.map((item) => (
               <Link
-                key={item.href}
+                key={item.name}
                 to={item.href}
-                className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-600 hover:text-orange-600 hover:bg-orange-50 transition-all duration-200 group"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center space-x-1 ${
+                  isActive(item.href)
+                    ? "text-orange-600 bg-orange-50"
+                    : "text-gray-700 hover:text-orange-600 hover:bg-gray-50"
+                }`}
               >
-                <item.icon className="h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
-                <span className="font-medium">{item.label}</span>
+                <item.icon className="w-4 h-4" />
+                <span>{item.name}</span>
               </Link>
             ))}
           </div>
 
-          {/* Right side - Auth & User Menu */}
-          <div className="flex items-center space-x-3">
+          {/* Auth Section */}
+          <div className="hidden md:flex items-center space-x-4">
             {user ? (
-              <div className="flex items-center space-x-3">
-                <RealTimeNotificationCenter />
-                
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-10 w-10 p-0 rounded-full hover:ring-2 hover:ring-orange-200 transition-all duration-200">
-                      <Avatar className="h-10 w-10 ring-2 ring-orange-100">
-                        <AvatarImage src={user?.user_metadata?.avatar_url || ""} alt={user?.user_metadata?.full_name || "User"} />
-                        <AvatarFallback className="bg-gradient-to-br from-orange-500 to-red-500 text-white font-semibold">
-                          {user?.user_metadata?.full_name?.charAt(0).toUpperCase() || "U"}
-                        </AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-64 p-2" align="end" forceMount>
-                    <DropdownMenuLabel className="font-normal p-3 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg mb-2">
-                      <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-semibold leading-none text-gray-900">
-                          {user?.user_metadata?.full_name || "User"}
-                        </p>
-                        <p className="text-xs leading-none text-gray-600">
-                          {user?.email}
-                        </p>
-                      </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    
-                    <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer hover:bg-orange-50">
-                      <Users className="h-4 w-4 mr-2" />
-                      Profile
-                    </DropdownMenuItem>
-                    
-                    {user?.user_metadata?.role === 'agent' && (
-                      <DropdownMenuItem onClick={() => navigate("/agent-dashboard")} className="cursor-pointer hover:bg-orange-50">
-                        <Building2 className="h-4 w-4 mr-2" />
-                        Agent Dashboard
-                      </DropdownMenuItem>
-                    )}
-                    
-                    {user?.user_metadata?.role === 'admin' && (
-                      <DropdownMenuItem onClick={() => navigate("/admin")} className="cursor-pointer hover:bg-orange-50">
-                        <Building2 className="h-4 w-4 mr-2" />
-                        Admin Dashboard
-                      </DropdownMenuItem>
-                    )}
-                    
-                    {user?.user_metadata?.role === 'tenant' && (
-                      <DropdownMenuItem onClick={() => navigate("/tenant-portal")} className="cursor-pointer hover:bg-orange-50">
-                        <Home className="h-4 w-4 mr-2" />
-                        Tenant Portal
-                      </DropdownMenuItem>
-                    )}
-                    
-                    <DropdownMenuItem onClick={() => navigate("/properties")} className="cursor-pointer hover:bg-orange-50">
-                      <Search className="h-4 w-4 mr-2" />
-                      My Properties
-                    </DropdownMenuItem>
-                    
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer hover:bg-red-50 text-red-600">
-                      Sign out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={toggleTheme}
-                  className="h-10 w-10 rounded-full hover:bg-orange-100 transition-colors duration-200"
-                >
-                  {theme === "dark" ? 
-                    <Sun className="h-5 w-5 text-orange-600" /> : 
-                    <Moon className="h-5 w-5 text-orange-600" />
-                  }
-                  <span className="sr-only">Toggle theme</span>
-                </Button>
-              </div>
+              <>
+                <Link to="/messages">
+                  <Button variant="ghost" size="sm">
+                    <MessageSquare className="w-4 h-4 mr-2" />
+                    Messages
+                  </Button>
+                </Link>
+                <UserMenu />
+              </>
             ) : (
-              <div className="flex items-center space-x-3">
-                <Link to="/auth/sign-in">
-                  <Button variant="outline" size="sm" className="border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300">
-                    Sign In
-                  </Button>
-                </Link>
-                <Link to="/auth/sign-up">
-                  <Button size="sm" className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg hover:shadow-xl transition-all duration-200">
-                    Sign Up
-                  </Button>
-                </Link>
-              </div>
-            )}
-
-            {/* Mobile menu button */}
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="md:hidden h-10 w-10 rounded-full hover:bg-orange-100 transition-colors duration-200"
-                >
-                  <Menu className="h-5 w-5 text-orange-600" />
+              <Link to="/auth">
+                <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white">
+                  Sign In
                 </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-80 bg-white">
-                <SheetHeader className="text-left pb-6">
-                  <SheetTitle className="flex items-center space-x-2">
-                    <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg">
-                      <Building2 className="h-4 w-4 text-white" />
-                    </div>
-                    <span className="text-lg font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-                      PhCityRent
-                    </span>
-                  </SheetTitle>
-                  <SheetDescription>
-                    Explore premium rental properties and manage your account.
-                  </SheetDescription>
-                </SheetHeader>
-                
-                <div className="grid gap-3 py-4">
-                  {navItems.map((item) => (
-                    <Link 
-                      key={item.href}
-                      to={item.href} 
-                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-orange-50 transition-colors duration-200 group"
-                    >
-                      <item.icon className="h-5 w-5 text-orange-600 group-hover:scale-110 transition-transform duration-200" />
-                      <span className="font-medium text-gray-700 group-hover:text-orange-700">{item.label}</span>
-                    </Link>
-                  ))}
-                  
-                  {user ? (
-                    <>
-                      <div className="border-t border-gray-200 my-4"></div>
-                      <Link to="/profile" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-orange-50 transition-colors duration-200">
-                        <Users className="h-5 w-5 text-orange-600" />
-                        <span className="font-medium text-gray-700">Profile</span>
-                      </Link>
-                      
-                      {user?.user_metadata?.role === 'agent' && (
-                        <Link to="/agent-dashboard" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-orange-50 transition-colors duration-200">
-                          <Building2 className="h-5 w-5 text-orange-600" />
-                          <span className="font-medium text-gray-700">Agent Dashboard</span>
-                        </Link>
-                      )}
-                      
-                      {user?.user_metadata?.role === 'admin' && (
-                        <Link to="/admin" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-orange-50 transition-colors duration-200">
-                          <Building2 className="h-5 w-5 text-orange-600" />
-                          <span className="font-medium text-gray-700">Admin Dashboard</span>
-                        </Link>
-                      )}
-                      
-                      {user?.user_metadata?.role === 'tenant' && (
-                        <Link to="/tenant-portal" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-orange-50 transition-colors duration-200">
-                          <Home className="h-5 w-5 text-orange-600" />
-                          <span className="font-medium text-gray-700">Tenant Portal</span>
-                        </Link>
-                      )}
-                      
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="w-full mt-4 border-red-200 text-red-600 hover:bg-red-50" 
-                        onClick={() => signOut()}
-                      >
-                        Sign out
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <div className="border-t border-gray-200 my-4"></div>
-                      <Link to="/auth/sign-in" className="block">
-                        <Button variant="outline" size="sm" className="w-full border-orange-200 text-orange-600 hover:bg-orange-50">
-                          Sign In
-                        </Button>
-                      </Link>
-                      <Link to="/auth/sign-up" className="block">
-                        <Button size="sm" className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white">
-                          Sign Up
-                        </Button>
-                      </Link>
-                    </>
-                  )}
-                  
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="w-full justify-start mt-4 hover:bg-orange-50" 
-                    onClick={toggleTheme}
-                  >
-                    {theme === "dark" ? 
-                      <Sun className="h-4 w-4 mr-2 text-orange-600" /> : 
-                      <Moon className="h-4 w-4 mr-2 text-orange-600" />
-                    }
-                    <span>Toggle {theme === "dark" ? "Light" : "Dark"} Mode</span>
-                  </Button>
-                </div>
-              </SheetContent>
-            </Sheet>
+              </Link>
+            )}
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden flex items-center">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="text-gray-700 hover:text-orange-600 p-2"
+            >
+              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Mobile Navigation */}
+      {isOpen && (
+        <div className="md:hidden bg-white border-t">
+          <div className="px-2 pt-2 pb-3 space-y-1">
+            {navigationItems.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                onClick={() => setIsOpen(false)}
+                className={`block px-3 py-2 rounded-md text-base font-medium flex items-center space-x-2 ${
+                  isActive(item.href)
+                    ? "text-orange-600 bg-orange-50"
+                    : "text-gray-700 hover:text-orange-600 hover:bg-gray-50"
+                }`}
+              >
+                <item.icon className="w-4 h-4" />
+                <span>{item.name}</span>
+              </Link>
+            ))}
+            
+            <div className="border-t pt-4">
+              {user ? (
+                <>
+                  <Link
+                    to="/messages"
+                    onClick={() => setIsOpen(false)}
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-gray-50 flex items-center space-x-2"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    <span>Messages</span>
+                  </Link>
+                  <Link
+                    to="/profile"
+                    onClick={() => setIsOpen(false)}
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-gray-50 flex items-center space-x-2"
+                  >
+                    <Settings className="w-4 h-4" />
+                    <span>Profile</span>
+                  </Link>
+                </>
+              ) : (
+                <Link
+                  to="/auth"
+                  onClick={() => setIsOpen(false)}
+                  className="block px-3 py-2 rounded-md text-base font-medium text-white bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-center"
+                >
+                  Sign In
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

@@ -25,6 +25,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminSeedData from "./pages/AdminSeedData";
 import AdvancedFeatures from "./pages/AdvancedFeatures";
 import ScalingOptimization from "./pages/ScalingOptimization";
+import AdvancedBusinessLogic from "./pages/AdvancedBusinessLogic";
 import RentalApplication from "./pages/RentalApplication";
 import VerificationStatus from "./pages/VerificationStatus";
 import Escrow from "./pages/Escrow";
@@ -68,6 +69,7 @@ function App() {
                 <Route path="/admin/seed-data" element={<AdminSeedData />} />
                 <Route path="/advanced-features" element={<AdvancedFeatures />} />
                 <Route path="/scaling-optimization" element={<ScalingOptimization />} />
+                <Route path="/advanced-business-logic" element={<AdvancedBusinessLogic />} />
                 <Route path="/rental-application" element={<RentalApplication />} />
                 <Route path="/verification-status" element={<VerificationStatus />} />
                 <Route path="/escrow" element={<Escrow />} />

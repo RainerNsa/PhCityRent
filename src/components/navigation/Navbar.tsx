@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import UserMenu from "@/components/auth/UserMenu";
-import { Menu, X, Home, Search, Users, Building, MessageSquare, Settings, Zap, TrendingUp } from "lucide-react";
+import { Menu, X, Home, Search, Users, Building, MessageSquare, Settings, Zap, TrendingUp, Bot } from "lucide-react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,6 +20,7 @@ const Navbar = () => {
     { name: "Search", href: "/search", icon: Search },
     { name: "Advanced Features", href: "/advanced-features", icon: Zap },
     { name: "Scaling & Optimization", href: "/scaling-optimization", icon: TrendingUp },
+    { name: "Business Logic", href: "/advanced-business-logic", icon: Bot },
   ];
 
   return (

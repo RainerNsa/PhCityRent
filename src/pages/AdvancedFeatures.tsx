@@ -7,7 +7,10 @@ import PaymentDashboard from '@/components/payments/PaymentDashboard';
 import PropertyRecommendations from '@/components/ai/PropertyRecommendations';
 import MarketAnalytics from '@/components/analytics/MarketAnalytics';
 import WhatsAppIntegration from '@/components/whatsapp/WhatsAppIntegration';
-import { CreditCard, Brain, BarChart3, MessageCircle } from 'lucide-react';
+import FeaturedListingsManager from '@/components/marketplace/FeaturedListingsManager';
+import ContractTemplateManager from '@/components/legal/ContractTemplateManager';
+import ThirdPartyAPIManager from '@/components/verification/ThirdPartyAPIManager';
+import { CreditCard, Brain, BarChart3, MessageCircle, Star, FileText, Shield } from 'lucide-react';
 
 const AdvancedFeatures = () => {
   return (
@@ -26,7 +29,7 @@ const AdvancedFeatures = () => {
           </div>
 
           <Tabs defaultValue="payments" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-8">
+            <TabsList className="grid w-full grid-cols-7 mb-8">
               <TabsTrigger value="payments" className="flex items-center space-x-2">
                 <CreditCard className="w-4 h-4" />
                 <span>Payments</span>
@@ -42,6 +45,18 @@ const AdvancedFeatures = () => {
               <TabsTrigger value="whatsapp" className="flex items-center space-x-2">
                 <MessageCircle className="w-4 h-4" />
                 <span>WhatsApp</span>
+              </TabsTrigger>
+              <TabsTrigger value="marketplace" className="flex items-center space-x-2">
+                <Star className="w-4 h-4" />
+                <span>Marketplace</span>
+              </TabsTrigger>
+              <TabsTrigger value="legal" className="flex items-center space-x-2">
+                <FileText className="w-4 h-4" />
+                <span>Legal</span>
+              </TabsTrigger>
+              <TabsTrigger value="verification" className="flex items-center space-x-2">
+                <Shield className="w-4 h-4" />
+                <span>Verification</span>
               </TabsTrigger>
             </TabsList>
 
@@ -59,6 +74,18 @@ const AdvancedFeatures = () => {
 
             <TabsContent value="whatsapp">
               <WhatsAppIntegration />
+            </TabsContent>
+
+            <TabsContent value="marketplace">
+              <FeaturedListingsManager />
+            </TabsContent>
+
+            <TabsContent value="legal">
+              <ContractTemplateManager />
+            </TabsContent>
+
+            <TabsContent value="verification">
+              <ThirdPartyAPIManager />
             </TabsContent>
           </Tabs>
         </div>

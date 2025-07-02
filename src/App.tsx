@@ -2,9 +2,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/hooks/useAuth";
+import { Routes, Route } from "react-router-dom";
 import { TranslationProvider } from "@/components/localization/LanguageManager";
 import Index from "./pages/Index";
 import Properties from "./pages/Properties";
@@ -31,24 +29,12 @@ import VerificationStatus from "./pages/VerificationStatus";
 import Escrow from "./pages/Escrow";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      retry: 1,
-    },
-  },
-});
-
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <TranslationProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
+    <TranslationProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/properties" element={<Properties />} />
@@ -74,12 +60,9 @@ function App() {
                 <Route path="/verification-status" element={<VerificationStatus />} />
                 <Route path="/escrow" element={<Escrow />} />
                 <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
-        </TranslationProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+        </Routes>
+      </TooltipProvider>
+    </TranslationProvider>
   );
 }
 

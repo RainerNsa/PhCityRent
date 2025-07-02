@@ -3,15 +3,22 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Building2, MapPin, Users, Shield, ArrowRight, Star } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import UnifiedPropertySearch from "@/components/search/UnifiedPropertySearch";
 
 const Hero = () => {
+  const navigate = useNavigate();
+  
   const stats = [
     { icon: Building2, value: "500+", label: "Premium Properties" },
     { icon: Users, value: "2000+", label: "Happy Tenants" },
     { icon: Shield, value: "100%", label: "Verified Listings" },
     { icon: Star, value: "4.9", label: "Average Rating" },
   ];
+
+  const handleQuickSearch = () => {
+    navigate('/search');
+  };
 
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 overflow-hidden">
@@ -68,32 +75,15 @@ const Hero = () => {
             {/* Quick Search */}
             <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
               <h3 className="text-lg font-semibold mb-4 text-gray-800">Quick Property Search</h3>
-              <div className="grid sm:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-600">Location</label>
-                  <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
-                    <MapPin className="h-4 w-4 text-orange-500" />
-                    <span className="text-sm text-gray-700">Port Harcourt, Rivers</span>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-600">Property Type</label>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <span className="text-sm text-gray-700">Apartment</span>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-600">Budget</label>
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <span className="text-sm text-gray-700">₦200k - ₦500k</span>
-                  </div>
-                </div>
-              </div>
-              <Link to="/properties">
-                <Button className="w-full mt-4 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white">
-                  Search Properties
-                </Button>
-              </Link>
+              <UnifiedPropertySearch 
+                onFiltersChange={(filters) => {
+                  // Store filters and navigate to search page
+                  sessionStorage.setItem('searchFilters', JSON.stringify(filters));
+                  navigate('/search');
+                }}
+                compact={true}
+                showAdvanced={false}
+              />
             </div>
           </div>
 

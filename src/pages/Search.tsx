@@ -1,22 +1,59 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "@/components/navigation/Navbar";
 import Footer from "@/components/Footer";
-import AdvancedSearch from "@/components/search/AdvancedSearch";
+import UnifiedPropertySearch, { SearchFilters } from "@/components/search/UnifiedPropertySearch";
 import PropertyCard from "@/components/properties/PropertyCard";
 import PropertyAuthPrompt from "@/components/properties/PropertyAuthPrompt";
+import { useProperties } from "@/hooks/useProperties";
 import { MapPin, SortAsc } from "lucide-react";
 
 const Search = () => {
-  const [searchResults, setSearchResults] = useState([]);
+  const [filters, setFilters] = useState<SearchFilters>({
+    search: '',
+    location: 'all',
+    propertyType: 'all',
+    priceRange: [0, 5000000],
+    bedrooms: 'all',
+    bathrooms: 'all',
+    amenities: [],
+    isVerified: false,
+    isFeatured: false
+  });
   const [sortBy, setSortBy] = useState("newest");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const handleSearchResults = (results: any[]) => {
-    setSearchResults(results);
+  const { data: properties = [], isLoading } = useProperties({
+    search: filters.search || undefined,
+    location: filters.location !== 'all' ? filters.location : undefined,
+    propertyType: filters.propertyType !== 'all' ? filters.propertyType : undefined,
+    minPrice: filters.priceRange[0],
+    maxPrice: filters.priceRange[1],
+    bedrooms: filters.bedrooms !== 'all' ? filters.bedrooms : undefined,
+    bathrooms: filters.bathrooms !== 'all' ? filters.bathrooms : undefined,
+    isVerified: filters.isVerified,
+    isFeatured: filters.isFeatured
+  });
+
+  const handleFiltersChange = (newFilters: SearchFilters) => {
+    setFilters(newFilters);
   };
 
-  const sortedResults = [...searchResults].sort((a, b) => {
+  // Load filters from sessionStorage on component mount
+  useEffect(() => {
+    const savedFilters = sessionStorage.getItem('searchFilters');
+    if (savedFilters) {
+      try {
+        const parsedFilters = JSON.parse(savedFilters);
+        setFilters(parsedFilters);
+        sessionStorage.removeItem('searchFilters'); // Clear after use
+      } catch (error) {
+        console.error('Error parsing saved filters:', error);
+      }
+    }
+  }, []);
+
+  const sortedResults = [...properties].sort((a, b) => {
     switch (sortBy) {
       case "price-low":
         return a.price_per_year - b.price_per_year;
@@ -48,7 +85,7 @@ const Search = () => {
           
           {/* Search Component */}
           <div className="mb-8">
-            <AdvancedSearch onSearchResults={handleSearchResults} />
+            <UnifiedPropertySearch onFiltersChange={handleFiltersChange} />
           </div>
 
           {/* Results Header */}
@@ -56,7 +93,7 @@ const Search = () => {
             <div>
               <h2 className="text-2xl font-bold text-gray-900">Search Results</h2>
               <p className="text-gray-600">
-                {searchResults.length} properties found
+                {isLoading ? 'Searching...' : `${properties.length} properties found`}
               </p>
             </div>
 
@@ -101,7 +138,12 @@ const Search = () => {
           </div>
 
           {/* Results */}
-          {searchResults.length === 0 ? (
+          {isLoading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+              <p className="text-gray-500">Searching properties...</p>
+            </div>
+          ) : properties.length === 0 ? (
             <div className="text-center py-12">
               <MapPin className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-gray-600 mb-2">Start Your Property Search</h3>

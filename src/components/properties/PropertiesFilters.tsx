@@ -1,10 +1,10 @@
 
 import React from "react";
-import AdvancedSearch from "@/components/search/AdvancedSearch";
+import UnifiedPropertySearch, { SearchFilters } from "@/components/search/UnifiedPropertySearch";
 import AuthPrompt from "@/components/auth/AuthPrompt";
 
 interface PropertiesFiltersProps {
-  onFiltersChange: (filters: any) => void;
+  onFiltersChange: (filters: SearchFilters) => void;
   user: any;
 }
 
@@ -23,7 +23,7 @@ const PropertiesFilters = ({ onFiltersChange, user }: PropertiesFiltersProps) =>
       )}
       
       <div className="mb-8">
-        <AdvancedSearch onFiltersChange={onFiltersChange} />
+        <UnifiedPropertySearch onFiltersChange={onFiltersChange} />
       </div>
     </>
   );

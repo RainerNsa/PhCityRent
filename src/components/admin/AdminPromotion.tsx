@@ -5,21 +5,40 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, Crown } from 'lucide-react';
+import { Shield, Crown, Mail } from 'lucide-react';
+
+// Email validation regex
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const AdminPromotion = () => {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState<'admin' | 'super_admin'>('admin');
   const [loading, setLoading] = useState(false);
+  const [emailError, setEmailError] = useState('');
   const { toast } = useToast();
 
+  const validateEmail = (email: string): boolean => {
+    if (!email.trim()) {
+      setEmailError('Email address is required');
+      return false;
+    }
+    if (!EMAIL_REGEX.test(email)) {
+      setEmailError('Please enter a valid email address');
+      return false;
+    }
+    setEmailError('');
+    return true;
+  };
+
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    if (emailError && value.trim()) {
+      validateEmail(value);
+    }
+  };
+
   const handlePromoteUser = async () => {
-    if (!email) {
-      toast({
-        title: "Error",
-        description: "Please enter an email address",
-        variant: "destructive"
-      });
+    if (!validateEmail(email)) {
       return;
     }
 
@@ -112,13 +131,20 @@ const AdminPromotion = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <label className="text-sm font-medium">Email Address</label>
+          <label className="text-sm font-medium flex items-center gap-2">
+            <Mail className="h-4 w-4" />
+            Email Address
+          </label>
           <Input
             type="email"
             placeholder="user@example.com"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => handleEmailChange(e.target.value)}
+            className={emailError ? "border-red-500" : ""}
           />
+          {emailError && (
+            <p className="text-sm text-red-500 mt-1">{emailError}</p>
+          )}
         </div>
         
         <div className="space-y-2">

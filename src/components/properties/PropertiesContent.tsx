@@ -5,7 +5,7 @@ import PropertiesLoadingState from "./PropertiesLoadingState";
 import PropertiesErrorState from "./PropertiesErrorState";
 import PropertiesEmptyState from "./PropertiesEmptyState";
 import PropertiesMapView from "./PropertiesMapView";
-import PropertyCard from "./PropertyCard";
+import LazyPropertyGrid from "@/components/performance/LazyPropertyGrid";
 import AuthPrompt from "@/components/auth/AuthPrompt";
 
 interface PropertiesContentProps {
@@ -66,22 +66,12 @@ const PropertiesContent = ({
 
       {/* Grid/List View */}
       {!isLoading && !error && viewMode !== "map" && properties.length > 0 && (
-        <div className={
-          viewMode === "grid"
-            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-            : "space-y-6"
-        }>
-          {properties.map((property) => (
-            <PropertyCard 
-              key={property.id} 
-              property={property}
-              showCompareButton={true}
-              isInComparison={isInComparison(property.id)}
-              onAddToComparison={onAddToComparison}
-              onRemoveFromComparison={onRemoveFromComparison}
-            />
-          ))}
-        </div>
+        <LazyPropertyGrid 
+          properties={properties} 
+          viewMode={viewMode}
+          itemsPerPage={8}
+          initialLoad={12}
+        />
       )}
 
       {/* No Results */}

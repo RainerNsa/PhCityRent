@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import OptimizedImage from '@/components/common/OptimizedImage';
 import { MapPin, Bed, Bath, Square, Star, Plus, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import SavePropertyButton from './SavePropertyButton';
@@ -64,10 +65,12 @@ const PropertyCard = ({
       <div className="relative" onClick={handleClick}>
         <div className="aspect-video bg-gray-200">
           {property.images && property.images.length > 0 ? (
-            <img
+            <OptimizedImage
               src={property.images[0]}
               alt={property.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              width={400}
+              height={225}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-400">

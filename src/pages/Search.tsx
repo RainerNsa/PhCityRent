@@ -4,9 +4,11 @@ import Navbar from "@/components/navigation/Navbar";
 import Footer from "@/components/Footer";
 import UnifiedPropertySearch, { SearchFilters } from "@/components/search/UnifiedPropertySearch";
 import PropertyCard from "@/components/properties/PropertyCard";
+import { Button } from "@/components/ui/button";
 import PropertyAuthPrompt from "@/components/properties/PropertyAuthPrompt";
 import { useProperties } from "@/hooks/useProperties";
-import { MapPin, SortAsc } from "lucide-react";
+import { useProgressiveLoading } from "@/hooks/useProgressiveLoading";
+import { MapPin, SortAsc, ChevronDown } from "lucide-react";
 
 const Search = () => {
   const [filters, setFilters] = useState<SearchFilters>({
@@ -53,19 +55,34 @@ const Search = () => {
     }
   }, []);
 
-  const sortedResults = [...properties].sort((a, b) => {
-    switch (sortBy) {
-      case "price-low":
-        return a.price_per_year - b.price_per_year;
-      case "price-high":
-        return b.price_per_year - a.price_per_year;
-      case "newest":
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      case "featured":
-        return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
-      default:
-        return 0;
-    }
+  const sortedResults = React.useMemo(() => {
+    return [...properties].sort((a, b) => {
+      switch (sortBy) {
+        case "price-low":
+          return a.price_per_year - b.price_per_year;
+        case "price-high":
+          return b.price_per_year - a.price_per_year;
+        case "newest":
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        case "featured":
+          return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
+        default:
+          return 0;
+      }
+    });
+  }, [properties, sortBy]);
+
+  const {
+    displayedItems: displayedProperties,
+    hasMore,
+    isLoading: isLoadingMore,
+    loadMore,
+    displayedCount,
+    totalItems
+  } = useProgressiveLoading({
+    data: sortedResults,
+    itemsPerPage: 6,
+    initialLoad: 9
   });
 
   return (
@@ -93,7 +110,7 @@ const Search = () => {
             <div>
               <h2 className="text-2xl font-bold text-gray-900">Search Results</h2>
               <p className="text-gray-600">
-                {isLoading ? 'Searching...' : `${properties.length} properties found`}
+                {isLoading ? 'Searching...' : `Showing ${displayedCount} of ${totalItems} properties`}
               </p>
             </div>
 
@@ -143,22 +160,49 @@ const Search = () => {
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
               <p className="text-gray-500">Searching properties...</p>
             </div>
-          ) : properties.length === 0 ? (
+          ) : totalItems === 0 ? (
             <div className="text-center py-12">
               <MapPin className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-gray-600 mb-2">Start Your Property Search</h3>
               <p className="text-gray-500">Use the advanced search above to find properties that match your criteria</p>
             </div>
           ) : (
-            <div className={
-              viewMode === "grid"
-                ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-                : "space-y-6"
-            }>
-              {sortedResults.map((property) => (
-                <PropertyCard key={property.id} property={property} />
-              ))}
-            </div>
+            <>
+              <div className={
+                viewMode === "grid"
+                  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                  : "space-y-6"
+              }>
+                {displayedProperties.map((property) => (
+                  <PropertyCard key={property.id} property={property} />
+                ))}
+              </div>
+              
+              {/* Progressive Loading Controls */}
+              {hasMore && (
+                <div className="flex justify-center mt-12">
+                  <Button
+                    onClick={loadMore}
+                    disabled={isLoadingMore}
+                    variant="outline"
+                    size="lg"
+                    className="min-w-[200px]"
+                  >
+                    {isLoadingMore ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+                        Loading more...
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="w-4 h-4 mr-2" />
+                        Load More Properties
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </main>

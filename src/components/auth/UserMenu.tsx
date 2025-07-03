@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
-import { User, Settings, LogOut, Shield, Home, User as UserIcon } from "lucide-react";
+import { User, Settings, LogOut, Shield, Home, User as UserIcon, MessageSquare, Zap, TrendingUp, Bot } from "lucide-react";
 
 const UserMenu = () => {
   const { user, signOut, isAdmin } = useAuth();
@@ -66,14 +66,49 @@ const UserMenu = () => {
             <span>Settings</span>
           </Link>
         </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+        
+        {/* User-specific features */}
+        <DropdownMenuItem asChild>
+          <Link to="/messages" className="flex items-center">
+            <MessageSquare className="mr-2 h-4 w-4" />
+            <span>Messages</span>
+          </Link>
+        </DropdownMenuItem>
+        
+        <DropdownMenuItem asChild>
+          <Link to="/advanced-features" className="flex items-center">
+            <Zap className="mr-2 h-4 w-4" />
+            <span>Advanced Features</span>
+          </Link>
+        </DropdownMenuItem>
         
         {isAdmin && (
-          <DropdownMenuItem asChild>
-            <Link to="/admin" className="flex items-center">
-              <Shield className="mr-2 h-4 w-4" />
-              <span>Admin Dashboard</span>
-            </Link>
-          </DropdownMenuItem>
+          <>
+            <DropdownMenuSeparator />
+            
+            <DropdownMenuItem asChild>
+              <Link to="/admin" className="flex items-center">
+                <Shield className="mr-2 h-4 w-4" />
+                <span>Admin Dashboard</span>
+              </Link>
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem asChild>
+              <Link to="/scaling-optimization" className="flex items-center">
+                <TrendingUp className="mr-2 h-4 w-4" />
+                <span>Scaling & Optimization</span>
+              </Link>
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem asChild>
+              <Link to="/advanced-business-logic" className="flex items-center">
+                <Bot className="mr-2 h-4 w-4" />
+                <span>Business Logic</span>
+              </Link>
+            </DropdownMenuItem>
+          </>
         )}
         
         <DropdownMenuSeparator />

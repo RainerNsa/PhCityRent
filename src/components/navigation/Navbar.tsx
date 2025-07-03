@@ -18,9 +18,6 @@ const Navbar = () => {
     { name: "Properties", href: "/properties", icon: Building },
     { name: "Agents", href: "/agents", icon: Users },
     { name: "Search", href: "/search", icon: Search },
-    { name: "Advanced Features", href: "/advanced-features", icon: Zap },
-    { name: "Scaling & Optimization", href: "/scaling-optimization", icon: TrendingUp },
-    { name: "Business Logic", href: "/advanced-business-logic", icon: Bot },
   ];
 
   return (
@@ -56,15 +53,7 @@ const Navbar = () => {
           {/* Auth Section */}
           <div className="hidden md:flex items-center space-x-4">
             {user ? (
-              <>
-                <Link to="/messages">
-                  <Button variant="ghost" size="sm">
-                    <MessageSquare className="w-4 h-4 mr-2" />
-                    Messages
-                  </Button>
-                </Link>
-                <UserMenu />
-              </>
+              <UserMenu />
             ) : (
               <Link to="/auth">
                 <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white">
@@ -107,26 +96,7 @@ const Navbar = () => {
             ))}
             
             <div className="border-t pt-4">
-              {user ? (
-                <>
-                  <Link
-                    to="/messages"
-                    onClick={() => setIsOpen(false)}
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-gray-50 flex items-center space-x-2"
-                  >
-                    <MessageSquare className="w-4 h-4" />
-                    <span>Messages</span>
-                  </Link>
-                  <Link
-                    to="/profile"
-                    onClick={() => setIsOpen(false)}
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-gray-50 flex items-center space-x-2"
-                  >
-                    <Settings className="w-4 h-4" />
-                    <span>Profile</span>
-                  </Link>
-                </>
-              ) : (
+              {!user && (
                 <Link
                   to="/auth"
                   onClick={() => setIsOpen(false)}

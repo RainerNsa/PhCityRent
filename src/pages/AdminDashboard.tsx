@@ -6,8 +6,9 @@ import AdminApplicationsList from '@/components/admin/AdminApplicationsList';
 import AdminStats from '@/components/admin/AdminStats';
 import ApplicationAnalytics from '@/components/admin/ApplicationAnalytics';
 import NotificationCenter from '@/components/admin/NotificationCenter';
+import AdminPromotion from '@/components/admin/AdminPromotion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Shield, Users, FileText, Settings, BarChart3, Bell } from 'lucide-react';
+import { Shield, Users, FileText, Settings, BarChart3, Bell, Crown } from 'lucide-react';
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -46,7 +47,7 @@ const AdminDashboard = () => {
         <Tabs defaultValue="applications" className="space-y-4 sm:space-y-6">
           {/* Mobile-Optimized Tabs */}
           <div className="overflow-x-auto">
-            <TabsList className="grid w-full grid-cols-6 min-w-[600px] sm:min-w-0">
+            <TabsList className="grid w-full grid-cols-7 min-w-[700px] sm:min-w-0">
               <TabsTrigger value="applications" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
                 <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span className="hidden xs:inline">Applications</span>
@@ -74,6 +75,11 @@ const AdminDashboard = () => {
               <TabsTrigger value="settings" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
                 <Settings className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span>Settings</span>
+              </TabsTrigger>
+              <TabsTrigger value="promote" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                <Crown className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden xs:inline">Promote</span>
+                <span className="xs:hidden">Promo</span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -105,6 +111,15 @@ const AdminDashboard = () => {
             <div className="bg-white rounded-lg p-4 sm:p-6">
               <h3 className="text-lg font-semibold mb-4">System Settings</h3>
               <p className="text-gray-600">Advanced settings panel coming soon...</p>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="promote">
+            <div className="bg-white rounded-lg p-4 sm:p-6">
+              <h3 className="text-lg font-semibold mb-4">User Promotion</h3>
+              <div className="flex justify-center">
+                <AdminPromotion />
+              </div>
             </div>
           </TabsContent>
         </Tabs>

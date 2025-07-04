@@ -102,7 +102,10 @@
   }
 
   body {
-    @apply bg-white text-black font-sans antialiased;
+    @apply bg-white text-gray-900 font-sans antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   /* Smooth scrolling */
@@ -110,22 +113,22 @@
     scroll-behavior: smooth;
   }
 
-  /* Custom scrollbar */
+  /* Custom scrollbar - more subtle */
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: #f8f9fa;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
+    background: #d1d5db;
+    border-radius: 6px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: #9ca3af;
   }
 }
 
@@ -138,50 +141,56 @@
     background-position: center;
   }
 
-  .pulse-chip {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-pulse-100 text-pulse-600 border border-pulse-200;
-  }
-  
-  .section-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12;
-  }
-
-  .section-title {
-    @apply text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight;
-  }
-
-  .section-subtitle {
-    @apply text-lg md:text-xl text-gray-600 mt-4 max-w-3xl;
-  }
-
+  /* Enhanced component classes */
   .glass-card {
-    @apply bg-white/70 backdrop-blur-sm border border-white/20 rounded-2xl shadow-elegant transition-all duration-300 hover:shadow-elegant-hover;
+    @apply bg-white/90 backdrop-blur-sm border border-white/20 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl;
   }
 
   .feature-card {
-    @apply p-6 rounded-2xl transition-all duration-500 hover:translate-y-[-5px];
+    @apply p-6 rounded-xl bg-white border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1;
   }
   
   .button-primary {
-    @apply bg-pulse-500 hover:bg-pulse-600 text-white font-medium py-3 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98];
+    @apply bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 
+           text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 
+           shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98]
+           focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2;
   }
 
   .button-secondary {
-    @apply bg-transparent border border-gray-300 hover:border-pulse-500 text-gray-800 hover:text-pulse-500 font-medium py-3 px-6 rounded-full transition-all duration-300;
+    @apply bg-white border border-gray-200 hover:border-gray-300 text-gray-700 hover:text-gray-900 
+           font-medium py-3 px-6 rounded-lg transition-all duration-200 
+           shadow-sm hover:shadow-md hover:bg-gray-50;
   }
   
   .nav-link {
-    @apply relative text-gray-800 hover:text-pulse-500 py-2 transition-colors duration-300 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-pulse-500 after:transition-all hover:after:w-full;
+    @apply relative text-gray-700 hover:text-orange-600 py-2 font-medium transition-colors duration-200 
+           after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-orange-500 
+           after:transition-all after:duration-200 hover:after:w-full;
+  }
+
+  /* Enhanced section styles */
+  .section-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16;
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900;
+  }
+
+  .section-subtitle {
+    @apply text-lg md:text-xl text-gray-600 mt-4 max-w-3xl leading-relaxed;
   }
 }
 
+/* Enhanced animations - more subtle */
 .image-scale-in {
-  animation: scaleIn 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  animation: subtleScaleIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
-@keyframes scaleIn {
+@keyframes subtleScaleIn {
   0% {
-    transform: scale(0.95);
+    transform: scale(0.98);
     opacity: 0;
   }
   100% {
@@ -192,11 +201,11 @@
 
 .fadeIn {
   opacity: 0;
-  transform: translateY(20px);
-  animation: fadeIn 0.8s ease forwards;
+  transform: translateY(10px);
+  animation: smoothFadeIn 0.6s ease forwards;
 }
 
-@keyframes fadeIn {
+@keyframes smoothFadeIn {
   to {
     opacity: 1;
     transform: translateY(0);
@@ -206,18 +215,47 @@
 .stagger-1 { animation-delay: 0.1s; }
 .stagger-2 { animation-delay: 0.2s; }
 .stagger-3 { animation-delay: 0.3s; }
-.stagger-4 { animation-delay: 0.4s; }
 
 .hover-lift {
-  transition: transform 0.3s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .hover-lift:hover {
-  transform: translateY(-5px);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-/* Parallax effect */
+/* Remove excessive parallax effects for cleaner experience */
 .parallax {
-  transform: translateY(var(--parallax-y, 0));
-  transition: transform 0.1s ease-out;
+  transform: none;
+  transition: none;
+}
+
+/* Enhanced mobile optimizations */
+@media (max-width: 640px) {
+  .section-container {
+    @apply px-4 py-8;
+  }
+  
+  .section-title {
+    @apply text-2xl leading-tight;
+  }
+  
+  .section-subtitle {
+    @apply text-base;
+  }
+
+  .button-primary, .button-secondary {
+    @apply w-full justify-center;
+  }
+
+  /* Better touch targets */
+  .nav-link, button, a {
+    @apply min-h-[44px] inline-flex items-center justify-center;
+  }
+
+  /* Mobile form improvements */
+  input, textarea, select {
+    @apply text-base; /* Prevents iOS zoom */
+  }
 }

@@ -44,6 +44,21 @@ const EnhancedSearch = () => {
     setFilters(newFilters);
   };
 
+  const handleResetFilters = () => {
+    setFilters({
+      search: '',
+      location: 'all',
+      propertyType: 'all',
+      priceRange: [0, 5000000],
+      bedrooms: 'all',
+      bathrooms: 'all',
+      amenities: [],
+      isVerified: false,
+      isFeatured: false
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Load filters from sessionStorage on component mount
   useEffect(() => {
     const savedFilters = sessionStorage.getItem('searchFilters');
@@ -215,14 +230,14 @@ const EnhancedSearch = () => {
               <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full mb-6">
                 <MapPin className="w-8 h-8 text-gray-400" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Start Your Property Search</h3>
-              <p className="text-gray-500 mb-6">Use the advanced search above to find properties that match your criteria</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">No Properties Found</h3>
+              <p className="text-gray-500 mb-6">Try adjusting your search criteria to find more properties</p>
               <EnhancedButton 
                 variant="primary" 
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                onClick={handleResetFilters}
               >
                 <Filter className="w-4 h-4 mr-2" />
-                Try Different Filters
+                Reset All Filters
               </EnhancedButton>
             </Card>
           ) : (

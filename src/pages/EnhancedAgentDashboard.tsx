@@ -8,7 +8,7 @@ import ProtectedRoute from '@/components/auth/ProtectedRoute';
 const EnhancedAgentDashboardPage = () => {
   return (
     <ProtectedRoute requireAuth={true}>
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <Navbar />
         <main className="pt-20 pb-12">
           <EnhancedAgentDashboard />

@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import UserMenu from "@/components/auth/UserMenu";
-import { Menu, X, Home, Search, Users, Building, MessageSquare, Settings, Zap, TrendingUp, Bot } from "lucide-react";
+import { Menu, X, Building, Users, MessageSquare, Phone } from "lucide-react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,10 +14,10 @@ const Navbar = () => {
   const isActive = (path: string) => location.pathname === path;
 
   const navigationItems = [
-    { name: "Home", href: "/", icon: Home },
     { name: "Properties", href: "/properties", icon: Building },
+    { name: "Landlords", href: "/landlords", icon: Users },
     { name: "Agents", href: "/agents", icon: Users },
-    { name: "Search", href: "/search", icon: Search },
+    { name: "Contact", href: "/contact", icon: Phone },
   ];
 
   return (

@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Navigate } from 'react-router-dom';
+import Navbar from '@/components/navigation/Navbar';
+import Footer from '@/components/Footer';
 import AdminApplicationsList from '@/components/admin/AdminApplicationsList';
 import AdminStats from '@/components/admin/AdminStats';
 import ApplicationAnalytics from '@/components/admin/ApplicationAnalytics';
@@ -15,8 +17,8 @@ const AdminDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-pulse-500"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500"></div>
       </div>
     );
   }
@@ -26,104 +28,106 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header - Mobile Optimized */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-          <div className="flex items-center gap-3">
-            <div className="bg-pulse-100 p-2 rounded-lg">
-              <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-pulse-600" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">Admin Dashboard</h1>
-              <p className="text-sm sm:text-base text-gray-600 hidden sm:block">Advanced agent verification management</p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <Navbar />
+      <main className="pt-20 pb-12">
+        {/* Enhanced Header */}
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+          <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-8 text-white shadow-xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl md:text-4xl font-bold mb-2">Admin Dashboard</h1>
+                <p className="text-orange-100 text-lg">
+                  Advanced agent verification management
+                </p>
+              </div>
+              <div className="hidden md:flex items-center justify-center w-20 h-20 bg-white/20 rounded-full">
+                <Shield className="w-10 h-10" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        <Tabs defaultValue="applications" className="space-y-4 sm:space-y-6">
-          {/* Mobile-Optimized Tabs */}
-          <div className="overflow-x-auto">
-            <TabsList className="grid w-full grid-cols-7 min-w-[700px] sm:min-w-0">
-              <TabsTrigger value="applications" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-                <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="hidden xs:inline">Applications</span>
-                <span className="xs:hidden">Apps</span>
-              </TabsTrigger>
-              <TabsTrigger value="analytics" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-                <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="hidden xs:inline">Analytics</span>
-                <span className="xs:hidden">Charts</span>
-              </TabsTrigger>
-              <TabsTrigger value="notifications" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-                <Bell className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="hidden xs:inline">Notifications</span>
-                <span className="xs:hidden">Alerts</span>
-              </TabsTrigger>
-              <TabsTrigger value="agents" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-                <Users className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span>Agents</span>
-              </TabsTrigger>
-              <TabsTrigger value="stats" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-                <Shield className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="hidden xs:inline">Statistics</span>
-                <span className="xs:hidden">Stats</span>
-              </TabsTrigger>
-              <TabsTrigger value="settings" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-                <Settings className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span>Settings</span>
-              </TabsTrigger>
-              <TabsTrigger value="promote" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-                <Crown className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="hidden xs:inline">Promote</span>
-                <span className="xs:hidden">Promo</span>
-              </TabsTrigger>
-            </TabsList>
-          </div>
-
-          <TabsContent value="applications">
-            <AdminApplicationsList />
-          </TabsContent>
-
-          <TabsContent value="analytics">
-            <ApplicationAnalytics />
-          </TabsContent>
-
-          <TabsContent value="notifications">
-            <NotificationCenter />
-          </TabsContent>
-
-          <TabsContent value="agents">
-            <div className="bg-white rounded-lg p-4 sm:p-6">
-              <h3 className="text-lg font-semibold mb-4">Verified Agents Management</h3>
-              <p className="text-gray-600">Advanced agent management features coming soon...</p>
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Tabs defaultValue="applications" className="space-y-4 sm:space-y-6">
+            {/* Mobile-Optimized Tabs */}
+            <div className="overflow-x-auto">
+              <TabsList className="grid w-full grid-cols-7 min-w-[700px] sm:min-w-0 bg-white shadow-lg rounded-xl">
+                <TabsTrigger value="applications" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-red-500 data-[state=active]:text-white">
+                  <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden xs:inline">Applications</span>
+                  <span className="xs:hidden">Apps</span>
+                </TabsTrigger>
+                <TabsTrigger value="analytics" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-red-500 data-[state=active]:text-white">
+                  <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden xs:inline">Analytics</span>
+                  <span className="xs:hidden">Charts</span>
+                </TabsTrigger>
+                <TabsTrigger value="notifications" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-red-500 data-[state=active]:text-white">
+                  <Bell className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden xs:inline">Notifications</span>
+                  <span className="xs:hidden">Alerts</span>
+                </TabsTrigger>
+                <TabsTrigger value="agents" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-red-500 data-[state=active]:text-white">
+                  <Users className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span>Agents</span>
+                </TabsTrigger>
+                <TabsTrigger value="stats" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-red-500 data-[state=active]:text-white">
+                  <Shield className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden xs:inline">Statistics</span>
+                  <span className="xs:hidden">Stats</span>
+                </TabsTrigger>
+                <TabsTrigger value="settings" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-red-500 data-[state=active]:text-white">
+                  <Settings className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span>Settings</span>
+                </TabsTrigger>
+                <TabsTrigger value="promote" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-red-500 data-[state=active]:text-white">
+                  <Crown className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden xs:inline">Promote</span>
+                  <span className="xs:hidden">Promo</span>
+                </TabsTrigger>
+              </TabsList>
             </div>
-          </TabsContent>
 
-          <TabsContent value="stats">
-            <AdminStats />
-          </TabsContent>
+            <div className="bg-white rounded-2xl shadow-xl border-0 overflow-hidden">
+              <TabsContent value="applications" className="p-0 m-0">
+                <AdminApplicationsList />
+              </TabsContent>
 
-          <TabsContent value="settings">
-            <div className="bg-white rounded-lg p-4 sm:p-6">
-              <h3 className="text-lg font-semibold mb-4">System Settings</h3>
-              <p className="text-gray-600">Advanced settings panel coming soon...</p>
+              <TabsContent value="analytics" className="p-0 m-0">
+                <ApplicationAnalytics />
+              </TabsContent>
+
+              <TabsContent value="notifications" className="p-0 m-0">
+                <NotificationCenter />
+              </TabsContent>
+
+              <TabsContent value="agents" className="p-6">
+                <h3 className="text-lg font-semibold mb-4">Verified Agents Management</h3>
+                <p className="text-gray-600">Advanced agent management features coming soon...</p>
+              </TabsContent>
+
+              <TabsContent value="stats" className="p-0 m-0">
+                <AdminStats />
+              </TabsContent>
+
+              <TabsContent value="settings" className="p-6">
+                <h3 className="text-lg font-semibold mb-4">System Settings</h3>
+                <p className="text-gray-600">Advanced settings panel coming soon...</p>
+              </TabsContent>
+
+              <TabsContent value="promote" className="p-6">
+                <h3 className="text-lg font-semibold mb-4">User Promotion</h3>
+                <div className="flex justify-center">
+                  <AdminPromotion />
+                </div>
+              </TabsContent>
             </div>
-          </TabsContent>
-
-          <TabsContent value="promote">
-            <div className="bg-white rounded-lg p-4 sm:p-6">
-              <h3 className="text-lg font-semibold mb-4">User Promotion</h3>
-              <div className="flex justify-center">
-                <AdminPromotion />
-              </div>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
+          </Tabs>
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 };

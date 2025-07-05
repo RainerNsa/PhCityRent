@@ -1,7 +1,9 @@
 
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,208 +11,168 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
+} from '@/components/ui/dropdown-menu';
 import { 
-  User, Settings, LogOut, Shield, Home, User as UserIcon, 
-  MessageSquare, Zap, TrendingUp, Bot, ChevronDown, Building, Users 
-} from "lucide-react";
+  User, 
+  LogOut, 
+  Settings, 
+  Shield, 
+  Home, 
+  Building2, 
+  UserCheck,
+  ChevronDown,
+  Crown,
+  Briefcase
+} from 'lucide-react';
 
 const EnhancedUserMenu = () => {
   const { user, signOut, isAdmin } = useAuth();
-  const [userType, setUserType] = useState<'tenant' | 'agent' | 'landlord' | null>(null);
 
-  useEffect(() => {
-    if (!user) return;
+  if (!user) {
+    return (
+      <div className="flex items-center gap-3">
+        <Link to="/auth">
+          <Button 
+            variant="outline" 
+            className="hidden sm:flex border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300 transition-all duration-200"
+          >
+            Sign In
+          </Button>
+        </Link>
+        <Link to="/auth">
+          <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+            Get Started
+          </Button>
+        </Link>
+      </div>
+    );
+  }
 
-    const checkUserType = async () => {
-      try {
-        // Check if user is a verified agent
-        const { data: agentProfile } = await supabase
-          .from('agent_profiles')
-          .select('agent_id, is_active')
-          .eq('user_id', user.id)
-          .eq('is_active', true)
-          .single();
+  const userInitials = user.user_metadata?.full_name 
+    ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase()
+    : user.email?.charAt(0).toUpperCase() || 'U';
 
-        if (agentProfile) {
-          setUserType('agent');
-          return;
-        }
-
-        // Check if user has properties (landlord)
-        const { data: properties } = await supabase
-          .from('properties')
-          .select('id')
-          .eq('landlord_id', user.id)
-          .limit(1);
-
-        if (properties && properties.length > 0) {
-          setUserType('landlord');
-          return;
-        }
-
-        // Default to tenant
-        setUserType('tenant');
-      } catch (error) {
-        console.error('Error checking user type:', error);
-        setUserType('tenant');
-      }
-    };
-
-    checkUserType();
-  }, [user]);
-
-  if (!user) return null;
-
-  const handleSignOut = async () => {
-    await signOut();
-  };
-
-  const userName = user.user_metadata?.full_name || "User";
-  const userEmail = user.email;
-
-  const getDashboardLink = () => {
-    if (isAdmin) return { path: '/admin', label: 'Admin Dashboard', icon: Shield };
-    if (userType === 'agent') return { path: '/enhanced-agent-dashboard', label: 'Agent Dashboard', icon: Users };
-    if (userType === 'landlord') return { path: '/landlord-portal', label: 'Landlord Portal', icon: Building };
-    return { path: '/tenant-portal', label: 'Tenant Portal', icon: Home };
-  };
-
-  const dashboardInfo = getDashboardLink();
+  const userDisplayName = user.user_metadata?.full_name || user.email || 'User';
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-10 px-3 rounded-xl hover:bg-gray-100 transition-all duration-200">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
-              {userName.charAt(0).toUpperCase()}
+        <Button 
+          variant="ghost" 
+          className="relative h-12 w-auto px-3 rounded-xl hover:bg-gray-100 transition-all duration-200 group"
+        >
+          <div className="flex items-center gap-3">
+            <Avatar className="h-8 w-8 ring-2 ring-orange-200 group-hover:ring-orange-300 transition-all duration-200">
+              <AvatarFallback className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-sm font-semibold">
+                {userInitials}
+              </AvatarFallback>
+            </Avatar>
+            <div className="hidden sm:block text-left">
+              <p className="text-sm font-medium text-gray-900 truncate max-w-32">
+                {userDisplayName}
+              </p>
+              <p className="text-xs text-gray-500 truncate max-w-32">
+                {user.email}
+              </p>
             </div>
-            <div className="hidden md:block text-left">
-              <div className="text-sm font-medium text-gray-900 truncate max-w-[120px]">
-                {userName}
-              </div>
-            </div>
-            <ChevronDown className="w-4 h-4 text-gray-500" />
+            <ChevronDown className="h-4 w-4 text-gray-500 group-hover:text-gray-700 transition-colors" />
           </div>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent 
-        className="w-72 bg-white border shadow-xl rounded-xl p-2" 
-        align="end" 
-        forceMount
-      >
-        {/* User Info Header */}
-        <div className="px-3 py-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg mb-2">
+      
+      <DropdownMenuContent className="w-64 p-2" align="end" forceMount>
+        <DropdownMenuLabel className="p-3 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg mb-2">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white font-semibold text-lg">
-              {userName.charAt(0).toUpperCase()}
-            </div>
+            <Avatar className="h-12 w-12 ring-2 ring-orange-200">
+              <AvatarFallback className="bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold">
+                {userInitials}
+              </AvatarFallback>
+            </Avatar>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-gray-900 truncate">
-                {userName}
+                {userDisplayName}
               </p>
-              <p className="text-xs text-gray-500 truncate">
-                {userEmail}
+              <p className="text-xs text-gray-600 truncate">
+                {user.email}
               </p>
+              {isAdmin && (
+                <div className="flex items-center gap-1 mt-1">
+                  <Crown className="h-3 w-3 text-yellow-600" />
+                  <span className="text-xs font-medium text-yellow-700">Admin</span>
+                </div>
+              )}
             </div>
           </div>
-        </div>
+        </DropdownMenuLabel>
 
-        <DropdownMenuSeparator className="my-2" />
-        
-        {/* Main Navigation */}
-        <div className="space-y-1">
-          <DropdownMenuItem asChild>
-            <Link to={dashboardInfo.path} className="flex items-center px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-              <dashboardInfo.icon className="mr-3 h-4 w-4 text-gray-500" />
-              <span className="font-medium">{dashboardInfo.label}</span>
-            </Link>
-          </DropdownMenuItem>
-          
-          <DropdownMenuItem asChild>
-            <Link to="/profile" className="flex items-center px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-              <UserIcon className="mr-3 h-4 w-4 text-gray-500" />
-              <span className="font-medium">Profile</span>
-            </Link>
-          </DropdownMenuItem>
-          
-          <DropdownMenuItem asChild>
-            <Link to="/profile?tab=settings" className="flex items-center px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-              <Settings className="mr-3 h-4 w-4 text-gray-500" />
-              <span className="font-medium">Settings</span>
-            </Link>
-          </DropdownMenuItem>
-        </div>
+        <DropdownMenuSeparator />
 
-        <DropdownMenuSeparator className="my-2" />
-        
-        {/* User Features */}
-        <div className="space-y-1">
-          <DropdownMenuLabel className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3">
-            Features
+        {/* Dashboard Access Section */}
+        <div className="py-2">
+          <DropdownMenuLabel className="text-xs text-gray-500 uppercase tracking-wider font-semibold px-2 py-1">
+            Dashboards
           </DropdownMenuLabel>
           
-          <DropdownMenuItem asChild>
-            <Link to="/messages" className="flex items-center px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-              <MessageSquare className="mr-3 h-4 w-4 text-gray-500" />
-              <span className="font-medium">Messages</span>
+          <Link to="/tenant-portal">
+            <DropdownMenuItem className="cursor-pointer rounded-lg mx-1 px-3 py-2 hover:bg-blue-50 hover:text-blue-700 transition-colors">
+              <Home className="mr-3 h-4 w-4" />
+              <span>Tenant Portal</span>
+            </DropdownMenuItem>
+          </Link>
+
+          <Link to="/landlord-portal">
+            <DropdownMenuItem className="cursor-pointer rounded-lg mx-1 px-3 py-2 hover:bg-green-50 hover:text-green-700 transition-colors">
+              <Building2 className="mr-3 h-4 w-4" />
+              <span>Landlord Portal</span>
+            </DropdownMenuItem>
+          </Link>
+
+          <Link to="/enhanced-agent-dashboard">
+            <DropdownMenuItem className="cursor-pointer rounded-lg mx-1 px-3 py-2 hover:bg-purple-50 hover:text-purple-700 transition-colors">
+              <UserCheck className="mr-3 h-4 w-4" />
+              <span>Agent Dashboard</span>
+            </DropdownMenuItem>
+          </Link>
+
+          {isAdmin && (
+            <Link to="/admin">
+              <DropdownMenuItem className="cursor-pointer rounded-lg mx-1 px-3 py-2 hover:bg-yellow-50 hover:text-yellow-700 transition-colors">
+                <Shield className="mr-3 h-4 w-4" />
+                <span>Admin Dashboard</span>
+              </DropdownMenuItem>
             </Link>
-          </DropdownMenuItem>
+          )}
+        </div>
+
+        <DropdownMenuSeparator />
+
+        {/* User Actions */}
+        <div className="py-2">
+          <DropdownMenuLabel className="text-xs text-gray-500 uppercase tracking-wider font-semibold px-2 py-1">
+            Account
+          </DropdownMenuLabel>
           
-          <DropdownMenuItem asChild>
-            <Link to="/advanced-features" className="flex items-center px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-              <Zap className="mr-3 h-4 w-4 text-gray-500" />
-              <span className="font-medium">Advanced Features</span>
-            </Link>
+          <Link to="/profile">
+            <DropdownMenuItem className="cursor-pointer rounded-lg mx-1 px-3 py-2 hover:bg-gray-50 transition-colors">
+              <User className="mr-3 h-4 w-4" />
+              <span>Profile</span>
+            </DropdownMenuItem>
+          </Link>
+
+          <DropdownMenuItem className="cursor-pointer rounded-lg mx-1 px-3 py-2 hover:bg-gray-50 transition-colors">
+            <Settings className="mr-3 h-4 w-4" />
+            <span>Settings</span>
           </DropdownMenuItem>
         </div>
-        
-        {/* Admin Section */}
-        {isAdmin && (
-          <>
-            <DropdownMenuSeparator className="my-2" />
-            
-            <div className="space-y-1">
-              <DropdownMenuLabel className="text-xs font-semibold text-orange-600 uppercase tracking-wider px-3">
-                Admin
-              </DropdownMenuLabel>
-              
-              <DropdownMenuItem asChild>
-                <Link to="/admin" className="flex items-center px-3 py-2 rounded-lg hover:bg-orange-50 transition-colors cursor-pointer group">
-                  <Shield className="mr-3 h-4 w-4 text-orange-500 group-hover:text-orange-600" />
-                  <span className="font-medium text-orange-700 group-hover:text-orange-800">Admin Dashboard</span>
-                </Link>
-              </DropdownMenuItem>
-              
-              <DropdownMenuItem asChild>
-                <Link to="/scaling-optimization" className="flex items-center px-3 py-2 rounded-lg hover:bg-orange-50 transition-colors cursor-pointer group">
-                  <TrendingUp className="mr-3 h-4 w-4 text-orange-500 group-hover:text-orange-600" />
-                  <span className="font-medium text-orange-700 group-hover:text-orange-800">Scaling & Optimization</span>
-                </Link>
-              </DropdownMenuItem>
-              
-              <DropdownMenuItem asChild>
-                <Link to="/advanced-business-logic" className="flex items-center px-3 py-2 rounded-lg hover:bg-orange-50 transition-colors cursor-pointer group">
-                  <Bot className="mr-3 h-4 w-4 text-orange-500 group-hover:text-orange-600" />
-                  <span className="font-medium text-orange-700 group-hover:text-orange-800">Business Logic</span>
-                </Link>
-              </DropdownMenuItem>
-            </div>
-          </>
-        )}
-        
-        <DropdownMenuSeparator className="my-2" />
-        
-        {/* Sign Out */}
+
+        <DropdownMenuSeparator />
+
         <DropdownMenuItem 
-          onClick={handleSignOut} 
-          className="flex items-center px-3 py-2 rounded-lg hover:bg-red-50 transition-colors cursor-pointer text-red-600 hover:text-red-700 focus:bg-red-50 focus:text-red-700"
+          className="cursor-pointer rounded-lg mx-1 px-3 py-2 text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+          onClick={() => signOut()}
         >
           <LogOut className="mr-3 h-4 w-4" />
-          <span className="font-medium">Sign Out</span>
+          <span>Sign Out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

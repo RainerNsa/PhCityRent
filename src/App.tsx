@@ -27,6 +27,7 @@ import AdvancedBusinessLogic from "./pages/AdvancedBusinessLogic";
 import RentalApplication from "./pages/RentalApplication";
 import VerificationStatus from "./pages/VerificationStatus";
 import Escrow from "./pages/Escrow";
+import AppStatus from "./pages/AppStatus";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
                 <Route path="/rental-application" element={<RentalApplication />} />
                 <Route path="/verification-status" element={<VerificationStatus />} />
                 <Route path="/escrow" element={<Escrow />} />
+                <Route path="/app-status" element={<AppStatus />} />
                 <Route path="*" element={<NotFound />} />
         </Routes>
       </TooltipProvider>

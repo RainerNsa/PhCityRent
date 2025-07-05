@@ -1,164 +1,197 @@
 
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, MapPin, Home, Filter } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { designTokens } from "@/lib/design-tokens";
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent } from '@/components/ui/card';
+import { MapPin, Building, Users, Star, Shield } from 'lucide-react';
 
 const EnhancedHero = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState("");
-  const [propertyType, setPropertyType] = useState("");
-  const navigate = useNavigate();
+  const [location, setLocation] = useState('');
+  const [propertyType, setPropertyType] = useState('');
+  const [budget, setBudget] = useState('');
 
   const handleSearch = () => {
+    // Navigate to properties page with filters
     const params = new URLSearchParams();
-    if (searchQuery) params.set('search', searchQuery);
-    if (selectedLocation) params.set('location', selectedLocation);
-    if (propertyType) params.set('type', propertyType);
+    if (location) params.append('location', location);
+    if (propertyType) params.append('type', propertyType);
+    if (budget) params.append('budget', budget);
     
-    navigate(`/properties?${params.toString()}`);
+    window.location.href = `/properties?${params.toString()}`;
   };
 
-  const locations = [
-    "Mile 1", "Mile 2", "Mile 3", "Old GRA", "New GRA", 
-    "Trans Amadi", "D-Line", "Rumuola", "Eliozu", "Ada George"
-  ];
-
-  const propertyTypes = [
-    "Apartment", "House", "Duplex", "Bungalow", "Office Space", "Shop"
-  ];
-
   return (
-    <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-      {/* Background with improved gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-white to-red-50">
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-red-500/5" />
-        
-        {/* Decorative elements */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-orange-200/30 to-red-200/30 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-red-200/20 to-orange-200/20 rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Main heading */}
-        <div className="max-w-4xl mx-auto mb-12">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-            Find Your Perfect
-            <span className="block bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-              Home in Port Harcourt
-            </span>
-          </h1>
-          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Discover verified properties, connect with trusted agents, and secure your dream home with confidence.
-          </p>
-        </div>
-
-        {/* Enhanced search form */}
-        <div className="max-w-4xl mx-auto mb-12">
-          <div className="bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl shadow-xl p-6 md:p-8">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-2">
-              {/* Search input */}
-              <div className="md:col-span-2 relative">
-                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
-                  <Search className="w-5 h-5" />
-                </div>
-                <Input
-                  type="text"
-                  placeholder="Search properties, areas, or features..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-12 h-14 border-gray-200 focus:border-orange-500 focus:ring-orange-500 text-base rounded-xl"
-                />
-              </div>
-
-              {/* Location select */}
-              <div className="relative">
-                <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-                  <SelectTrigger className="h-14 border-gray-200 focus:border-orange-500 focus:ring-orange-500 rounded-xl">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-gray-400" />
-                      <SelectValue placeholder="Location" />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {locations.map((location) => (
-                      <SelectItem key={location} value={location}>
-                        {location}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Property type select */}
-              <div className="relative">
-                <Select value={propertyType} onValueChange={setPropertyType}>
-                  <SelectTrigger className="h-14 border-gray-200 focus:border-orange-500 focus:ring-orange-500 rounded-xl">
-                    <div className="flex items-center gap-2">
-                      <Home className="w-4 h-4 text-gray-400" />
-                      <SelectValue placeholder="Type" />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {propertyTypes.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+    <div className="relative min-h-screen bg-white overflow-hidden">
+      {/* Main Container */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+        <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[calc(100vh-200px)]">
+          
+          {/* Left Content */}
+          <div className="space-y-8">
+            {/* Badge */}
+            <div className="inline-flex items-center px-4 py-2 bg-orange-500 text-white rounded-full text-sm font-medium">
+              <Building className="w-4 h-4 mr-2" />
+              #1 Rental Platform in Port Harcourt
             </div>
 
-            {/* Search button */}
-            <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                onClick={handleSearch}
-                className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-8 py-4 rounded-xl text-base font-semibold shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200"
-                size="lg"
+            {/* Main Heading */}
+            <div className="space-y-4">
+              <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
+                Find Your
+                <br />
+                <span className="text-orange-500">Perfect Home</span>
+                <br />
+                in Port Harcourt
+              </h1>
+              
+              <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
+                Discover premium rental properties with verified listings, transparent pricing, and secure transactions. Your dream home is just a click away.
+              </p>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button 
+                size="lg" 
+                className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg rounded-xl"
+                onClick={() => window.location.href = '/properties'}
               >
-                <Search className="w-5 h-5 mr-2" />
-                Search Properties
+                Explore Properties →
               </Button>
-              <Button
-                variant="outline"
-                onClick={() => navigate('/properties')}
-                className="border-2 border-gray-200 hover:border-orange-500 text-gray-700 hover:text-orange-600 px-6 py-4 rounded-xl text-base font-semibold hover:bg-orange-50 transition-all duration-200"
-                size="lg"
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="border-2 border-orange-500 text-orange-500 hover:bg-orange-50 px-8 py-4 text-lg rounded-xl"
+                onClick={() => window.location.href = '/agents'}
               >
-                <Filter className="w-5 h-5 mr-2" />
-                Advanced Search
+                Find an Agent
               </Button>
+            </div>
+
+            {/* Quick Property Search */}
+            <Card className="w-full bg-white shadow-lg border-0">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold mb-4 text-gray-900">Quick Property Search</h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  {/* Location */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">Location</label>
+                    <div className="relative">
+                      <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-500 w-4 h-4" />
+                      <Input
+                        placeholder="Port Harcourt, Rivers"
+                        value={location}
+                        onChange={(e) => setLocation(e.target.value)}
+                        className="pl-10 h-12 border-gray-200 focus:border-orange-500"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Property Type */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">Property Type</label>
+                    <Select value={propertyType} onValueChange={setPropertyType}>
+                      <SelectTrigger className="h-12 border-gray-200 focus:border-orange-500">
+                        <SelectValue placeholder="Apartment" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="apartment">Apartment</SelectItem>
+                        <SelectItem value="house">House</SelectItem>
+                        <SelectItem value="duplex">Duplex</SelectItem>
+                        <SelectItem value="bungalow">Bungalow</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Budget */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">Budget</label>
+                    <Select value={budget} onValueChange={setBudget}>
+                      <SelectTrigger className="h-12 border-gray-200 focus:border-orange-500">
+                        <SelectValue placeholder="₦200k - ₦500k" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0-200000">Under ₦200k</SelectItem>
+                        <SelectItem value="200000-500000">₦200k - ₦500k</SelectItem>
+                        <SelectItem value="500000-1000000">₦500k - ₦1M</SelectItem>
+                        <SelectItem value="1000000-2000000">₦1M - ₦2M</SelectItem>
+                        <SelectItem value="2000000+">Above ₦2M</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <Button 
+                  onClick={handleSearch}
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white h-12 text-lg font-medium rounded-lg"
+                >
+                  Search Properties
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Content - Image and Stats */}
+          <div className="relative">
+            {/* Main Image */}
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+              <img 
+                src="/lovable-uploads/384341c1-7fa8-4f09-8a30-c684732b5b00.png" 
+                alt="Modern apartment interior"
+                className="w-full h-[600px] object-cover"
+              />
+              
+              {/* Stats Overlay */}
+              <Card className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-sm border-0 shadow-xl">
+                <CardContent className="p-6">
+                  <div className="grid grid-cols-2 gap-8">
+                    {/* Column 1 */}
+                    <div className="space-y-6">
+                      <div className="text-center">
+                        <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                          <Building className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="text-2xl font-bold text-gray-900">500+</div>
+                        <div className="text-sm text-gray-600">Premium Properties</div>
+                      </div>
+                      
+                      <div className="text-center">
+                        <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                          <Shield className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="text-2xl font-bold text-gray-900">100%</div>
+                        <div className="text-sm text-gray-600">Verified Listings</div>
+                      </div>
+                    </div>
+
+                    {/* Column 2 */}
+                    <div className="space-y-6">
+                      <div className="text-center">
+                        <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                          <Users className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="text-2xl font-bold text-gray-900">2000+</div>
+                        <div className="text-sm text-gray-600">Happy Tenants</div>
+                      </div>
+                      
+                      <div className="text-center">
+                        <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                          <Star className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="text-2xl font-bold text-gray-900">4.9</div>
+                        <div className="text-sm text-gray-600">Average Rating</div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
-
-        {/* Quick stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
-          {[
-            { number: "500+", label: "Verified Properties" },
-            { number: "50+", label: "Trusted Agents" },
-            { number: "1000+", label: "Happy Tenants" },
-            { number: "15+", label: "Areas Covered" },
-          ].map((stat, index) => (
-            <div key={index} className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
-                {stat.number}
-              </div>
-              <div className="text-sm text-gray-600">{stat.label}</div>
-            </div>
-          ))}
-        </div>
       </div>
-
-      {/* Floating elements for visual interest */}
-      <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-orange-400 rounded-full opacity-60 animate-ping" />
-      <div className="absolute top-3/4 right-1/4 w-3 h-3 bg-red-400 rounded-full opacity-40 animate-pulse" />
-      <div className="absolute top-1/2 right-1/3 w-1 h-1 bg-orange-500 rounded-full opacity-80 animate-bounce" />
-    </section>
+    </div>
   );
 };
 

@@ -30,6 +30,7 @@ import Escrow from "./pages/Escrow";
 import AppStatus from "./pages/AppStatus";
 import CreateAlert from "./pages/CreateAlert";
 import ContactAgent from "./pages/ContactAgent";
+import MaintenanceDashboard from "./pages/MaintenanceDashboard";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -65,6 +66,7 @@ function App() {
                 <Route path="/app-status" element={<AppStatus />} />
                 <Route path="/create-alert" element={<CreateAlert />} />
                 <Route path="/contact-agent" element={<ContactAgent />} />
+                <Route path="/maintenance-dashboard" element={<MaintenanceDashboard />} />
                 <Route path="*" element={<NotFound />} />
         </Routes>
       </TooltipProvider>

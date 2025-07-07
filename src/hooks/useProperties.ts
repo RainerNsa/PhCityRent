@@ -2,6 +2,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Database } from '@/integrations/supabase/types';
+import { sampleProperties } from '@/components/admin/seed/SampleData';
 
 type Property = Database['public']['Tables']['properties']['Row'];
 type PropertyInsert = Database['public']['Tables']['properties']['Insert'];
@@ -21,6 +22,15 @@ export const useProperties = (filters?: {
   return useQuery({
     queryKey: ['properties', filters],
     queryFn: async () => {
+      // Use sample data in development mode for immediate preview
+      const isDevelopment = import.meta.env.DEV;
+
+      if (isDevelopment) {
+        // Return sample data with simulated delay
+        await new Promise(resolve => setTimeout(resolve, 500));
+        return sampleProperties.filter(property => property.is_available);
+      }
+
       let query = supabase
         .from('properties')
         .select('*')

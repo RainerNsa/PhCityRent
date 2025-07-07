@@ -3,14 +3,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent } from '@/components/ui/card';
-import { 
-  Home, 
-  Building2, 
-  UserCheck, 
-  Shield, 
+import {
+  Home,
+  Building2,
+  UserCheck,
+  Shield,
   ArrowRight,
   Crown,
-  Briefcase
+  Briefcase,
+  Wrench
 } from 'lucide-react';
 
 const DashboardQuickAccess = () => {
@@ -42,6 +43,14 @@ const DashboardQuickAccess = () => {
       href: '/enhanced-agent-dashboard',
       color: 'from-purple-500 to-purple-600',
       hoverColor: 'hover:from-purple-600 hover:to-purple-700'
+    },
+    {
+      title: 'House Maintenance Dashboard',
+      description: 'Track repairs, schedule maintenance, manage service requests',
+      icon: Wrench,
+      href: '/maintenance-dashboard',
+      color: 'from-orange-500 to-orange-600',
+      hoverColor: 'hover:from-orange-600 hover:to-orange-700'
     }
   ];
 

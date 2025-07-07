@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -23,7 +24,7 @@ const PropertyShowcase = () => {
         location: "Old GRA, Port Harcourt",
         price: "₦8,500,000",
         period: "per year",
-        image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
+        image: "/Properties/iroko-interior-design-sa-private-residence-port-harcourt-nigeria-iroko-interior-design-and-consulting-img~0221aa35039df89b_4-4169-1-4d073bf.jpg",
         beds: 4, baths: 3, sqft: 2800,
         rating: 4.9,
         badge: "Premium",
@@ -35,7 +36,7 @@ const PropertyShowcase = () => {
         location: "New GRA, Port Harcourt",
         price: "₦6,200,000",
         period: "per year",
-        image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+        image: "/Properties/iroko-interior-design-sa-private-residence-port-harcourt-nigeria-iroko-interior-design-and-consulting-img~62e1075f039df8d0_4-4169-1-b2d4729.jpg",
         beds: 3, baths: 2, sqft: 2200,
         rating: 4.8,
         badge: "Featured",
@@ -49,7 +50,7 @@ const PropertyShowcase = () => {
         location: "Woji, Port Harcourt",
         price: "₦4,800,000",
         period: "per year",
-        image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
+        image: "/Properties/standard-4-bedroom-duplex-with-bq-OyxBI8lrm4Y58PQG4agi.jpg",
         beds: 5, baths: 4, sqft: 3500,
         rating: 4.7,
         badge: "Popular",
@@ -61,7 +62,7 @@ const PropertyShowcase = () => {
         location: "Eliozu, Port Harcourt",
         price: "₦3,600,000",
         period: "per year",
-        image: "https://images.unsplash.com/photo-1572120360610-d971b9d7767c?auto=format&fit=crop&w=800&q=80",
+        image: "/Properties/houses.jpg",
         beds: 4, baths: 3, sqft: 2800,
         rating: 4.6,
         badge: "New",
@@ -75,7 +76,7 @@ const PropertyShowcase = () => {
         location: "D-Line, Port Harcourt",
         price: "₦1,800,000",
         period: "per year",
-        image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80",
+        image: "/Properties/657092341.jpg",
         beds: 1, baths: 1, sqft: 800,
         rating: 4.5,
         badge: "Trending",
@@ -87,7 +88,7 @@ const PropertyShowcase = () => {
         location: "Ada George, Port Harcourt",
         price: "₦2,100,000",
         period: "per year",
-        image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
+        image: "/Properties/657092948.jpg",
         beds: 1, baths: 1, sqft: 950,
         rating: 4.4,
         badge: "Hot",
@@ -101,7 +102,7 @@ const PropertyShowcase = () => {
         location: "Old GRA Phase 2, Port Harcourt",
         price: "₦15,000,000",
         period: "per year",
-        image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
+        image: "/Properties/iroko-interior-design-sa-private-residence-port-harcourt-nigeria-iroko-interior-design-and-consulting-img~0221aa35039df89b_4-4169-1-4d073bf.jpg",
         beds: 6, baths: 5, sqft: 5000,
         rating: 5.0,
         badge: "Exclusive",
@@ -113,7 +114,7 @@ const PropertyShowcase = () => {
         location: "New GRA Estate, Port Harcourt",
         price: "₦12,500,000",
         period: "per year",
-        image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80",
+        image: "/Properties/standard-4-bedroom-duplex-with-bq-OyxBI8lrm4Y58PQG4agi.jpg",
         beds: 5, baths: 4, sqft: 4200,
         rating: 4.9,
         badge: "Elite",
@@ -143,7 +144,7 @@ const PropertyShowcase = () => {
             </span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Explore our curated collection of premium properties across Lagos, each verified and ready for immediate occupancy.
+            Explore our curated collection of premium properties across Port Harcourt, each verified and ready for immediate occupancy.
           </p>
         </div>
 
@@ -239,9 +240,11 @@ const PropertyShowcase = () => {
                   ))}
                 </div>
 
-                <Button className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-3 rounded-xl">
-                  View Details
-                </Button>
+                <Link to="/properties">
+                  <Button className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold py-3 rounded-xl">
+                    View Details
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           ))}
@@ -249,13 +252,15 @@ const PropertyShowcase = () => {
 
         {/* View All Button */}
         <div className="text-center">
-          <Button 
-            size="lg"
-            variant="outline"
-            className="border-2 border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white px-12 py-4 text-lg font-semibold rounded-2xl transition-all duration-300"
-          >
-            View All Properties
-          </Button>
+          <Link to="/properties">
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-2 border-orange-500 text-orange-600 hover:bg-orange-500 hover:text-white px-12 py-4 text-lg font-semibold rounded-2xl transition-all duration-300"
+            >
+              View All Properties
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

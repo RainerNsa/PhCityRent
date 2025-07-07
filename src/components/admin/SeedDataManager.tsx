@@ -14,14 +14,14 @@ const SeedDataManager = () => {
     {
       key: 'properties',
       title: 'Sample Properties',
-      description: 'Add 5 sample properties with images and details',
+      description: `Add ${sampleProperties.length} sample properties with mixed local and Unsplash images`,
       icon: Building2,
       count: sampleProperties.length
     },
     {
       key: 'agents',
       title: 'Agent Profiles',
-      description: 'Add 3 verified agent profiles',
+      description: `Add ${sampleAgentProfiles.length} verified agent profiles`,
       icon: Users,
       count: sampleAgentProfiles.length
     },

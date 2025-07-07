@@ -28,6 +28,8 @@ import RentalApplication from "./pages/RentalApplication";
 import VerificationStatus from "./pages/VerificationStatus";
 import Escrow from "./pages/Escrow";
 import AppStatus from "./pages/AppStatus";
+import CreateAlert from "./pages/CreateAlert";
+import ContactAgent from "./pages/ContactAgent";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -61,6 +63,8 @@ function App() {
                 <Route path="/verification-status" element={<VerificationStatus />} />
                 <Route path="/escrow" element={<Escrow />} />
                 <Route path="/app-status" element={<AppStatus />} />
+                <Route path="/create-alert" element={<CreateAlert />} />
+                <Route path="/contact-agent" element={<ContactAgent />} />
                 <Route path="*" element={<NotFound />} />
         </Routes>
       </TooltipProvider>

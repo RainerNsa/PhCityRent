@@ -19,20 +19,20 @@ const PropertyShowcase = () => {
     luxury: [
       {
         id: 1,
-        title: "Oceanview Luxury Penthouse",
-        location: "Victoria Island, Lagos",
+        title: "Waterfront Luxury Penthouse",
+        location: "Old GRA, Port Harcourt",
         price: "₦8,500,000",
         period: "per year",
         image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
         beds: 4, baths: 3, sqft: 2800,
         rating: 4.9,
         badge: "Premium",
-        features: ["Ocean View", "Private Pool", "Concierge"]
+        features: ["River View", "Private Pool", "Concierge"]
       },
       {
         id: 2,
         title: "Sky-High Executive Suite",
-        location: "Ikoyi, Lagos",
+        location: "New GRA, Port Harcourt",
         price: "₦6,200,000",
         period: "per year",
         image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
@@ -46,7 +46,7 @@ const PropertyShowcase = () => {
       {
         id: 3,
         title: "Spacious Family Villa",
-        location: "Lekki Phase 1, Lagos",
+        location: "Woji, Port Harcourt",
         price: "₦4,800,000",
         period: "per year",
         image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80",
@@ -58,7 +58,7 @@ const PropertyShowcase = () => {
       {
         id: 4,
         title: "Cozy Suburban Home",
-        location: "Magodo, Lagos",
+        location: "Eliozu, Port Harcourt",
         price: "₦3,600,000",
         period: "per year",
         image: "https://images.unsplash.com/photo-1572120360610-d971b9d7767c?auto=format&fit=crop&w=800&q=80",
@@ -72,19 +72,19 @@ const PropertyShowcase = () => {
       {
         id: 5,
         title: "Minimalist Studio Loft",
-        location: "Surulere, Lagos",
+        location: "D-Line, Port Harcourt",
         price: "₦1,800,000",
         period: "per year",
         image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80",
         beds: 1, baths: 1, sqft: 800,
         rating: 4.5,
         badge: "Trending",
-        features: ["Modern Design", "High Speed WiFi", "Metro Access"]
+        features: ["Modern Design", "High Speed WiFi", "Bus Access"]
       },
       {
         id: 6,
         title: "Urban Creative Space",
-        location: "Yaba, Lagos",
+        location: "Ada George, Port Harcourt",
         price: "₦2,100,000",
         period: "per year",
         image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
@@ -98,26 +98,26 @@ const PropertyShowcase = () => {
       {
         id: 7,
         title: "Luxury Duplex Mansion",
-        location: "Banana Island, Lagos",
+        location: "Old GRA Phase 2, Port Harcourt",
         price: "₦15,000,000",
         period: "per year",
         image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
         beds: 6, baths: 5, sqft: 5000,
         rating: 5.0,
         badge: "Exclusive",
-        features: ["Private Beach", "Home Theater", "Wine Cellar"]
+        features: ["Waterfront View", "Home Theater", "Wine Cellar"]
       },
       {
         id: 8,
         title: "Executive Duplex",
-        location: "Parkview Estate, Ikoyi",
+        location: "New GRA Estate, Port Harcourt",
         price: "₦12,500,000",
         period: "per year",
         image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80",
         beds: 5, baths: 4, sqft: 4200,
         rating: 4.9,
         badge: "Elite",
-        features: ["Gated Community", "Golf Course", "Premium Location"]
+        features: ["Gated Community", "Recreation Center", "Premium Location"]
       }
     ]
   };

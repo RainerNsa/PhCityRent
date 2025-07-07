@@ -120,7 +120,7 @@ const PremiumFeatures = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent">
                 <div className="absolute bottom-0 left-0 right-0 p-8">
                   <div className="inline-flex items-center px-4 py-2 bg-orange-500 text-white rounded-full text-sm font-semibold mb-4">
-                    <features[activeFeature].icon className="w-4 h-4 mr-2" />
+                    {React.createElement(features[activeFeature].icon, { className: "w-4 h-4 mr-2" })}
                     Featured Technology
                   </div>
                   <h3 className="text-3xl font-bold text-white mb-2">

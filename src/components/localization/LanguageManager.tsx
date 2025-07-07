@@ -40,9 +40,9 @@ const LanguageManager = () => {
 
   const marketInsights = [
     { region: 'Port Harcourt', languages: ['English', 'Igbo', 'Pidgin'], percentage: 95 },
-    { region: 'Lagos', languages: ['English', 'Yoruba', 'Pidgin'], percentage: 88 },
-    { region: 'Abuja', languages: ['English', 'Hausa', 'Pidgin'], percentage: 92 },
-    { region: 'Kano', languages: ['English', 'Hausa'], percentage: 78 }
+    { region: 'Rivers State', languages: ['English', 'Igbo', 'Pidgin'], percentage: 92 },
+    { region: 'Bayelsa State', languages: ['English', 'Ijaw', 'Pidgin'], percentage: 88 },
+    { region: 'Akwa Ibom State', languages: ['English', 'Ibibio', 'Pidgin'], percentage: 85 }
   ];
 
   const handleLanguageChange = (languageCode: string) => {

@@ -42,11 +42,11 @@ const AgentClientManager = () => {
       email: 'john.doe@email.com',
       phone: '+234 123 456 7890',
       status: 'active',
-      propertyInterests: ['3-bedroom apartment', 'Lekki area'],
+      propertyInterests: ['3-bedroom apartment', 'Old GRA area'],
       lastContact: '2024-01-15',
       totalInquiries: 3,
       potentialValue: 5000000,
-      location: 'Lagos'
+      location: 'Port Harcourt'
     },
     {
       id: '2',
@@ -54,11 +54,11 @@ const AgentClientManager = () => {
       email: 'jane.smith@email.com',
       phone: '+234 098 765 4321',
       status: 'prospect',
-      propertyInterests: ['2-bedroom flat', 'Victoria Island'],
+      propertyInterests: ['2-bedroom flat', 'New GRA'],
       lastContact: '2024-01-10',
       totalInquiries: 1,
       potentialValue: 3000000,
-      location: 'Lagos'
+      location: 'Port Harcourt'
     },
     {
       id: '3',
@@ -66,11 +66,11 @@ const AgentClientManager = () => {
       email: 'michael.j@email.com',
       phone: '+234 555 123 4567',
       status: 'inactive',
-      propertyInterests: ['4-bedroom house', 'Ikoyi'],
+      propertyInterests: ['4-bedroom house', 'Woji'],
       lastContact: '2023-12-20',
       totalInquiries: 5,
       potentialValue: 8000000,
-      location: 'Lagos'
+      location: 'Port Harcourt'
     }
   ];
 

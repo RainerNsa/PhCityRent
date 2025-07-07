@@ -3,15 +3,28 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { 
-  Heart, 
-  FileText, 
-  MessageSquare, 
+
+import {
+  Heart,
+  FileText,
+  MessageSquare,
   Search,
   Plus
 } from 'lucide-react';
 
+import { useProperties } from '@/hooks/useProperties';
+import { useDashboardStats } from '@/hooks/useDashboardStats';
+
 const DashboardContent = () => {
+
+  const { data: properties } = useProperties();
+  const { data: dashboardStats } = useDashboardStats();
+
+  // Get a random property for quick apply feature
+  const randomProperty = properties && properties.length > 0
+    ? properties[Math.floor(Math.random() * properties.length)]
+    : null;
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -21,7 +34,7 @@ const DashboardContent = () => {
             <Heart className="h-4 w-4 text-red-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12</div>
+            <div className="text-2xl font-bold">{dashboardStats?.saved_properties_count || 0}</div>
             <p className="text-xs text-muted-foreground">Properties you've liked</p>
           </CardContent>
         </Card>
@@ -32,7 +45,7 @@ const DashboardContent = () => {
             <FileText className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">3</div>
+            <div className="text-2xl font-bold">{dashboardStats?.pending_applications_count || 0}</div>
             <p className="text-xs text-muted-foreground">Applications in progress</p>
           </CardContent>
         </Card>
@@ -43,7 +56,7 @@ const DashboardContent = () => {
             <MessageSquare className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">7</div>
+            <div className="text-2xl font-bold">{dashboardStats?.unread_messages_count || 0}</div>
             <p className="text-xs text-muted-foreground">New messages</p>
           </CardContent>
         </Card>
@@ -93,22 +106,36 @@ const DashboardContent = () => {
                   <span className="text-sm">Browse Properties</span>
                 </Button>
               </Link>
-              <Button className="w-full h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
-                <Plus className="w-6 h-6" />
-                <span className="text-sm">Create Alert</span>
-              </Button>
-              <Button className="w-full h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
-                <MessageSquare className="w-6 h-6" />
-                <span className="text-sm">Contact Agent</span>
-              </Button>
-              <Button className="w-full h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
-                <FileText className="w-6 h-6" />
-                <span className="text-sm">Apply Now</span>
-              </Button>
+              <Link to="/create-alert">
+                <Button
+                  className="w-full h-20 flex flex-col items-center justify-center space-y-2"
+                  variant="outline"
+                >
+                  <Plus className="w-6 h-6" />
+                  <span className="text-sm">Create Alert</span>
+                </Button>
+              </Link>
+              <Link to="/contact-agent">
+                <Button
+                  className="w-full h-20 flex flex-col items-center justify-center space-y-2"
+                  variant="outline"
+                >
+                  <MessageSquare className="w-6 h-6" />
+                  <span className="text-sm">Contact Agent</span>
+                </Button>
+              </Link>
+              <Link to={randomProperty ? `/properties/${randomProperty.id}` : '/properties'}>
+                <Button className="w-full h-20 flex flex-col items-center justify-center space-y-2" variant="outline">
+                  <FileText className="w-6 h-6" />
+                  <span className="text-sm">Apply Now</span>
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
       </div>
+
+
     </div>
   );
 };

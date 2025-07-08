@@ -11,7 +11,8 @@ import {
   ArrowRight,
   Crown,
   Briefcase,
-  Wrench
+  Wrench,
+  CreditCard
 } from 'lucide-react';
 
 const DashboardQuickAccess = () => {
@@ -51,6 +52,14 @@ const DashboardQuickAccess = () => {
       href: '/maintenance-dashboard',
       color: 'from-orange-500 to-orange-600',
       hoverColor: 'hover:from-orange-600 hover:to-orange-700'
+    },
+    {
+      title: 'Secure Payments',
+      description: 'Pay rent, fees, and deposits securely with Paystack',
+      icon: CreditCard,
+      href: '/tenant-portal?tab=payments',
+      color: 'from-emerald-500 to-emerald-600',
+      hoverColor: 'hover:from-emerald-600 hover:to-emerald-700'
     }
   ];
 

@@ -8,6 +8,12 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    hmr: {
+      overlay: false, // Disable error overlay that might cause issues
+    },
+    watch: {
+      usePolling: false, // Disable polling to reduce file system load
+    },
   },
   plugins: [
     react(),

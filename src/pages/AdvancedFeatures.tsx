@@ -1,20 +1,31 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Navbar from '@/components/navigation/Navbar';
 import Footer from '@/components/Footer';
 import EnhancedBreadcrumb from '@/components/ui/enhanced-breadcrumb';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import PaymentDashboard from '@/components/payments/PaymentDashboard';
+import EnhancedSecurePaymentDashboard from '@/components/payment/EnhancedSecurePaymentDashboard';
+import SimplePaymentTest from '@/components/payment/SimplePaymentTest';
 import PropertyRecommendations from '@/components/ai/PropertyRecommendations';
 import MarketAnalytics from '@/components/analytics/MarketAnalytics';
 import WhatsAppIntegration from '@/components/whatsapp/WhatsAppIntegration';
 import FeaturedListingsManager from '@/components/marketplace/FeaturedListingsManager';
 import ContractTemplateManager from '@/components/legal/ContractTemplateManager';
 import ThirdPartyAPIManager from '@/components/verification/ThirdPartyAPIManager';
-import { CreditCard, Brain, BarChart3, MessageCircle, Star, FileText, Shield, Zap, Sparkles } from 'lucide-react';
+import { CreditCard, Brain, BarChart3, MessageCircle, Star, FileText, Shield, Zap, Sparkles, TestTube } from 'lucide-react';
 
 const AdvancedFeatures = () => {
+  const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("payments");
+
+  // Handle URL parameters for tab navigation
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && ['payments', 'ai', 'analytics', 'whatsapp', 'marketplace', 'legal', 'verification', 'test'].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
 
   const features = [
     {
@@ -79,6 +90,15 @@ const AdvancedFeatures = () => {
       color: "from-indigo-500 to-indigo-700",
       bgColor: "bg-indigo-50",
       iconColor: "text-indigo-600"
+    },
+    {
+      id: "test",
+      title: "Payment Test",
+      description: "Test payment integration with Nigerian providers",
+      icon: TestTube,
+      color: "from-purple-500 to-purple-700",
+      bgColor: "bg-purple-50",
+      iconColor: "text-purple-600"
     }
   ];
 
@@ -214,7 +234,7 @@ const AdvancedFeatures = () => {
             <div className="p-0">
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsContent value="payments" className="p-0 m-0">
-                  <PaymentDashboard />
+                  <EnhancedSecurePaymentDashboard />
                 </TabsContent>
 
                 <TabsContent value="ai" className="p-0 m-0">
@@ -239,6 +259,10 @@ const AdvancedFeatures = () => {
 
                 <TabsContent value="verification" className="p-0 m-0">
                   <ThirdPartyAPIManager />
+                </TabsContent>
+
+                <TabsContent value="test" className="p-0 m-0">
+                  <SimplePaymentTest />
                 </TabsContent>
               </Tabs>
             </div>

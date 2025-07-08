@@ -13,15 +13,17 @@ import AlertsContent from '@/components/tenant/alerts/AlertsContent';
 import ApplicationsContent from '@/components/tenant/applications/ApplicationsContent';
 import MessagesContent from '@/components/tenant/messages/MessagesContent';
 import SettingsContent from '@/components/tenant/settings/SettingsContent';
-import { 
-  User, 
-  Home, 
-  Bell, 
-  FileText, 
-  MessageSquare, 
+import EnhancedSecurePaymentDashboard from '@/components/payment/EnhancedSecurePaymentDashboard';
+import {
+  User,
+  Home,
+  Bell,
+  FileText,
+  MessageSquare,
   Settings,
   Heart,
-  Shield
+  Shield,
+  CreditCard
 } from 'lucide-react';
 
 const TenantPortal = () => {
@@ -32,7 +34,7 @@ const TenantPortal = () => {
   // Handle URL parameters for tab navigation
   useEffect(() => {
     const tabParam = searchParams.get('tab');
-    if (tabParam && ['dashboard', 'profile', 'properties', 'alerts', 'applications', 'messages', 'settings'].includes(tabParam)) {
+    if (tabParam && ['dashboard', 'profile', 'properties', 'payments', 'alerts', 'applications', 'messages', 'settings'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
@@ -77,6 +79,10 @@ const TenantPortal = () => {
                 <Heart className="w-4 h-4" />
                 <span className="hidden sm:inline">Properties</span>
               </TabsTrigger>
+              <TabsTrigger value="payments" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-red-500 data-[state=active]:text-white rounded-lg transition-all duration-200">
+                <CreditCard className="w-4 h-4" />
+                <span className="hidden sm:inline">Payments</span>
+              </TabsTrigger>
               <TabsTrigger value="alerts" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-red-500 data-[state=active]:text-white rounded-lg transition-all duration-200">
                 <Bell className="w-4 h-4" />
                 <span className="hidden sm:inline">Alerts</span>
@@ -105,6 +111,10 @@ const TenantPortal = () => {
 
             <TabsContent value="properties" className="space-y-6">
               <PropertiesContent />
+            </TabsContent>
+
+            <TabsContent value="payments" className="space-y-6">
+              <EnhancedSecurePaymentDashboard tenantId={user?.id} />
             </TabsContent>
 
             <TabsContent value="alerts" className="space-y-6">

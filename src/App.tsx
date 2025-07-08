@@ -27,6 +27,10 @@ import AdvancedBusinessLogic from "./pages/AdvancedBusinessLogic";
 import RentalApplication from "./pages/RentalApplication";
 import VerificationStatus from "./pages/VerificationStatus";
 import Escrow from "./pages/Escrow";
+import PaymentCallback from "./pages/PaymentCallback";
+import PaymentDebug from "./pages/PaymentDebug";
+import ReceiptDemo from "./pages/ReceiptDemo";
+import PaymentTest from "./pages/PaymentTest";
 import AppStatus from "./pages/AppStatus";
 import CreateAlert from "./pages/CreateAlert";
 import ContactAgent from "./pages/ContactAgent";
@@ -63,6 +67,10 @@ function App() {
                 <Route path="/rental-application" element={<RentalApplication />} />
                 <Route path="/verification-status" element={<VerificationStatus />} />
                 <Route path="/escrow" element={<Escrow />} />
+                <Route path="/payment/callback" element={<PaymentCallback />} />
+                <Route path="/payment/debug" element={<PaymentDebug />} />
+                <Route path="/receipt/demo" element={<ReceiptDemo />} />
+                <Route path="/payment/test" element={<PaymentTest />} />
                 <Route path="/app-status" element={<AppStatus />} />
                 <Route path="/create-alert" element={<CreateAlert />} />
                 <Route path="/contact-agent" element={<ContactAgent />} />

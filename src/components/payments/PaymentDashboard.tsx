@@ -1,10 +1,13 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { usePaystack } from '@/hooks/usePaystack';
-import { CreditCard, Wallet, Receipt, History, DollarSign, Calendar } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { usePayment, useTransactionHistory, useRentPayment, formatAmount } from '@/hooks/usePayment';
+import { PaymentProvider } from '@/types/payment';
+import PaymentProviderSelector from '@/components/payment/PaymentProviderSelector';
+import { CreditCard, Wallet, Receipt, History, DollarSign, Calendar, Clock, CheckCircle, TrendingUp } from 'lucide-react';
 
 interface PaymentDashboardProps {
   tenantId?: string;
@@ -13,14 +16,17 @@ interface PaymentDashboardProps {
 
 const PaymentDashboard = ({ tenantId, propertyId }: PaymentDashboardProps) => {
   const [selectedPaymentType, setSelectedPaymentType] = useState<string>('');
-  const { initializePayment, isLoading } = usePaystack();
+  const [selectedProvider, setSelectedProvider] = useState<PaymentProvider>('paystack');
+  const [showProviderSelector, setShowProviderSelector] = useState(false);
+  const { payRent, isLoading } = useRentPayment();
+  const { data: transactions = [], isLoading: loadingHistory } = useTransactionHistory();
 
   const paymentTypes = [
     {
       id: 'monthly_rent',
       title: 'Monthly Rent',
       description: 'Pay your monthly rent securely',
-      amount: 450000,
+      amount: 450000, // Amount in kobo
       icon: Calendar,
       color: 'bg-blue-500'
     },
@@ -28,7 +34,7 @@ const PaymentDashboard = ({ tenantId, propertyId }: PaymentDashboardProps) => {
       id: 'security_deposit',
       title: 'Security Deposit',
       description: 'One-time security deposit',
-      amount: 900000,
+      amount: 900000, // Amount in kobo
       icon: Wallet,
       color: 'bg-green-500'
     },
@@ -36,29 +42,37 @@ const PaymentDashboard = ({ tenantId, propertyId }: PaymentDashboardProps) => {
       id: 'maintenance_fee',
       title: 'Maintenance Fee',
       description: 'Property maintenance contribution',
-      amount: 50000,
+      amount: 50000, // Amount in kobo
       icon: Receipt,
       color: 'bg-orange-500'
     }
   ];
 
   const handlePayment = async (paymentType: any) => {
-    const reference = `PHC_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
+    if (!showProviderSelector) {
+      setSelectedPaymentType(paymentType.id);
+      setShowProviderSelector(true);
+      return;
+    }
+
     try {
-      await initializePayment({
-        email: 'tenant@phcityrent.com',
-        amount: paymentType.amount,
-        reference,
-        metadata: {
-          tenantId,
-          propertyId,
-          paymentType: paymentType.id,
-          description: paymentType.title
-        }
+      await payRent({
+        propertyId: propertyId || 'demo-property',
+        amount: paymentType.amount / 100, // Convert from kobo to naira
+        tenantEmail: 'tenant@phcityrent.com',
+        tenantName: 'Demo Tenant',
+        tenantPhone: '+2348012345678',
+        provider: selectedProvider
       });
     } catch (error) {
       console.error('Payment failed:', error);
+    }
+  };
+
+  const handleProviderSelection = () => {
+    const paymentType = paymentTypes.find(p => p.id === selectedPaymentType);
+    if (paymentType) {
+      handlePayment(paymentType);
     }
   };
 

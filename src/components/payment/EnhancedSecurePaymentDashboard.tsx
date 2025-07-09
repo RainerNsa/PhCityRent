@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/useAuth';
+import { paymentHistoryService } from '@/services/paymentHistoryService';
 import { 
   CreditCard, 
   Wallet, 
@@ -58,18 +59,29 @@ interface EnhancedSecurePaymentDashboardProps {
   propertyId?: string;
 }
 
-const EnhancedSecurePaymentDashboard: React.FC<EnhancedSecurePaymentDashboardProps> = ({ 
-  tenantId, 
-  propertyId 
+const EnhancedSecurePaymentDashboard: React.FC<EnhancedSecurePaymentDashboardProps> = ({
+  tenantId,
+  propertyId
 }) => {
   const { user } = useAuth();
   const [isPaystackLoaded, setIsPaystackLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [paymentHistory, setPaymentHistory] = useState<any[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [selectedPayments, setSelectedPayments] = useState<string[]>([]);
   const [customAmounts, setCustomAmounts] = useState<{[key: string]: number}>({});
   const [showPaymentPlan, setShowPaymentPlan] = useState(false);
   const [activeTab, setActiveTab] = useState('outstanding');
+
+  // Mock user data for development if no user is available
+  const currentUser = user || {
+    id: 'demo-user-123',
+    email: 'demo@phcityrent.com',
+    user_metadata: {
+      full_name: 'Demo User',
+      phone: '+234-801-234-5678'
+    }
+  };
 
   // Load Paystack script
   useEffect(() => {
@@ -97,6 +109,29 @@ const EnhancedSecurePaymentDashboard: React.FC<EnhancedSecurePaymentDashboardPro
 
     loadPaystackScript();
   }, []);
+
+  // Load payment history
+  useEffect(() => {
+    if (currentUser?.id) {
+      loadPaymentHistory();
+    }
+  }, [currentUser?.id, activeTab]);
+
+  const loadPaymentHistory = async () => {
+    if (!currentUser?.id) return;
+
+    setIsLoadingHistory(true);
+    try {
+      const result = await paymentHistoryService.getPaymentHistory(currentUser.id, { limit: 20 });
+      if (result.success && result.data) {
+        setPaymentHistory(result.data);
+      }
+    } catch (error) {
+      console.error('Failed to load payment history:', error);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
 
   // Real-world payment items with dynamic data
   const paymentItems: PaymentItem[] = [
@@ -592,16 +627,31 @@ const EnhancedSecurePaymentDashboard: React.FC<EnhancedSecurePaymentDashboardPro
         </TabsContent>
 
         <TabsContent value="history" className="space-y-6">
-          {/* Payment History will be implemented here */}
           <Card>
             <CardHeader>
-              <CardTitle>Payment History</CardTitle>
+              <CardTitle className="flex items-center justify-between">
+                <span>Payment History</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={loadPaymentHistory}
+                  disabled={isLoadingHistory}
+                >
+                  <RefreshCw className={`w-4 h-4 mr-2 ${isLoadingHistory ? 'animate-spin' : ''}`} />
+                  Refresh
+                </Button>
+              </CardTitle>
               <CardDescription>
                 View all your past transactions and download receipts
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {paymentHistory.length === 0 ? (
+              {isLoadingHistory ? (
+                <div className="text-center py-8">
+                  <RefreshCw className="w-8 h-8 mx-auto mb-4 text-blue-500 animate-spin" />
+                  <p className="text-gray-500">Loading payment history...</p>
+                </div>
+              ) : paymentHistory.length === 0 ? (
                 <div className="text-center py-8">
                   <History className="w-12 h-12 mx-auto mb-4 text-gray-400" />
                   <p className="text-gray-500 mb-2">No payment history yet</p>
@@ -610,22 +660,93 @@ const EnhancedSecurePaymentDashboard: React.FC<EnhancedSecurePaymentDashboardPro
               ) : (
                 <div className="space-y-4">
                   {paymentHistory.map((payment) => (
-                    <div key={payment.id} className="border rounded-lg p-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">{payment.items.length} item(s) paid</p>
-                          <p className="text-sm text-gray-500">{payment.reference}</p>
-                          <p className="text-xs text-gray-400">
-                            {new Date(payment.date).toLocaleDateString()}
-                          </p>
+                    <div key={payment.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start space-x-4">
+                          <div className="p-2 bg-green-100 rounded-lg">
+                            <Receipt className="w-5 h-5 text-green-600" />
+                          </div>
+                          <div>
+                            <div className="flex items-center space-x-2 mb-1">
+                              <p className="font-semibold text-gray-900">
+                                {payment.payment_items?.[0]?.description || 'Payment'}
+                              </p>
+                              <Badge className={`${
+                                payment.status === 'success' ? 'bg-green-100 text-green-800' :
+                                payment.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                'bg-red-100 text-red-800'
+                              }`}>
+                                {payment.status.toUpperCase()}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-gray-600 mb-1">
+                              {payment.property_title} • {payment.property_location}
+                            </p>
+                            <div className="flex items-center space-x-4 text-xs text-gray-500">
+                              <span>Ref: {payment.reference}</span>
+                              <span>•</span>
+                              <span>{new Date(payment.created_at).toLocaleDateString()}</span>
+                              <span>•</span>
+                              <span>{payment.payment_method.toUpperCase()}</span>
+                            </div>
+                          </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-semibold">{formatAmount(payment.totalAmount)}</p>
-                          <Badge className="bg-green-100 text-green-800">SUCCESS</Badge>
+                          <p className="text-lg font-bold text-gray-900">
+                            {formatAmount(payment.amount)}
+                          </p>
+                          {payment.fees > 0 && (
+                            <p className="text-xs text-gray-500">
+                              Fee: {formatAmount(payment.fees)}
+                            </p>
+                          )}
+                          <div className="flex items-center space-x-2 mt-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                // Download receipt for this payment
+                                window.open(`/payment/callback?reference=${payment.reference}&status=success&provider=${payment.provider}`, '_blank');
+                              }}
+                            >
+                              <Download className="w-3 h-3 mr-1" />
+                              Receipt
+                            </Button>
+                          </div>
                         </div>
                       </div>
+
+                      {/* Payment Items Breakdown */}
+                      {payment.payment_items && payment.payment_items.length > 1 && (
+                        <div className="mt-4 pt-4 border-t border-gray-100">
+                          <p className="text-sm font-medium text-gray-700 mb-2">Payment Breakdown:</p>
+                          <div className="space-y-1">
+                            {payment.payment_items.map((item: any, index: number) => (
+                              <div key={index} className="flex justify-between text-sm">
+                                <span className="text-gray-600">{item.description}</span>
+                                <span className="font-medium">{formatAmount(item.amount)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))}
+
+                  {/* Load More Button */}
+                  {paymentHistory.length >= 20 && (
+                    <div className="text-center pt-4">
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          // Load more payments
+                          // This would implement pagination
+                        }}
+                      >
+                        Load More Payments
+                      </Button>
+                    </div>
+                  )}
                 </div>
               )}
             </CardContent>

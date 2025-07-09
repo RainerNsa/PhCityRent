@@ -12,17 +12,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { 
-  User, 
-  LogOut, 
-  Settings, 
-  Shield, 
-  Home, 
-  Building2, 
+import {
+  User,
+  LogOut,
+  Settings,
+  Shield,
+  Home,
+  Building2,
   UserCheck,
   ChevronDown,
   Crown,
-  Briefcase
+  Briefcase,
+  CreditCard
 } from 'lucide-react';
 
 const EnhancedUserMenu = () => {
@@ -117,6 +118,20 @@ const EnhancedUserMenu = () => {
             <DropdownMenuItem className="cursor-pointer rounded-lg mx-1 px-3 py-2 hover:bg-blue-50 hover:text-blue-700 transition-colors">
               <Home className="mr-3 h-4 w-4" />
               <span>Tenant Portal</span>
+            </DropdownMenuItem>
+          </Link>
+
+          <Link to="/payment-dashboard">
+            <DropdownMenuItem className="cursor-pointer rounded-lg mx-1 px-3 py-2 bg-gradient-to-r from-orange-50 to-red-50 hover:from-orange-100 hover:to-red-100 border border-orange-200 hover:border-orange-300 transition-all duration-200">
+              <div className="flex items-center">
+                <div className="p-1 bg-gradient-to-r from-orange-500 to-red-500 rounded-md mr-3">
+                  <CreditCard className="h-4 w-4 text-white" />
+                </div>
+                <div>
+                  <span className="font-medium text-orange-800">Payment Dashboard</span>
+                  <p className="text-xs text-orange-600">Manage payments & analytics</p>
+                </div>
+              </div>
             </DropdownMenuItem>
           </Link>
 

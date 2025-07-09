@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Routes, Route } from "react-router-dom";
 import { TranslationProvider } from "@/components/localization/LanguageManager";
+import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Properties from "./pages/Properties";
 import PropertyDetail from "./pages/PropertyDetail";
@@ -22,6 +23,8 @@ import EnhancedAgentDashboard from "./pages/EnhancedAgentDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminSeedData from "./pages/AdminSeedData";
 import AdvancedFeatures from "./pages/AdvancedFeatures";
+import AdvancedFeaturesTest from "./pages/AdvancedFeaturesTest";
+import PaymentDashboard from "./pages/PaymentDashboard";
 import ScalingOptimization from "./pages/ScalingOptimization";
 import AdvancedBusinessLogic from "./pages/AdvancedBusinessLogic";
 import RentalApplication from "./pages/RentalApplication";
@@ -39,10 +42,11 @@ import NotFound from "./pages/NotFound";
 
 function App() {
   return (
-    <TranslationProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
+    <AuthProvider>
+      <TranslationProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/properties" element={<Properties />} />
@@ -62,6 +66,8 @@ function App() {
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/seed-data" element={<AdminSeedData />} />
                 <Route path="/advanced-features" element={<AdvancedFeatures />} />
+                <Route path="/advanced-features-test" element={<AdvancedFeaturesTest />} />
+                <Route path="/payment-dashboard" element={<PaymentDashboard />} />
                 <Route path="/scaling-optimization" element={<ScalingOptimization />} />
                 <Route path="/advanced-business-logic" element={<AdvancedBusinessLogic />} />
                 <Route path="/rental-application" element={<RentalApplication />} />
@@ -77,8 +83,9 @@ function App() {
                 <Route path="/maintenance-dashboard" element={<MaintenanceDashboard />} />
                 <Route path="*" element={<NotFound />} />
         </Routes>
-      </TooltipProvider>
-    </TranslationProvider>
+        </TooltipProvider>
+      </TranslationProvider>
+    </AuthProvider>
   );
 }
 

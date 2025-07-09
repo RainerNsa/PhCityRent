@@ -16,6 +16,9 @@ import {
   ReceiptData
 } from '@/utils/receiptGenerator';
 import PaymentReceipt from '@/components/payment/PaymentReceipt';
+import { paymentHistoryService } from '@/services/paymentHistoryService';
+import { whatsappService } from '@/services/whatsappService';
+import { useAuth } from '@/hooks/useAuth';
 import Navbar from '@/components/navigation/Navbar';
 import Footer from '@/components/Footer';
 import {
@@ -54,6 +57,7 @@ const PaymentCallback: React.FC = () => {
 
   const { verifyPayment } = usePayment();
   const { data: transaction } = useTransaction(reference || '');
+  const { user } = useAuth();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -68,6 +72,54 @@ const PaymentCallback: React.FC = () => {
       };
     }
   }, [showDownloadMenu]);
+
+  const savePaymentToHistory = async (paymentData: any, paymentReference: string) => {
+    if (!user) return;
+
+    try {
+      const historyData = {
+        tenant_id: user.id,
+        property_id: 'demo-property', // This would come from the payment metadata
+        reference: paymentReference,
+        amount: paymentData.amount || 45000000,
+        fees: paymentData.fees || 2250000,
+        status: 'success',
+        payment_method: paymentData.channel || 'card',
+        provider: provider,
+        transaction_id: paymentData.id || paymentReference,
+        payment_items: [
+          {
+            type: 'rent',
+            description: 'Monthly Rent Payment',
+            amount: paymentData.amount || 45000000
+          }
+        ],
+        metadata: paymentData,
+        customer_email: user.email || 'user@phcityrent.com',
+        customer_name: user.user_metadata?.full_name || 'PHCityRent User',
+        property_title: 'Luxury 3-Bedroom Apartment',
+        property_location: 'GRA Phase 2, Port Harcourt'
+      };
+
+      const result = await paymentHistoryService.savePaymentRecord(historyData);
+
+      if (result.success) {
+        console.log('✅ Payment saved to history');
+
+        // Send WhatsApp confirmation if user has phone number
+        const userPhone = user.user_metadata?.phone;
+        if (userPhone) {
+          await whatsappService.sendPaymentConfirmation(
+            userPhone,
+            (paymentData.amount || 45000000) / 100,
+            paymentReference
+          );
+        }
+      }
+    } catch (error) {
+      console.error('Failed to save payment to history:', error);
+    }
+  };
 
   useEffect(() => {
     if (!reference || hasVerified) {
@@ -101,6 +153,9 @@ const PaymentCallback: React.FC = () => {
           setVerificationStatus('success');
           setVerificationData(mockData);
           setHasVerified(true);
+
+          // Save to payment history
+          await savePaymentToHistory(mockData, reference);
           return;
         }
 
@@ -110,6 +165,9 @@ const PaymentCallback: React.FC = () => {
         if (result.success && result.data.status === 'success') {
           setVerificationStatus('success');
           setVerificationData(result.data);
+
+          // Save to payment history
+          await savePaymentToHistory(result.data, reference);
         } else {
           setVerificationStatus('failed');
           setVerificationData(result.data);

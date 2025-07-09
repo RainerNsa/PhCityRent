@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Brain, Star, MapPin, Bed, Bath, Square, TrendingUp } from 'lucide-react';
-import { useProperties } from '@/hooks/useProperties';
+import { aiRecommendationService } from '@/services/aiRecommendationService';
+import { useAuth } from '@/hooks/useAuth';
 
 interface RecommendationScore {
   property_id: string;
@@ -17,7 +18,14 @@ interface RecommendationScore {
 const PropertyRecommendations = () => {
   const [recommendations, setRecommendations] = useState<RecommendationScore[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const { data: properties } = useProperties();
+  const [insights, setInsights] = useState<any>(null);
+  const { user } = useAuth();
+
+  // Mock user data for development
+  const currentUser = user || {
+    id: 'demo-user-123',
+    email: 'demo@phcityrent.com'
+  };
 
   const analyzeProperties = async () => {
     setIsAnalyzing(true);

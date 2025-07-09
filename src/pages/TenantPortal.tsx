@@ -23,7 +23,8 @@ import {
   Settings,
   Heart,
   Shield,
-  CreditCard
+  CreditCard,
+  ArrowRight
 } from 'lucide-react';
 
 const TenantPortal = () => {
@@ -51,13 +52,21 @@ const TenantPortal = () => {
           {/* Enhanced Header */}
           <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-8 mb-8 text-white shadow-xl">
             <div className="flex items-center justify-between">
-              <div>
+              <div className="flex-1">
                 <h1 className="text-3xl md:text-4xl font-bold mb-2">
                   Welcome back, {user?.user_metadata?.full_name || 'Tenant'}!
                 </h1>
-                <p className="text-orange-100 text-lg">
+                <p className="text-orange-100 text-lg mb-4">
                   Manage your rental journey from one convenient dashboard
                 </p>
+                <button
+                  onClick={() => window.location.href = '/payment-dashboard'}
+                  className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/30 text-white px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105"
+                >
+                  <CreditCard className="w-4 h-4" />
+                  <span className="font-medium">Payment Dashboard</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </div>
               <div className="hidden md:flex items-center justify-center w-20 h-20 bg-white/20 rounded-full">
                 <Shield className="w-10 h-10" />

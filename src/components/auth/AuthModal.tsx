@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Mail, Lock, User, X, Eye, EyeOff, Shield, CheckCircle } from 'lucide-react';
+import { Loader2, Mail, Lock, User, Eye, EyeOff, Shield, CheckCircle } from 'lucide-react';
 
 interface AuthModalProps {
   isOpen: boolean;

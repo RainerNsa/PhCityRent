@@ -142,7 +142,13 @@ To ensure project success, each team has a dedicated success guide:
    yarn install
    ```
 3. **Set up environment variables:**
-   - Copy `.env.example` to `.env` and fill in required values
+   ```bash
+   cp .env.example .env
+   # Edit .env with your actual credentials (never commit this file!)
+   ```
+   📖 **See [ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md) for detailed setup instructions**
+
+   ⚠️ **Security Notice:** Never commit `.env` files to version control
 4. **Run the development server:**
    ```bash
    npm run dev

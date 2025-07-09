@@ -17,8 +17,8 @@ export const sampleProperties: SampleProperty[] = [
     amenities: ["River View", "Private Pool", "Concierge", "24/7 Security", "Gym Access", "Parking"],
     images: [
       "/Properties/iroko-interior-design-sa-private-residence-port-harcourt-nigeria-iroko-interior-design-and-consulting-img~0221aa35039df89b_4-4169-1-4d073bf.jpg",
-      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80",
-      "/Properties/iroko-interior-design-sa-private-residence-port-harcourt-nigeria-iroko-interior-design-and-consulting-img~62e1075f039df8d0_4-4169-1-b2d4729.jpg"
+      "/Properties/iroko-interior-design-sa-private-residence-port-harcourt-nigeria-iroko-interior-design-and-consulting-img~62e1075f039df8d0_4-4169-1-b2d4729.jpg",
+      "/Properties/657092341.jpg"
     ],
     featured: true,
     is_available: true,
@@ -41,8 +41,8 @@ export const sampleProperties: SampleProperty[] = [
     amenities: ["City View", "Gym Access", "24/7 Security", "Modern Kitchen", "Balcony", "Parking"],
     images: [
       "/Properties/iroko-interior-design-sa-private-residence-port-harcourt-nigeria-iroko-interior-design-and-consulting-img~62e1075f039df8d0_4-4169-1-b2d4729.jpg",
-      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
-      "/Properties/657092341.jpg"
+      "/Properties/657092341.jpg",
+      "/Properties/657092948.jpg"
     ],
     featured: true,
     is_available: true,

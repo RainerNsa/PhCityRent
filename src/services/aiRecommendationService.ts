@@ -1,5 +1,5 @@
 // AI-Powered Property Recommendation Service
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface UserPreferences {
   budget_min: number;

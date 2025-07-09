@@ -1,5 +1,5 @@
 // WhatsApp Business API Integration Service
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface WhatsAppMessage {
   id: string;

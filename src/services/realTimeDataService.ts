@@ -1,6 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
 import { RealtimeChannel } from '@supabase/supabase-js';
-import { WebSocketManager } from '@/lib/websocketManager';
 
 // Types for real-time data
 export interface AgentMetrics {
@@ -75,14 +74,12 @@ export class RealTimeDataService {
   private static instance: RealTimeDataService;
   private subscriptions: Map<string, Subscription> = new Map();
   private channels: Map<string, RealtimeChannel> = new Map();
-  private websocketManager: WebSocketManager;
   private isConnected: boolean = false;
   private reconnectAttempts: number = 0;
   private maxReconnectAttempts: number = 5;
   private reconnectDelay: number = 1000;
 
   private constructor() {
-    this.websocketManager = WebSocketManager.getInstance();
     this.initializeConnection();
   }
 
@@ -101,11 +98,16 @@ export class RealTimeDataService {
    */
   private async initializeConnection(): Promise<void> {
     try {
-      // Initialize WebSocket manager
-      await this.websocketManager.connect();
+      // Check Supabase connection
+      const { data: { session }, error } = await supabase.auth.getSession();
+
+      if (error) {
+        console.warn('Supabase auth session error:', error);
+      }
+
       this.isConnected = true;
       this.reconnectAttempts = 0;
-      
+
       console.log('Real-time data service connected');
     } catch (error) {
       console.error('Failed to initialize real-time connection:', error);
@@ -320,7 +322,7 @@ export class RealTimeDataService {
    * Get connection status
    */
   public getConnectionStatus(): boolean {
-    return this.isConnected && this.websocketManager.isConnected();
+    return this.isConnected;
   }
 
   /**

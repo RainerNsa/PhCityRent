@@ -1,13 +1,14 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { 
-  realTimeDataService, 
-  AgentMetrics, 
-  PropertyUpdate, 
-  PaymentAlert, 
-  DashboardMetrics 
+import {
+  realTimeDataService,
+  AgentMetrics,
+  PropertyUpdate,
+  PaymentAlert,
+  DashboardMetrics
 } from '@/services/realTimeDataService';
 import { useToast } from '@/hooks/use-toast';
+import { PropertyAnalytics } from '@/types/property';
 
 /**
  * Hook for real-time agent metrics
@@ -381,5 +382,94 @@ export const useRealTimeManager = () => {
     connectionStatus,
     activeSubscriptions,
     disconnectAll
+  };
+};
+
+/**
+ * Hook for real-time property data updates
+ */
+export const useRealTimePropertyData = (propertyId: string | null) => {
+  const [analytics, setAnalytics] = useState<PropertyAnalytics | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const subscriptionRef = useRef<string | null>(null);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  const handlePropertyUpdate = useCallback((update: PropertyUpdate) => {
+    setError(null);
+
+    // Invalidate related queries
+    queryClient.invalidateQueries(['property', propertyId]);
+    queryClient.invalidateQueries(['property-analytics', propertyId]);
+
+    // Show toast notification for important updates
+    if (update.type === 'inquiry') {
+      toast({
+        title: "New Property Inquiry! 📧",
+        description: "Someone is interested in your property.",
+        duration: 5000,
+      });
+    } else if (update.type === 'view') {
+      // Don't show toast for every view, but update analytics
+      if (analytics) {
+        setAnalytics(prev => prev ? {
+          ...prev,
+          total_views: prev.total_views + 1
+        } : null);
+      }
+    }
+  }, [propertyId, queryClient, toast, analytics]);
+
+  const handleConnectionChange = useCallback((connected: boolean) => {
+    setIsConnected(connected);
+    if (!connected) {
+      setError(new Error('Real-time connection lost'));
+    } else {
+      setError(null);
+    }
+  }, []);
+
+  const handleError = useCallback((error: Error) => {
+    setError(error);
+    setIsConnected(false);
+    console.error('Real-time property data error:', error);
+  }, []);
+
+  useEffect(() => {
+    if (!propertyId) {
+      setAnalytics(null);
+      setIsConnected(false);
+      return;
+    }
+
+    try {
+      // Subscribe to real-time property updates
+      const subscriptionId = realTimeDataService.subscribeToPropertyUpdates(
+        propertyId,
+        handlePropertyUpdate,
+        handleConnectionChange,
+        handleError
+      );
+
+      subscriptionRef.current = subscriptionId;
+      setIsConnected(true);
+
+      return () => {
+        if (subscriptionRef.current) {
+          realTimeDataService.unsubscribe(subscriptionRef.current);
+          subscriptionRef.current = null;
+        }
+        setIsConnected(false);
+      };
+    } catch (error) {
+      handleError(error as Error);
+    }
+  }, [propertyId, handlePropertyUpdate, handleConnectionChange, handleError]);
+
+  return {
+    analytics,
+    isConnected,
+    error
   };
 };
